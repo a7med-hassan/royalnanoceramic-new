@@ -32,10 +32,18 @@ export interface ApiResponse {
   providedIn: 'root',
 })
 export class ApiService {
-  private BASE_URL = environment.apiUrl;
+  private BASE_URL = 'https://royal-nano-backend.vercel.app/api/';
+
+  // Specific endpoint URLs - only existing ones
+  private CONTACT_URL = `${this.BASE_URL}contact`;
+  private JOIN_URL = `${this.BASE_URL}join`;
+  private HEALTH_URL = `${this.BASE_URL}health`;
 
   constructor(private http: HttpClient) {
     console.log('🚀 ApiService initialized with BASE_URL:', this.BASE_URL);
+    console.log('🔧 Contact URL:', this.CONTACT_URL);
+    console.log('🔧 Join URL:', this.JOIN_URL);
+    console.log('🔧 Health URL:', this.HEALTH_URL);
     console.log('🔧 HttpClient instance:', this.http);
     console.log('🔧 HttpClient type:', typeof this.http);
     console.log('🔧 HttpClient constructor:', this.http.constructor.name);
@@ -69,13 +77,13 @@ export class ApiService {
    * Submit contact form
    */
   submitContactForm(data: ContactFormData): Observable<ApiResponse> {
-    console.log('📤 Submitting contact form to:', `${this.BASE_URL}/contact`);
+    console.log('📤 Submitting contact form to:', `${this.CONTACT_URL}`);
     console.log('📤 Contact form data:', data);
     console.log('🔧 HttpClient instance:', this.http);
     console.log('🔧 BASE_URL:', this.BASE_URL);
-    console.log('🔧 Full URL:', `${this.BASE_URL}/contact`);
+    console.log('🔧 Full URL:', `${this.CONTACT_URL}`);
 
-    return this.http.post<ApiResponse>(`${this.BASE_URL}/contact`, data).pipe(
+    return this.http.post<ApiResponse>(`${this.CONTACT_URL}`, data).pipe(
       tap((response) =>
         console.log('✅ Contact form submitted successfully:', response)
       ),
@@ -99,13 +107,13 @@ export class ApiService {
    * Submit join form
    */
   submitJoinForm(data: JoinFormData): Observable<ApiResponse> {
-    console.log('📤 Submitting join form to:', `${this.BASE_URL}/join`);
+    console.log('📤 Submitting join form to:', `${this.JOIN_URL}`);
     console.log('📤 Join form data:', data);
     console.log('🔧 HttpClient instance:', this.http);
     console.log('🔧 BASE_URL:', this.BASE_URL);
-    console.log('🔧 Full URL:', `${this.BASE_URL}/join`);
+    console.log('🔧 Full URL:', `${this.JOIN_URL}`);
 
-    return this.http.post<ApiResponse>(`${this.BASE_URL}/join`, data).pipe(
+    return this.http.post<ApiResponse>(`${this.JOIN_URL}`, data).pipe(
       tap((response) =>
         console.log('✅ Join form submitted successfully:', response)
       ),
@@ -129,9 +137,9 @@ export class ApiService {
    * Health check endpoint
    */
   healthCheck(): Observable<any> {
-    console.log('🏥 Health check to:', `${this.BASE_URL}/health`);
+    console.log('🏥 Health check to:', `${this.HEALTH_URL}`);
 
-    return this.http.get(`${this.BASE_URL}/health`).pipe(
+    return this.http.get(`${this.HEALTH_URL}`).pipe(
       tap((response) => console.log('✅ Health check successful:', response)),
       catchError(this.handleError)
     );
@@ -143,11 +151,11 @@ export class ApiService {
   testConnection(): Observable<any> {
     console.log('🧪 Testing connection with HttpClient...');
     console.log('🔗 Base URL:', this.BASE_URL);
-    console.log('🔗 Full URL:', `${this.BASE_URL}/health`);
+    console.log('🔗 Full URL:', `${this.HEALTH_URL}`);
 
     // Test with different HTTP methods
     return this.http
-      .get(`${this.BASE_URL}/health`, {
+      .get(`${this.HEALTH_URL}`, {
         observe: 'response',
         headers: {
           Accept: 'application/json',
@@ -174,11 +182,7 @@ export class ApiService {
    */
   getContactMessages(): Observable<any[]> {
     console.log('📥 Fetching contact messages...');
-    const endpoints = [
-      `${this.BASE_URL}/contact/messages`,
-      `${this.BASE_URL}/contact`,
-      `${this.BASE_URL}/admin/contact`,
-    ];
+    const endpoints = [`${this.CONTACT_URL}`];
     return this.tryEndpoints(endpoints, 'contact messages');
   }
 
@@ -187,11 +191,7 @@ export class ApiService {
    */
   getJoinMessages(): Observable<any[]> {
     console.log('📥 Fetching join messages...');
-    const endpoints = [
-      `${this.BASE_URL}/join/messages`,
-      `${this.BASE_URL}/join`,
-      `${this.BASE_URL}/admin/join`,
-    ];
+    const endpoints = [`${this.JOIN_URL}`];
     return this.tryEndpoints(endpoints, 'join messages');
   }
 

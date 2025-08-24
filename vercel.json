@@ -11,6 +11,45 @@
   ],
   "routes": [
     {
+      "src": "/(.*\\.js)",
+      "dest": "/$1",
+      "headers": {
+        "Content-Type": "application/javascript"
+      }
+    },
+    {
+      "src": "/(.*\\.css)",
+      "dest": "/$1",
+      "headers": {
+        "Content-Type": "text/css"
+      }
+    },
+    {
+      "src": "/(.*\\.json)",
+      "dest": "/$1",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    },
+    {
+      "src": "/(.*\\.(png|jpg|jpeg|gif|ico|svg|webp))",
+      "dest": "/$1",
+      "headers": {
+        "Content-Type": "image/$1"
+      }
+    },
+    {
+      "src": "/(.*\\.(woff|woff2|ttf|eot))",
+      "dest": "/$1",
+      "headers": {
+        "Content-Type": "font/$1"
+      }
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }

@@ -1,0 +1,7 @@
+node_modules
+.git
+.angular
+dist/royal-nano-ceramic/browser
+*.log
+.env
+.env.local

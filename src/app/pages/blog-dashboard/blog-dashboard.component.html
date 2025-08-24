@@ -1,0 +1,356 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>لوحة إدارة المدونة</h1>
+    <p>أضف منشورات جديدة للمدونة</p>
+
+    <div class="user-info">
+      <div class="user-details">
+        <i class="fas fa-user-circle"></i>
+        <span class="username">{{ currentUsername }}</span>
+        <span class="login-time">تم تسجيل الدخول: {{ loginTime }}</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="goToBlog()" title="عرض المدونة">
+        <i class="fas fa-newspaper"></i>
+        عرض المدونة
+      </button>
+      <button
+        class="btn-view-posts"
+        (click)="openPostsPopup()"
+        title="عرض المنشورات"
+        *ngIf="existingPosts.length > 0"
+      >
+        <i class="fas fa-eye"></i>
+        عرض المنشورات
+        <span class="posts-count">({{ existingPosts.length }})</span>
+      </button>
+      <button class="btn-logout" (click)="logout()" title="تسجيل الخروج">
+        <i class="fas fa-sign-out-alt"></i>
+        تسجيل الخروج
+      </button>
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="form-container">
+      <form [formGroup]="blogForm" (ngSubmit)="onSubmit()" class="blog-form">
+        <div class="form-section">
+          <h3>معلومات المنشور الأساسية</h3>
+
+          <div class="form-group">
+            <label for="title">عنوان المنشور *</label>
+            <input
+              type="text"
+              id="title"
+              formControlName="title"
+              placeholder="أدخل عنوان المنشور"
+              [class.invalid]="isFieldInvalid('title')"
+            />
+            <div class="error-message" *ngIf="isFieldInvalid('title')">
+              {{ getErrorMessage("title") }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="excerpt">ملخص المنشور *</label>
+            <textarea
+              id="excerpt"
+              formControlName="excerpt"
+              placeholder="أدخل ملخص مختصر للمنشور"
+              rows="3"
+              [class.invalid]="isFieldInvalid('excerpt')"
+            ></textarea>
+            <div class="error-message" *ngIf="isFieldInvalid('excerpt')">
+              {{ getErrorMessage("excerpt") }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="content">محتوى المنشور *</label>
+            <textarea
+              id="content"
+              formControlName="content"
+              placeholder="أدخل المحتوى الكامل للمنشور"
+              rows="8"
+              [class.invalid]="isFieldInvalid('content')"
+            ></textarea>
+            <div class="error-message" *ngIf="isFieldInvalid('content')">
+              {{ getErrorMessage("content") }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>تفاصيل إضافية</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="category">الفئة *</label>
+              <select
+                id="category"
+                formControlName="category"
+                [class.invalid]="isFieldInvalid('category')"
+              >
+                <option value="">اختر الفئة</option>
+                <option *ngFor="let cat of categories" [value]="cat">
+                  {{ cat }}
+                </option>
+              </select>
+              <div class="error-message" *ngIf="isFieldInvalid('category')">
+                {{ getErrorMessage("category") }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="readTime">وقت القراءة *</label>
+              <input
+                type="text"
+                id="readTime"
+                formControlName="readTime"
+                placeholder="مثال: 5 دقائق"
+                [class.invalid]="isFieldInvalid('readTime')"
+              />
+              <div class="error-message" *ngIf="isFieldInvalid('readTime')">
+                {{ getErrorMessage("readTime") }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="image">رابط الصورة *</label>
+            <input
+              type="url"
+              id="image"
+              formControlName="image"
+              placeholder="أدخل رابط الصورة"
+              (input)="onImageUrlChange($event)"
+              [class.invalid]="isFieldInvalid('image')"
+            />
+            <div class="error-message" *ngIf="isFieldInvalid('image')">
+              {{ getErrorMessage("image") }}
+            </div>
+            <small class="help-text"
+              >يجب أن يكون الرابط صحيحاً ويشير إلى صورة</small
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="tags">العلامات *</label>
+            <input
+              type="text"
+              id="tags"
+              formControlName="tags"
+              placeholder="أدخل العلامات مفصولة بفواصل"
+              [class.invalid]="isFieldInvalid('tags')"
+            />
+            <div class="error-message" *ngIf="isFieldInvalid('tags')">
+              {{ getErrorMessage("tags") }}
+            </div>
+            <small class="help-text">مثال: تقنيات, حماية, سيارات, جودة</small>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>تحسين محركات البحث (SEO)</h3>
+
+          <div class="form-group">
+            <label for="seoKeywords">الكلمات المفتاحية *</label>
+            <input
+              type="text"
+              id="seoKeywords"
+              formControlName="seoKeywords"
+              placeholder="أدخل الكلمات المفتاحية مفصولة بفواصل"
+              [class.invalid]="isFieldInvalid('seoKeywords')"
+            />
+            <div class="error-message" *ngIf="isFieldInvalid('seoKeywords')">
+              {{ getErrorMessage("seoKeywords") }}
+            </div>
+            <small class="help-text">مثال: تقنيات, حماية, سيارات, جودة</small>
+          </div>
+
+          <div class="form-group">
+            <label for="seoDescription">وصف SEO *</label>
+            <textarea
+              id="seoDescription"
+              formControlName="seoDescription"
+              placeholder="أدخل وصف مختصر للمنشور لتحسين محركات البحث"
+              rows="3"
+              [class.invalid]="isFieldInvalid('seoDescription')"
+            ></textarea>
+            <div class="error-message" *ngIf="isFieldInvalid('seoDescription')">
+              {{ getErrorMessage("seoDescription") }}
+            </div>
+            <small class="help-text">يجب أن يكون الوصف بين 50-160 حرف</small>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="featured" id="featured" />
+              <span class="checkmark"></span>
+              منشور مميز
+            </label>
+            <small class="help-text"
+              >المنشورات المميزة تظهر في أعلى المدونة</small
+            >
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+            <i class="fas fa-plus" *ngIf="!isSubmitting"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+            {{ isSubmitting ? "جاري الإضافة..." : "إضافة المنشور" }}
+          </button>
+
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="blogForm.reset()"
+            [disabled]="isSubmitting"
+          >
+            <i class="fas fa-undo"></i>
+            إعادة تعيين
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div class="message-container" *ngIf="message">
+    <div class="message" [class]="'message-' + messageType">
+      <i
+        class="fas"
+        [class]="
+          messageType === 'success'
+            ? 'fa-check-circle'
+            : 'fa-exclamation-circle'
+        "
+      ></i>
+      {{ message }}
+    </div>
+  </div>
+
+  <!-- Posts Popup Modal -->
+  <div
+    class="posts-popup-overlay"
+    *ngIf="showPostsPopup"
+    (click)="closePostsPopup()"
+  >
+    <div class="posts-popup-content" (click)="$event.stopPropagation()">
+      <div class="popup-header">
+        <h3>عرض المنشورات</h3>
+        <button class="popup-close" (click)="closePostsPopup()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="popup-controls">
+        <div class="selection-controls">
+          <button
+            class="btn-select-all"
+            (click)="selectAllPosts()"
+            title="تحديد جميع المنشورات"
+            *ngIf="
+              existingPosts.length > 0 &&
+              selectedPosts.length < existingPosts.length
+            "
+          >
+            <i class="fas fa-check-square"></i>
+            تحديد الكل
+          </button>
+          <button
+            class="btn-deselect-all"
+            (click)="deselectAllPosts()"
+            title="إلغاء تحديد جميع المنشورات"
+            *ngIf="selectedPosts.length > 0"
+          >
+            <i class="fas fa-square"></i>
+            إلغاء التحديد
+          </button>
+        </div>
+
+        <div class="popup-actions">
+          <button
+            class="btn-delete-popup"
+            (click)="deleteSelectedPosts()"
+            title="حذف المنشورات المحددة"
+            *ngIf="selectedPosts.length > 0"
+            [attr.data-count]="selectedPosts.length"
+          >
+            <i class="fas fa-trash-alt"></i>
+            حذف المنشورات المحددة
+            <span class="selected-count" *ngIf="selectedPosts.length > 0">
+              ({{ selectedPosts.length }})
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div class="popup-posts-grid">
+        <div
+          class="popup-post-card"
+          *ngFor="let post of existingPosts; trackBy: trackByPostId"
+        >
+          <div class="post-selection">
+            <input
+              type="checkbox"
+              [id]="'popup-post-' + post.id"
+              [checked]="selectedPosts.includes(post.id)"
+              (change)="togglePostSelection(post.id)"
+              class="post-checkbox"
+            />
+            <label [for]="'popup-post-' + post.id" class="post-checkbox-label">
+              <i class="fas fa-check"></i>
+            </label>
+          </div>
+
+          <div class="post-image">
+            <img
+              [src]="post.image"
+              [alt]="post.title"
+              onerror="this.src='assets/images/blog/default-post.jpg'"
+            />
+            <div class="post-badge" *ngIf="post.featured">
+              <i class="fas fa-star"></i>
+              مميز
+            </div>
+          </div>
+
+          <div class="post-content">
+            <h4 class="post-title">{{ post.title }}</h4>
+            <p class="post-excerpt">{{ post.excerpt }}</p>
+
+            <div class="post-meta">
+              <span class="category">
+                <i class="fas fa-tag"></i>
+                {{ post.category }}
+              </span>
+              <span class="date">
+                <i class="fas fa-calendar"></i>
+                {{ getFormattedDate(post.date) }}
+              </span>
+              <span class="read-time">
+                <i class="fas fa-clock"></i>
+                {{ post.readTime }}
+              </span>
+            </div>
+
+            <div class="post-tags">
+              <span class="tag" *ngFor="let tag of post.tags">{{ tag }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="no-posts" *ngIf="existingPosts.length === 0">
+          <i class="fas fa-newspaper"></i>
+          <h3>📝 لا توجد منشورات حالياً</h3>
+          <p>لم يتم إضافة أي منشورات بعد</p>
+          <small>قم بإضافة منشور جديد من النموذج أعلاه</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

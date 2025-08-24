@@ -1,0 +1,213 @@
+<div class="about-page" [class.rtl]="isRtl">
+  <section class="hero-section">
+    <div class="container">
+      <h1>{{ translationService.getTranslation("about.hero.title") }}</h1>
+      <p>{{ translationService.getTranslation("about.hero.subtitle") }}</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <div class="about-content">
+        <h2>{{ translationService.getTranslation("about.story.title") }}</h2>
+        <p>
+          {{ translationService.getTranslation("about.story.description") }}
+        </p>
+
+        <h2>{{ translationService.getTranslation("about.history.title") }}</h2>
+        <div class="company-history">
+          <div class="timeline">
+            <div class="timeline-item" data-year="2012">
+              <div class="timeline-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-line"></div>
+              </div>
+              <div class="timeline-content">
+                <div class="year-badge">2012</div>
+                <h3>
+                  {{
+                    translationService.getTranslation(
+                      "about.timeline.2012.title"
+                    )
+                  }}
+                </h3>
+                <p>
+                  {{
+                    translationService.getTranslation(
+                      "about.timeline.2012.description"
+                    )
+                  }}
+                </p>
+                <div class="achievement-icon">🏭</div>
+              </div>
+            </div>
+
+            <div class="timeline-item" data-year="2015">
+              <div class="timeline-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-line"></div>
+              </div>
+              <div class="timeline-content">
+                <div class="year-badge">2015</div>
+                <h3>
+                  {{
+                    translationService.getTranslation(
+                      "about.timeline.2015.title"
+                    )
+                  }}
+                </h3>
+                <p>
+                  {{
+                    translationService.getTranslation(
+                      "about.timeline.2015.description"
+                    )
+                  }}
+                </p>
+                <div class="achievement-icon">🚀</div>
+              </div>
+            </div>
+
+            <div class="timeline-item" data-year="2018">
+              <div class="timeline-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-line"></div>
+              </div>
+              <div class="timeline-content">
+                <div class="year-badge">2018</div>
+                <h3>
+                  {{
+                    translationService.getTranslation(
+                      "about.timeline.2018.title"
+                    )
+                  }}
+                </h3>
+                <p>
+                  {{
+                    translationService.getTranslation(
+                      "about.timeline.2018.description"
+                    )
+                  }}
+                </p>
+                <div class="achievement-icon">🌍</div>
+              </div>
+            </div>
+
+            <div class="timeline-item" data-year="2020">
+              <div class="timeline-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-line"></div>
+              </div>
+              <div class="timeline-content">
+                <div class="year-badge">2020</div>
+                <h3>
+                  {{
+                    translationService.getTranslation(
+                      "about.timeline.2020.title"
+                    )
+                  }}
+                </h3>
+                <p>
+                  {{
+                    translationService.getTranslation(
+                      "about.timeline.2020.description"
+                    )
+                  }}
+                </p>
+                <div class="achievement-icon">🤝</div>
+              </div>
+            </div>
+
+            <div class="timeline-item" data-year="2024">
+              <div class="timeline-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-line"></div>
+              </div>
+              <div class="timeline-content">
+                <div class="year-badge">2024</div>
+                <h3>
+                  {{
+                    translationService.getTranslation(
+                      "about.timeline.2024.title"
+                    )
+                  }}
+                </h3>
+                <p>
+                  {{
+                    translationService.getTranslation(
+                      "about.timeline.2024.description"
+                    )
+                  }}
+                </p>
+                <div class="achievement-icon">🔬</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="company-values">
+            <div class="value-card">
+              <div class="value-icon">🎯</div>
+              <h4>
+                {{
+                  translationService.getTranslation(
+                    "about.values.quality.title"
+                  )
+                }}
+              </h4>
+              <p>
+                {{
+                  translationService.getTranslation(
+                    "about.values.quality.description"
+                  )
+                }}
+              </p>
+            </div>
+            <div class="value-card">
+              <div class="value-icon">⚡</div>
+              <h4>
+                {{
+                  translationService.getTranslation(
+                    "about.values.precision.title"
+                  )
+                }}
+              </h4>
+              <p>
+                {{
+                  translationService.getTranslation(
+                    "about.values.precision.description"
+                  )
+                }}
+              </p>
+            </div>
+            <div class="value-card">
+              <div class="value-icon">🌟</div>
+              <h4>
+                {{
+                  translationService.getTranslation(
+                    "about.values.innovation.title"
+                  )
+                }}
+              </h4>
+              <p>
+                {{
+                  translationService.getTranslation(
+                    "about.values.innovation.description"
+                  )
+                }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <h2>{{ translationService.getTranslation("about.vision.title") }}</h2>
+        <p>
+          {{ translationService.getTranslation("about.vision.description") }}
+        </p>
+
+        <h2>{{ translationService.getTranslation("about.mission.title") }}</h2>
+        <p>
+          {{ translationService.getTranslation("about.mission.description") }}
+        </p>
+      </div>
+    </div>
+  </section>
+</div>

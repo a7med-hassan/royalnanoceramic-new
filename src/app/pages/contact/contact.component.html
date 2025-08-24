@@ -1,0 +1,14 @@
+<div class="contact-page" [class.rtl]="isRtl">
+  <section class="hero-section">
+    <div class="container">
+      <h1>{{ translationService.getTranslation("contact.hero.title") }}</h1>
+      <p>{{ translationService.getTranslation("contact.hero.subtitle") }}</p>
+    </div>
+  </section>
+
+  <section class="contact-form-section">
+    <div class="container">
+      <app-contact-form></app-contact-form>
+    </div>
+  </section>
+</div>

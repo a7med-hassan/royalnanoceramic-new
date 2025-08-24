@@ -1,0 +1,192 @@
+<div class="home-page" [class.rtl]="isRtl">
+  <!-- Hero Slider -->
+  <app-hero-slider></app-hero-slider>
+
+  <!-- Services Section -->
+  <section class="services-section">
+    <div class="container">
+      <div class="section-header" [class.rtl]="isRtl">
+        <h2 class="section-title">
+          {{ translationService.getTranslation("home.services.title") }}
+        </h2>
+        <p class="section-description">
+          {{ translationService.getTranslation("home.services.subtitle") }}
+        </p>
+      </div>
+
+      <div class="services-grid">
+        <div
+          class="service-card animate-on-scroll"
+          *ngFor="let service of services"
+        >
+          <a
+            [routerLink]="['/services']"
+            class="service-link"
+            [attr.aria-label]="getServiceTitle(service.key)"
+          >
+            <div class="service-icon">
+              <i [class]="service.icon"></i>
+            </div>
+            <div class="service-content">
+              <h3 class="service-title">
+                {{ getServiceTitle(service.key) }}
+              </h3>
+              <p class="service-description">
+                {{ getServiceDescription(service.key) }}
+              </p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Before & After Gallery Section -->
+  <app-before-after-slider></app-before-after-slider>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <div class="section-header" [class.rtl]="isRtl">
+        <h2 class="section-title">
+          {{ translationService.getTranslation("home.features.title") }}
+        </h2>
+        <p class="section-description">
+          {{ translationService.getTranslation("home.features.subtitle") }}
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <div
+          class="feature-card animate-on-scroll"
+          *ngFor="let feature of features"
+        >
+          <div class="feature-icon" [style.color]="feature.color">
+            <i [class]="feature.icon"></i>
+          </div>
+          <div class="feature-content">
+            <h3 class="feature-title">
+              {{ getFeatureTitle(feature.key) }}
+            </h3>
+            <p class="feature-description">
+              {{ getFeatureDescription(feature.key) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content" [class.rtl]="isRtl">
+        <h2 class="cta-title">
+          {{ translationService.getTranslation("home.cta.title") }}
+        </h2>
+        <p class="cta-description">
+          {{ translationService.getTranslation("home.cta.description") }}
+        </p>
+        <a class="cta-button" [routerLink]="['/contact']">
+          {{ translationService.getTranslation("home.cta.button") }}
+          <i class="fas fa-arrow-left"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Form Section -->
+  <section class="contact-form-section">
+    <div class="container">
+      <app-contact-form></app-contact-form>
+    </div>
+  </section>
+
+  <!-- Social Media Section -->
+  <section class="social-media-section">
+    <div class="container">
+      <div class="section-header" [class.rtl]="isRtl">
+        <h2 class="section-title">
+          {{ translationService.getTranslation("home.social.title") }}
+        </h2>
+        <p class="section-description">
+          {{ translationService.getTranslation("home.social.subtitle") }}
+        </p>
+      </div>
+
+      <div class="social-media-grid">
+        <a
+          href="https://wa.me/201234567890"
+          target="_blank"
+          class="social-card whatsapp"
+        >
+          <div class="social-icon">
+            <i class="fab fa-whatsapp"></i>
+          </div>
+          <h3>
+            {{ translationService.getTranslation("social.whatsapp.title") }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation("social.whatsapp.description")
+            }}
+          </p>
+        </a>
+
+        <a
+          href="https://instagram.com/royalnanoceramic"
+          target="_blank"
+          class="social-card instagram"
+        >
+          <div class="social-icon">
+            <i class="fab fa-instagram"></i>
+          </div>
+          <h3>
+            {{ translationService.getTranslation("social.instagram.title") }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation("social.instagram.description")
+            }}
+          </p>
+        </a>
+
+        <a
+          href="https://facebook.com/royalnanoceramic"
+          target="_blank"
+          class="social-card facebook"
+        >
+          <div class="social-icon">
+            <i class="fab fa-facebook-f"></i>
+          </div>
+          <h3>
+            {{ translationService.getTranslation("social.facebook.title") }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation("social.facebook.description")
+            }}
+          </p>
+        </a>
+
+        <a
+          href="https://youtube.com/royalnanoceramic"
+          target="_blank"
+          class="social-card youtube"
+        >
+          <div class="social-icon">
+            <i class="fab fa-youtube"></i>
+          </div>
+          <h3>
+            {{ translationService.getTranslation("social.youtube.title") }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation("social.youtube.description")
+            }}
+          </p>
+        </a>
+      </div>
+    </div>
+  </section>
+</div>

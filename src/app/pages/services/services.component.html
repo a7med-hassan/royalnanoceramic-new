@@ -1,0 +1,561 @@
+<div class="services-page" [class.rtl]="isRtl">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-background"></div>
+    <div class="hero-overlay"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          {{ translationService.getTranslation("services.hero.title") }}
+        </h1>
+        <p class="hero-subtitle">
+          {{ translationService.getTranslation("services.hero.subtitle") }}
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">4</span>
+            <span class="stat-label">{{
+              translationService.getTranslation("services.hero.stats.services")
+            }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">10+</span>
+            <span class="stat-label">{{
+              translationService.getTranslation(
+                "services.hero.stats.experience"
+              )
+            }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">{{
+              translationService.getTranslation("services.hero.stats.quality")
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Grid -->
+  <section class="services-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>
+          {{ translationService.getTranslation("services.section.title") }}
+        </h2>
+        <p>
+          {{ translationService.getTranslation("services.section.subtitle") }}
+        </p>
+      </div>
+
+      <div class="services-grid">
+        <!-- Diamond Hybrid Plus -->
+        <div class="service-card premium">
+          <div class="service-image">
+            <img
+              src="assets/images/services/HYPERD+.png"
+              alt="Diamond Hybrid Plus"
+            />
+            <div class="service-overlay">
+              <div class="service-badge">
+                {{
+                  translationService.getTranslation("services.premium_badge")
+                }}
+              </div>
+            </div>
+          </div>
+          <div class="service-content">
+            <div class="service-icon">💎</div>
+            <h3>
+              {{
+                translationService.getTranslation(
+                  "services.diamond_hybrid.title"
+                )
+              }}
+            </h3>
+            <p class="service-description">
+              {{
+                translationService.getTranslation(
+                  "services.diamond_hybrid.description"
+                )
+              }}
+            </p>
+            <div class="service-features">
+              <span class="feature">{{
+                translationService.getTranslation(
+                  "services.diamond_hybrid.features.protection"
+                )
+              }}</span>
+              <span class="feature">{{
+                translationService.getTranslation(
+                  "services.diamond_hybrid.features.scratch"
+                )
+              }}</span>
+              <span class="feature">{{
+                translationService.getTranslation(
+                  "services.diamond_hybrid.features.shine"
+                )
+              }}</span>
+            </div>
+            <div class="service-details">
+              <div class="detail-item">
+                <i class="fas fa-shield-alt"></i>
+                <span>{{
+                  translationService.getTranslation(
+                    "services.diamond_hybrid.details.protection_level"
+                  )
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-clock"></i>
+                <span>{{
+                  translationService.getTranslation(
+                    "services.diamond_hybrid.details.duration"
+                  )
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-star"></i>
+                <span>{{
+                  translationService.getTranslation(
+                    "services.diamond_hybrid.details.warranty"
+                  )
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paint Protection -->
+        <div class="service-card">
+          <div class="service-image">
+            <img
+              src="assets/images/services/male-worker-wrapping-car-with-ptotective-foil.jpg"
+              alt="Paint Protection"
+            />
+          </div>
+          <div class="service-content">
+            <div class="service-icon">🎨</div>
+            <h3>
+              {{
+                translationService.getTranslation(
+                  "services.paint_protection.title"
+                )
+              }}
+            </h3>
+            <p class="service-description">
+              {{
+                translationService.getTranslation(
+                  "services.paint_protection.description"
+                )
+              }}
+            </p>
+            <div class="service-features">
+              <span class="feature">{{
+                translationService.getTranslation(
+                  "services.paint_protection.features.protection"
+                )
+              }}</span>
+              <span class="feature">{{
+                translationService.getTranslation(
+                  "services.paint_protection.features.films"
+                )
+              }}</span>
+              <span class="feature">{{
+                translationService.getTranslation(
+                  "services.paint_protection.features.transparency"
+                )
+              }}</span>
+            </div>
+            <div class="service-details">
+              <div class="detail-item">
+                <i class="fas fa-shield-alt"></i>
+                <span>{{
+                  translationService.getTranslation(
+                    "services.paint_protection.details.protection_level"
+                  )
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-clock"></i>
+                <span>{{
+                  translationService.getTranslation(
+                    "services.paint_protection.details.duration"
+                  )
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-star"></i>
+                <span>{{
+                  translationService.getTranslation(
+                    "services.paint_protection.details.warranty"
+                  )
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paint Protection Process -->
+        <div class="service-card">
+          <div class="service-image">
+            <img
+              src="assets/images/services/close-up-car-care-process.jpg"
+              alt="Paint Protection Process"
+            />
+          </div>
+          <div class="service-content">
+            <div class="service-icon">🔧</div>
+            <h3>
+              {{
+                translationService.getTranslation(
+                  "services.paint_protection_process.title"
+                )
+              }}
+            </h3>
+            <p class="service-description">
+              {{
+                translationService.getTranslation(
+                  "services.paint_protection_process.description"
+                )
+              }}
+            </p>
+            <div class="service-features">
+              <span class="feature">{{
+                translationService.getTranslation(
+                  "services.paint_protection_process.features.protection"
+                )
+              }}</span>
+              <span class="feature">{{
+                translationService.getTranslation(
+                  "services.paint_protection_process.features.technology"
+                )
+              }}</span>
+              <span class="feature">{{
+                translationService.getTranslation(
+                  "services.paint_protection_process.features.professional"
+                )
+              }}</span>
+            </div>
+            <div class="service-details">
+              <div class="detail-item">
+                <i class="fas fa-shield-alt"></i>
+                <span>{{
+                  translationService.getTranslation(
+                    "services.paint_protection_process.details.protection_level"
+                  )
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-clock"></i>
+                <span>{{
+                  translationService.getTranslation(
+                    "services.paint_protection_process.details.duration"
+                  )
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-star"></i>
+                <span>{{
+                  translationService.getTranslation(
+                    "services.paint_protection_process.details.warranty"
+                  )
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shield UltraCool -->
+        <div class="service-card premium">
+          <div class="service-image">
+            <img
+              src="assets/images/services/shield-ultra-cool.png"
+              alt="Shield UltraCool"
+            />
+            <div class="service-overlay">
+              <div class="service-badge">
+                {{
+                  translationService.getTranslation("services.premium_badge")
+                }}
+              </div>
+            </div>
+          </div>
+          <div class="service-content">
+            <div class="service-icon">❄️</div>
+            <h3>
+              {{
+                translationService.getTranslation(
+                  "services.shield_ultracool.title"
+                )
+              }}
+            </h3>
+            <p class="service-description">
+              {{
+                translationService.getTranslation(
+                  "services.shield_ultracool.description"
+                )
+              }}
+            </p>
+            <div class="service-features">
+              <span class="feature">{{
+                translationService.getTranslation(
+                  "services.shield_ultracool.features.protection"
+                )
+              }}</span>
+              <span class="feature">{{
+                translationService.getTranslation(
+                  "services.shield_ultracool.features.cooling"
+                )
+              }}</span>
+              <span class="feature">{{
+                translationService.getTranslation(
+                  "services.shield_ultracool.features.energy"
+                )
+              }}</span>
+            </div>
+            <div class="service-details">
+              <div class="detail-item">
+                <i class="fas fa-shield-alt"></i>
+                <span>{{
+                  translationService.getTranslation(
+                    "services.shield_ultracool.details.protection_level"
+                  )
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-clock"></i>
+                <span>{{
+                  translationService.getTranslation(
+                    "services.shield_ultracool.details.duration"
+                  )
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-star"></i>
+                <span>{{
+                  translationService.getTranslation(
+                    "services.shield_ultracool.details.warranty"
+                  )
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technology Section -->
+  <section class="technology-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>
+          {{ translationService.getTranslation("services.technology.title") }}
+        </h2>
+        <p>
+          {{
+            translationService.getTranslation("services.technology.subtitle")
+          }}
+        </p>
+      </div>
+
+      <div class="technology-grid">
+        <div class="tech-card">
+          <div class="tech-icon">🔬</div>
+          <h3>
+            {{
+              translationService.getTranslation(
+                "services.technology.nano.title"
+              )
+            }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation(
+                "services.technology.nano.description"
+              )
+            }}
+          </p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-icon">💎</div>
+          <h3>
+            {{
+              translationService.getTranslation(
+                "services.technology.ceramic.title"
+              )
+            }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation(
+                "services.technology.ceramic.description"
+              )
+            }}
+          </p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-icon">⚡</div>
+          <h3>
+            {{
+              translationService.getTranslation(
+                "services.technology.graphene.title"
+              )
+            }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation(
+                "services.technology.graphene.description"
+              )
+            }}
+          </p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-icon">🛡️</div>
+          <h3>
+            {{
+              translationService.getTranslation(
+                "services.technology.multilayer.title"
+              )
+            }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation(
+                "services.technology.multilayer.description"
+              )
+            }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section class="process-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>
+          {{ translationService.getTranslation("services.process.title") }}
+        </h2>
+        <p>
+          {{ translationService.getTranslation("services.process.subtitle") }}
+        </p>
+      </div>
+
+      <div class="process-timeline">
+        <div class="process-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>
+              {{
+                translationService.getTranslation(
+                  "services.process.step1.title"
+                )
+              }}
+            </h3>
+            <p>
+              {{
+                translationService.getTranslation(
+                  "services.process.step1.description"
+                )
+              }}
+            </p>
+          </div>
+        </div>
+
+        <div class="process-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>
+              {{
+                translationService.getTranslation(
+                  "services.process.step2.title"
+                )
+              }}
+            </h3>
+            <p>
+              {{
+                translationService.getTranslation(
+                  "services.process.step2.description"
+                )
+              }}
+            </p>
+          </div>
+        </div>
+
+        <div class="process-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>
+              {{
+                translationService.getTranslation(
+                  "services.process.step3.title"
+                )
+              }}
+            </h3>
+            <p>
+              {{
+                translationService.getTranslation(
+                  "services.process.step3.description"
+                )
+              }}
+            </p>
+          </div>
+        </div>
+
+        <div class="process-step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3>
+              {{
+                translationService.getTranslation(
+                  "services.process.step4.title"
+                )
+              }}
+            </h3>
+            <p>
+              {{
+                translationService.getTranslation(
+                  "services.process.step4.description"
+                )
+              }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>{{ translationService.getTranslation("services.cta.title") }}</h2>
+        <p>
+          {{ translationService.getTranslation("services.cta.description") }}
+        </p>
+        <div class="cta-buttons">
+          <button class="cta-primary" (click)="navigateTo('contact')">
+            <i class="fas fa-phone"></i>
+            {{
+              translationService.getTranslation("services.cta.primary_button")
+            }}
+          </button>
+          <button class="cta-secondary" (click)="navigateTo('gallery')">
+            <i class="fas fa-images"></i>
+            {{
+              translationService.getTranslation("services.cta.secondary_button")
+            }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

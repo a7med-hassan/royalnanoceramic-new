@@ -1,0 +1,102 @@
+.language-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border: 2px solid #d4af37; // تم تقليل اللون الأصفر أكثر
+  border-radius: 25px;
+  color: #d4af37; // تم تقليل اللون الأصفر أكثر
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-width: 120px;
+  justify-content: center;
+
+  &:hover {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    border-color: #ffed4e;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2); // تم تقليل اللون الأصفر أكثر
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  .language-icon {
+    color: #ffd700;
+    font-size: 16px;
+    transition: transform 0.3s ease;
+  }
+
+  .language-text {
+    font-family: inherit;
+    white-space: nowrap;
+  }
+
+  .language-arrow {
+    color: #ffd700;
+    font-size: 12px;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover .language-icon {
+    transform: rotate(15deg);
+  }
+
+  &:hover .language-arrow {
+    transform: translateY(2px);
+  }
+
+  // RTL specific styles
+  &.rtl {
+    .language-text {
+      font-family: "Arial", sans-serif;
+    }
+  }
+
+  // LTR specific styles
+  &.ltr {
+    .language-text {
+      font-family: "Arial", sans-serif;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .language-switcher {
+    padding: 6px 12px;
+    min-width: 100px;
+    font-size: 12px;
+
+    .language-icon {
+      font-size: 14px;
+    }
+
+    .language-arrow {
+      font-size: 10px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .language-switcher {
+    padding: 4px 8px;
+    min-width: 80px;
+    font-size: 11px;
+    gap: 4px;
+
+    .language-text {
+      display: none;
+    }
+
+    .language-icon {
+      font-size: 16px;
+    }
+  }
+}

@@ -1,0 +1,241 @@
+<div class="blog-page" [class.rtl]="isRtl">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-background"></div>
+    <div class="hero-overlay"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          {{ translationService.getTranslation("blog.hero.title") }}
+        </h1>
+        <p class="hero-subtitle">
+          {{ translationService.getTranslation("blog.hero.subtitle") }}
+        </p>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ allPosts.length }}+</span>
+            <span class="stat-label">{{
+              translationService.getTranslation("blog.hero.stats.articles")
+            }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">{{
+              translationService.getTranslation("blog.hero.stats.trusted")
+            }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">{{
+              translationService.getTranslation("blog.hero.stats.support")
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Categories -->
+  <section class="categories-section">
+    <div class="container">
+      <div class="categories-grid">
+        <div class="category-card active" (click)="filterByCategory('all')">
+          <i class="fas fa-th-large"></i>
+          <span>{{
+            translationService.getTranslation("blog.categories.all")
+          }}</span>
+        </div>
+        <div class="category-card" (click)="filterByCategory('nano-ceramic')">
+          <i class="fas fa-shield-alt"></i>
+          <span>{{
+            translationService.getTranslation("blog.categories.nano_technology")
+          }}</span>
+        </div>
+        <div class="category-card" (click)="filterByCategory('car-care')">
+          <i class="fas fa-car"></i>
+          <span>{{
+            translationService.getTranslation("blog.categories.car_care")
+          }}</span>
+        </div>
+        <div class="category-card" (click)="filterByCategory('protection')">
+          <i class="fas fa-shield-virus"></i>
+          <span>{{
+            translationService.getTranslation(
+              "blog.categories.paint_protection"
+            )
+          }}</span>
+        </div>
+        <div class="category-card" (click)="filterByCategory('tips')">
+          <i class="fas fa-lightbulb"></i>
+          <span>{{
+            translationService.getTranslation("blog.categories.tips")
+          }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Blog Post -->
+  <section class="featured-post-section" *ngIf="featuredPost">
+    <div class="container">
+      <div class="featured-post">
+        <div class="featured-image">
+          <img [src]="featuredPost.image" [alt]="featuredPost.title" />
+          <div class="featured-badge">
+            {{ translationService.getTranslation("blog.featured.badge") }}
+          </div>
+        </div>
+        <div class="featured-content">
+          <div class="post-meta">
+            <span class="category">{{ featuredPost.category }}</span>
+            <span class="date">{{ featuredPost.date }}</span>
+            <span class="read-time">{{ featuredPost.readTime }}</span>
+          </div>
+          <h2 class="post-title">{{ featuredPost.title }}</h2>
+          <p class="post-excerpt">{{ featuredPost.excerpt }}</p>
+          <div class="post-tags">
+            <span class="tag" *ngFor="let tag of featuredPost.tags">{{
+              tag
+            }}</span>
+          </div>
+          <button class="read-more-btn" (click)="readFullPost(featuredPost)">
+            {{ translationService.getTranslation("blog.read_more") }}
+            <i class="fas fa-arrow-left"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Posts Grid -->
+  <section class="blog-posts-section">
+    <div class="container">
+      <div class="posts-header">
+        <h2>{{ translationService.getTranslation("blog.posts.title") }}</h2>
+        <div class="search-box">
+          <input
+            type="text"
+            [placeholder]="
+              translationService.getTranslation('blog.search.placeholder')
+            "
+            [value]="searchTerm"
+            (input)="searchTerm = $any($event.target).value; filterPosts()"
+          />
+          <i class="fas fa-search"></i>
+        </div>
+      </div>
+
+      <div class="posts-grid">
+        <article
+          class="blog-card"
+          *ngFor="let post of filteredPosts"
+          [class.featured]="post.featured"
+        >
+          <div class="card-image">
+            <img [src]="post.image" [alt]="post.title" />
+            <div class="card-overlay">
+              <div class="overlay-content">
+                <span class="category-badge">{{ post.category }}</span>
+                <button class="quick-view-btn" (click)="quickView(post)">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="post-meta">
+              <span class="date">{{ post.date }}</span>
+              <span class="read-time">{{ post.readTime }}</span>
+            </div>
+            <h3 class="post-title">{{ post.title }}</h3>
+            <p class="post-excerpt">{{ post.excerpt }}</p>
+            <div class="post-tags">
+              <span class="tag" *ngFor="let tag of post.tags.slice(0, 3)">{{
+                tag
+              }}</span>
+            </div>
+            <button class="read-more-btn" (click)="readFullPost(post)">
+              {{ translationService.getTranslation("blog.read_more") }}
+              <i class="fas fa-arrow-left"></i>
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <!-- Load More Button -->
+      <div class="load-more-section" *ngIf="hasMorePosts">
+        <button class="load-more-btn" (click)="loadMorePosts()">
+          <span>{{ translationService.getTranslation("blog.load_more") }}</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="newsletter-section">
+    <div class="container">
+      <div class="newsletter-content">
+        <div class="newsletter-text">
+          <h3>
+            {{ translationService.getTranslation("blog.newsletter.title") }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation("blog.newsletter.description")
+            }}
+          </p>
+        </div>
+        <div class="newsletter-form">
+          <input
+            type="email"
+            [placeholder]="
+              translationService.getTranslation('blog.newsletter.placeholder')
+            "
+            [value]="newsletterEmail"
+            (input)="newsletterEmail = $any($event.target).value"
+            (keyup.enter)="subscribeNewsletter()"
+            autocomplete="email"
+            aria-label="Email address for newsletter subscription"
+          />
+          <button
+            type="button"
+            (click)="subscribeNewsletter()"
+            [disabled]="!newsletterEmail.trim()"
+            aria-label="Subscribe to newsletter"
+          >
+            {{ translationService.getTranslation("blog.newsletter.subscribe") }}
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick View Modal -->
+  <div class="modal-overlay" *ngIf="selectedPost" (click)="closeQuickView()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="closeQuickView()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-body">
+        <div class="modal-image">
+          <img [src]="selectedPost.image" [alt]="selectedPost.title" />
+        </div>
+        <div class="modal-text">
+          <h3>{{ selectedPost.title }}</h3>
+          <p>{{ selectedPost.excerpt }}</p>
+          <div class="modal-tags">
+            <span class="tag" *ngFor="let tag of selectedPost.tags">{{
+              tag
+            }}</span>
+          </div>
+          <button class="read-full-btn" (click)="readFullPost(selectedPost)">
+            {{ translationService.getTranslation("blog.read_full") }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

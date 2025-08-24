@@ -1,0 +1,179 @@
+<footer class="footer" [class.rtl]="isRtl">
+  <div class="container">
+    <div class="footer-content">
+      <!-- First Column - Services and Description -->
+      <div class="footer-section">
+        <h3>{{ translationService.getTranslation("footer.description") }}</h3>
+        <p>
+          {{ translationService.getTranslation("slider.experts_description") }}
+        </p>
+
+        <h4>{{ translationService.getTranslation("footer.services_list") }}</h4>
+        <ul class="footer-services">
+          <li *ngFor="let service of services">
+            {{ getServiceName(service) }}
+          </li>
+        </ul>
+
+        <!-- Branches for Desktop -->
+        <div class="branches-section-desktop">
+          <h4>
+            {{ translationService.getTranslation("footer.our_branches") }}
+          </h4>
+          <div class="branches-list">
+            <div class="branches-preview">
+              <span *ngFor="let branch of allBranches.slice(0, 5)">
+                {{ branch }}
+              </span>
+              <button
+                class="show-more-btn"
+                (click)="toggleBranches()"
+                [attr.aria-label]="
+                  showAllBranchesFlag
+                    ? translationService.getTranslation('footer.click_less')
+                    : translationService.getTranslation('footer.click_more')
+                "
+              >
+                {{
+                  showAllBranchesFlag
+                    ? translationService.getTranslation("footer.click_less")
+                    : translationService.getTranslation("footer.click_more")
+                }}
+              </button>
+            </div>
+            <div class="all-branches" *ngIf="showAllBranchesFlag">
+              <span *ngFor="let branch of allBranches">{{ branch }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Branches for Mobile (added to first column) -->
+        <div class="branches-section-mobile">
+          <h4>
+            {{ translationService.getTranslation("footer.our_branches") }}
+          </h4>
+          <div class="branches-list">
+            <div class="branches-preview">
+              <span *ngFor="let branch of allBranches.slice(0, 5)">
+                {{ branch }}
+              </span>
+              <button
+                class="show-more-btn"
+                (click)="toggleBranches()"
+                [attr.aria-label]="
+                  showAllBranchesFlag
+                    ? translationService.getTranslation('footer.click_less')
+                    : translationService.getTranslation('footer.click_more')
+                "
+              >
+                {{
+                  showAllBranchesFlag
+                    ? translationService.getTranslation("footer.click_less")
+                    : translationService.getTranslation("footer.click_more")
+                }}
+              </button>
+            </div>
+            <div class="all-branches" *ngIf="showAllBranchesFlag">
+              <span *ngFor="let branch of allBranches">{{ branch }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Second Column - Links, Social and Mobile Branches -->
+      <div class="footer-section">
+        <h4>{{ translationService.getTranslation("footer.quick_links") }}</h4>
+        <ul class="footer-links">
+          <li *ngFor="let link of quickLinks">
+            <a
+              [routerLink]="['/' + link.route]"
+              [attr.aria-label]="getQuickLinkName(link.label)"
+            >
+              {{ getQuickLinkName(link.label) }}
+            </a>
+          </li>
+        </ul>
+
+        <h4>{{ translationService.getTranslation("footer.follow_us") }}</h4>
+        <div class="social-links">
+          <a
+            *ngFor="let social of socialLinks"
+            [href]="social.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            [attr.aria-label]="social.name"
+            class="social-link"
+          >
+            <i [class]="social.icon"></i>
+          </a>
+        </div>
+
+        <!-- Contact Info for Mobile (replaces branches) -->
+        <div class="contact-section-mobile">
+          <h4>
+            {{ translationService.getTranslation("footer.contact_info") }}
+          </h4>
+          <div class="contact-info">
+            <p>
+              <i class="fas fa-phone"></i>
+              <a href="tel:+201234567890">+20 123 456 7890</a>
+            </p>
+            <p>
+              <i class="fas fa-envelope"></i>
+              <a href="mailto:info&#64;royalnanoceramic.com">
+                info&#64;royalnanoceramic.com
+              </a>
+            </p>
+            <p>
+              <i class="fas fa-map-marker-alt"></i>
+              {{ translationService.getTranslation("footer.address") }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Third Column - Contact Info (Desktop) -->
+      <div class="footer-section contact-section-desktop">
+        <h4>{{ translationService.getTranslation("footer.contact_info") }}</h4>
+        <div class="contact-info">
+          <p>
+            <i class="fas fa-phone"></i>
+            <a href="tel:+201234567890">+20 123 456 7890</a>
+          </p>
+          <p>
+            <i class="fas fa-envelope"></i>
+            <a href="mailto:info&#64;royalnanoceramic.com">
+              info&#64;royalnanoceramic.com
+            </a>
+          </p>
+          <p>
+            <i class="fas fa-map-marker-alt"></i>
+            {{ translationService.getTranslation("footer.address") }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- WhatsApp Contact -->
+    <div class="whatsapp-section">
+      <a
+        href="https://wa.me/201234567890"
+        target="_blank"
+        class="whatsapp-link"
+        [attr.aria-label]="
+          translationService.getTranslation('footer.contact_whatsapp')
+        "
+      >
+        <i class="fab fa-whatsapp"></i>
+        {{ translationService.getTranslation("footer.contact_whatsapp") }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Copyright -->
+  <div class="footer-bottom">
+    <div class="container">
+      <p>{{ translationService.getTranslation("footer.copyright") }}</p>
+    </div>
+  </div>
+</footer>

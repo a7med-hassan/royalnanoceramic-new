@@ -1,0 +1,200 @@
+<div class="admin-messages-container">
+  <div class="header">
+    <h1>رسائل الإدارة</h1>
+  </div>
+
+  <div class="header-buttons">
+    <button class="test-api-btn" (click)="testAPI()">
+      <i class="fas fa-vial"></i>
+      اختبار API
+    </button>
+    <button class="test-direct-btn" (click)="testDirectConnection()">
+      <i class="fas fa-network-wired"></i>
+      اختبار الاتصال المباشر
+    </button>
+    <button class="test-http-btn" (click)="testHttpClient()">
+      <i class="fas fa-code"></i>
+      اختبار HttpClient
+    </button>
+    <button class="test-contact-btn" (click)="testFormSubmission()">
+      <i class="fas fa-paper-plane"></i>
+      اختبار نموذج الاتصال
+    </button>
+    <button class="test-join-btn" (click)="testJoinFormSubmission()">
+      <i class="fas fa-user-plus"></i>
+      اختبار نموذج الانضمام
+    </button>
+    <button class="refresh-btn" (click)="refreshData()">
+      <i class="fas fa-sync-alt"></i>
+      تحديث البيانات
+    </button>
+  </div>
+
+  <!-- Contact Messages Section -->
+  <div class="section">
+    <div class="section-header">
+      <h2>رسائل نموذج الاتصال ({{ contactMessages.length }})</h2>
+      <div class="filters">
+        <div class="data-source-info">
+          <span class="data-source" [class]="apiStatus.contact">
+            {{ getDataSourceText("contact") }}
+          </span>
+        </div>
+        <button
+          class="export-btn"
+          (click)="exportCSV('contact')"
+          [disabled]="contactMessages.length === 0"
+        >
+          <i class="fas fa-download"></i>
+          تصدير CSV
+        </button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <!-- Loading State -->
+      <div *ngIf="isLoadingContact" class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>جاري تحميل رسائل الاتصال...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="contactError && !isLoadingContact" class="error-state">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>{{ contactError }}</p>
+        <button class="retry-btn" (click)="refreshData()">
+          <i class="fas fa-redo"></i>
+          إعادة المحاولة
+        </button>
+      </div>
+
+      <!-- Empty State -->
+      <div
+        *ngIf="
+          !isLoadingContact && !contactError && contactMessages.length === 0
+        "
+        class="empty-state"
+      >
+        <i class="fas fa-inbox"></i>
+        <p>لا توجد رسائل اتصال حالياً</p>
+      </div>
+
+      <!-- Data Table -->
+      <table
+        *ngIf="!isLoadingContact && !contactError && contactMessages.length > 0"
+        class="data-table"
+      >
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>رقم الهاتف</th>
+            <th>نوع السيارة</th>
+            <th>موديل السيارة</th>
+            <th>ملاحظات إضافية</th>
+            <th>التاريخ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let message of contactMessages" class="message-row">
+            <td>{{ message.fullName || "غير محدد" }}</td>
+            <td>{{ message.phoneNumber || "غير محدد" }}</td>
+            <td>{{ message.carType || "غير محدد" }}</td>
+            <td>{{ message.carModel || "غير محدد" }}</td>
+            <td>{{ message.notes || "لا توجد ملاحظات" }}</td>
+            <td>
+              {{
+                message.createdAt
+                  ? (message.createdAt | date : "short")
+                  : "غير محدد"
+              }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Join Messages Section -->
+  <div class="section">
+    <div class="section-header">
+      <h2>رسائل نموذج الانضمام ({{ joinMessages.length }})</h2>
+      <div class="filters">
+        <div class="data-source-info">
+          <span class="data-source" [class]="apiStatus.join">
+            {{ getDataSourceText("join") }}
+          </span>
+        </div>
+        <button
+          class="export-btn"
+          (click)="exportCSV('join')"
+          [disabled]="joinMessages.length === 0"
+        >
+          <i class="fas fa-download"></i>
+          تصدير CSV
+        </button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <!-- Loading State -->
+      <div *ngIf="isLoadingJoin" class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>جاري تحميل رسائل الانضمام...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="joinError && !isLoadingJoin" class="error-state">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>{{ joinError }}</p>
+        <button class="retry-btn" (click)="refreshData()">
+          <i class="fas fa-redo"></i>
+          إعادة المحاولة
+        </button>
+      </div>
+
+      <!-- Empty State -->
+      <div
+        *ngIf="!isLoadingJoin && !joinError && joinMessages.length === 0"
+        class="empty-state"
+      >
+        <i class="fas fa-inbox"></i>
+        <p>لا توجد رسائل انضمام حالياً</p>
+      </div>
+
+      <!-- Data Table -->
+      <table
+        *ngIf="!isLoadingJoin && !joinError && joinMessages.length > 0"
+        class="data-table"
+      >
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>رقم الهاتف</th>
+            <th>البريد الإلكتروني</th>
+            <th>المنصب المطلوب</th>
+            <th>الخبرة السابقة</th>
+            <th>الرسالة</th>
+            <th>التاريخ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let message of joinMessages" class="message-row">
+            <td>{{ message.fullName || "غير محدد" }}</td>
+            <td>{{ message.phoneNumber || "غير محدد" }}</td>
+            <td>{{ message.email || "غير محدد" }}</td>
+            <td>{{ message.position || "غير محدد" }}</td>
+            <td>{{ message.experience || "غير محدد" }}</td>
+            <td>{{ message.message || "لا توجد رسالة" }}</td>
+            <td>
+              {{
+                message.createdAt
+                  ? (message.createdAt | date : "short")
+                  : "غير محدد"
+              }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

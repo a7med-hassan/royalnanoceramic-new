@@ -1,0 +1,92 @@
+<header class="header" [class.home-page]="isHomePage" [class.scrolled]="isScrolled">
+  <div class="container">
+    <div class="header-content">
+      <!-- Logo -->
+      <div class="logo">
+        <a [routerLink]="['/home']" [attr.aria-label]="'Royal Nano Ceramic Logo'">
+          <img
+            src="assets/images/logo.png"
+            alt="Royal Nano Ceramic Logo"
+            class="logo-image"
+          />
+        </a>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="nav-menu" [class.active]="isMenuOpen">
+        <ul class="nav-list">
+          <li *ngFor="let item of menuItems">
+            <a
+              [routerLink]="['/' + item.route]"
+              routerLinkActive="active"
+              class="nav-link"
+              (click)="navigateTo(item.route)"
+              [attr.aria-label]="translationService.getTranslation(item.label)"
+            >
+              {{ translationService.getTranslation(item.label) }}
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Language Switcher -->
+      <div class="language-switcher-container">
+        <div class="language-switcher">
+          <button
+            class="lang-btn"
+            (click)="toggleLanguage()"
+            [attr.aria-label]="
+              currentLang === 'ar'
+                ? 'Switch to English'
+                : 'التبديل إلى العربية'
+            "
+          >
+            {{ currentLang === 'ar' ? 'EN' : 'عربي' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button
+        class="mobile-menu-toggle"
+        [class.active]="isMenuOpen"
+        (click)="toggleMenu()"
+        [attr.aria-label]="
+          isMenuOpen
+            ? 'Close mobile menu'
+            : 'Open mobile menu'
+        "
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" [class.active]="isMenuOpen">
+    <button
+      class="mobile-close-btn"
+      (click)="closeMenu()"
+      [attr.aria-label]="'Close mobile menu'"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+    <nav class="nav-menu" [class.active]="isMenuOpen">
+      <ul class="nav-list">
+        <li *ngFor="let item of menuItems">
+          <a
+            [routerLink]="['/' + item.route]"
+            routerLinkActive="active"
+            class="nav-link"
+            (click)="navigateTo(item.route)"
+            [attr.aria-label]="translationService.getTranslation(item.label)"
+          >
+            {{ translationService.getTranslation(item.label) }}
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>

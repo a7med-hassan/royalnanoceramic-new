@@ -1,0 +1,28 @@
+<div
+  class="app-container"
+  [class.rtl]="isRtl"
+  [class.arabic]="currentLang === 'ar'"
+>
+  <!-- Header Component -->
+  <app-header></app-header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer Component -->
+  <app-footer></app-footer>
+
+  <!-- Floating WhatsApp Button -->
+  <a
+    href="https://wa.me/201234567890"
+    target="_blank"
+    class="floating-whatsapp"
+    title="تواصل معنا على WhatsApp"
+    aria-label="تواصل معنا على WhatsApp"
+    rel="noopener noreferrer"
+  >
+    <i class="fab fa-whatsapp" aria-hidden="true"></i>
+  </a>
+</div>

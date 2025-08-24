@@ -1,0 +1,182 @@
+{
+  "header": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "blog": "Blog",
+    "gallery": "Gallery",
+    "contact": "Contact",
+    "language": "العربية"
+  },
+  "home": {
+    "hero": {
+      "title": "Royal Nano Ceramic",
+      "subtitle": "Best Car Protection in Egypt",
+      "description": "We specialize in providing advanced protection services for cars, planes, boats, and motorcycles using the latest nano ceramic technology",
+      "cta_button": "Protect Your Car Now",
+      "learn_more": "Learn More"
+    },
+    "services_section": {
+      "title": "Our Premium Services",
+      "subtitle": "We offer a comprehensive range of advanced protection services",
+      "ceramic_coating": {
+        "title": "Nano Ceramic Coating",
+        "description": "Superior protection against scratches and weather with lasting shine for years"
+      },
+      "paint_protection": {
+        "title": "Paint Protection",
+        "description": "Transparent protection film that preserves the original car paint"
+      },
+      "interior_protection": {
+        "title": "Interior Protection",
+        "description": "Complete treatment to protect seats and interior materials"
+      },
+      "detailing": {
+        "title": "Car Detailing",
+        "description": "Comprehensive cleaning and beautification service to restore car's shine"
+      }
+    },
+    "about_section": {
+      "title": "Why Royal Nano Ceramic?",
+      "experience": {
+        "title": "Outstanding Experience",
+        "description": "Over 10 years of experience in car protection field"
+      },
+      "quality": {
+        "title": "Global Quality",
+        "description": "We use the best global products and advanced technology"
+      },
+      "warranty": {
+        "title": "Comprehensive Warranty",
+        "description": "We provide comprehensive warranty on all our services for your peace of mind"
+      },
+      "team": {
+        "title": "Professional Team",
+        "description": "Team of experts trained on the latest techniques"
+      }
+    },
+    "contact_section": {
+      "title": "Join Us",
+      "subtitle": "Get a free consultation and protect your car today"
+    },
+    "beforeAfter": {
+      "title": "Before & After",
+      "subtitle": "See the amazing transformations of our services"
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "Royal Nano Ceramic - Experts in Car Protection",
+      "subtitle": "Our Story"
+    },
+    "story": {
+      "title": "Our Story",
+      "description": "We are a company specialized in car protection using the latest nano and ceramic technologies."
+    },
+    "history": {
+      "title": "Our History in the Egyptian Market"
+    },
+    "timeline": {
+      "2012": {
+        "title": "Nano Technology Revolution",
+        "description": "The founder realized that the Egyptian market needed advanced technologies to protect cars from harsh weather conditions. He began importing the first nano ceramic products from America, and this was the beginning of a revolution in car protection in Egypt."
+      },
+      "2015": {
+        "title": "Regional Expansion",
+        "description": "The company expanded to include branches in Alexandria and Ismailia, and became a leader in ceramic coating for cars. It overcame economic challenges through focusing on quality and distinguished service."
+      },
+      "2018": {
+        "title": "Strategic Partnership",
+        "description": "Royal Nano Ceramic achieved a great milestone when it became the exclusive partner of \"Nano Tech\" American company in Egypt and North Africa. This cooperation allowed access to the latest global technologies."
+      },
+      "2020": {
+        "title": "Research and Development Center",
+        "description": "The year 2020 witnessed a major shift in the company's strategy, where it began developing local products using joint Egyptian and American expertise. A research and development center was established in 6th of October City."
+      },
+      "2024": {
+        "title": "National Leadership",
+        "description": "Today, Royal Nano Ceramic owns a network of 16 branches spread throughout Egypt. The company has become a reference in car protection, serving more than 250,000 customers annually."
+      }
+    },
+    "values": {
+      "title": "Our Values",
+      "quality": {
+        "title": "Absolute Quality",
+        "description": "We are committed to the highest global quality standards in all our services"
+      },
+      "precision": {
+        "title": "Precision in Execution",
+        "description": "We ensure precision in every detail to guarantee the perfect result"
+      },
+      "innovation": {
+        "title": "Continuous Innovation",
+        "description": "We keep pace with the latest global technologies to provide the best solutions"
+      }
+    },
+    "vision": {
+      "title": "Our Vision",
+      "description": "To be the first choice for car protection in the Middle East"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "description": "Providing the best car protection services using the latest nano and ceramic technologies"
+    }
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Comprehensive range of car protection services"
+  },
+  "gallery": {
+    "hero": {
+      "title": "Our Gallery",
+      "subtitle": "See a collection of our best car protection work"
+    },
+    "section": {
+      "title": "Gallery",
+      "subtitle": "See our outstanding work in car protection"
+    },
+    "lightbox": {
+      "protection_details": "Protection Details",
+      "features": "Features"
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Latest news and car care tips"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "We are here to help you",
+    "form": {
+      "name": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "service": "Service Type",
+      "message": "Message",
+      "submit": "Submit",
+      "required": "This field is required"
+    },
+    "info": {
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Working Hours"
+    }
+  },
+  "footer": {
+    "description": "Royal Nano Ceramic - Best Car Protection in Egypt",
+    "quick_links": "Quick Links",
+    "services_list": "Our Services",
+    "contact_info": "Contact Info",
+    "follow_us": "Follow Us",
+    "rights": "All Rights Reserved"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "read_more": "Read More",
+    "book_now": "Book Now",
+    "get_quote": "Get Quote"
+  }
+}

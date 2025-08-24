@@ -1,0 +1,52 @@
+<div class="gallery-page" [class.rtl]="isRtl">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        {{ translationService.getTranslation("gallery.hero.title") }}
+      </h1>
+      <p class="hero-subtitle">
+        {{ translationService.getTranslation("gallery.hero.subtitle") }}
+      </p>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section class="gallery-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>
+          {{ translationService.getTranslation("gallery.section.title") }}
+        </h2>
+        <p>
+          {{ translationService.getTranslation("gallery.section.subtitle") }}
+        </p>
+      </div>
+
+      <div class="gallery-grid">
+        <div
+          class="gallery-card"
+          *ngFor="let image of galleryImages; let i = index"
+          data-aos="fade-up"
+          [attr.data-aos-delay]="i * 100"
+        >
+          <div class="card-image">
+            <img [src]="image.src" [alt]="image.alt" loading="lazy" />
+            <div class="card-overlay">
+              <div class="overlay-content">
+                <h3>{{ image.title }}</h3>
+                <p>{{ image.description }}</p>
+                <div class="protection-badge">{{ image.protectionType }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-info">
+            <h3>{{ image.title }}</h3>
+            <p>{{ image.description }}</p>
+            <div class="protection-tag">{{ image.protectionType }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

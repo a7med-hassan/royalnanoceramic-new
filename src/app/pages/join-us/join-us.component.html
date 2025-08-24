@@ -1,0 +1,327 @@
+<div class="join-us-page" [class.rtl]="isRtl">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          {{ translationService.getTranslation("join.hero.title") }}
+        </h1>
+        <p class="hero-subtitle">
+          {{ translationService.getTranslation("join.hero.subtitle") }}
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">16</span>
+            <span class="stat-label">{{
+              translationService.getTranslation("join.hero.stats.branches")
+            }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">500+</span>
+            <span class="stat-label">{{
+              translationService.getTranslation("join.hero.stats.employees")
+            }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">15+</span>
+            <span class="stat-label">{{
+              translationService.getTranslation("join.hero.stats.experience")
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Job Application Form Section -->
+  <section class="application-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>
+          {{ translationService.getTranslation("join.application.title") }}
+        </h2>
+        <p>
+          {{ translationService.getTranslation("join.application.subtitle") }}
+        </p>
+      </div>
+
+      <div class="form-container">
+        <form
+          [formGroup]="joinForm"
+          (ngSubmit)="onSubmit()"
+          class="application-form"
+        >
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fullName">{{
+                translationService.getTranslation("join.form.full_name")
+              }}</label>
+              <input
+                type="text"
+                id="fullName"
+                formControlName="fullName"
+                [class.invalid]="isFieldInvalid('fullName')"
+                [placeholder]="
+                  translationService.getTranslation(
+                    'join.form.full_name_placeholder'
+                  )
+                "
+              />
+              <div class="error-message" *ngIf="isFieldInvalid('fullName')">
+                {{ getErrorMessage("fullName") }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phoneNumber">{{
+                translationService.getTranslation("join.form.phone")
+              }}</label>
+              <input
+                type="tel"
+                id="phoneNumber"
+                formControlName="phoneNumber"
+                [class.invalid]="isFieldInvalid('phoneNumber')"
+                [placeholder]="
+                  translationService.getTranslation(
+                    'join.form.phone_placeholder'
+                  )
+                "
+              />
+              <div class="error-message" *ngIf="isFieldInvalid('phoneNumber')">
+                {{ getErrorMessage("phoneNumber") }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">{{
+                translationService.getTranslation("join.form.email")
+              }}</label>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                [class.invalid]="isFieldInvalid('email')"
+                [placeholder]="
+                  translationService.getTranslation(
+                    'join.form.email_placeholder'
+                  )
+                "
+              />
+              <div class="error-message" *ngIf="isFieldInvalid('email')">
+                {{ getErrorMessage("email") }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="position">{{
+                translationService.getTranslation("join.form.position")
+              }}</label>
+              <select
+                id="position"
+                formControlName="position"
+                [class.invalid]="isFieldInvalid('position')"
+              >
+                <option value="">
+                  {{
+                    translationService.getTranslation(
+                      "join.form.position_placeholder"
+                    )
+                  }}
+                </option>
+                <option value="تيلي سيلز">تيلي سيلز</option>
+                <option value="مدير فرع">مدير فرع</option>
+                <option value="فني نانو">فني نانو</option>
+                <option value="مدير مبيعات">مدير مبيعات</option>
+                <option value="سكرتيره">سكرتيره</option>
+                <option value="ميديا باير">ميديا باير</option>
+                <option value="سوشيال ميديا مديتيور">
+                  سوشيال ميديا مديتيور
+                </option>
+              </select>
+              <div class="error-message" *ngIf="isFieldInvalid('position')">
+                {{ getErrorMessage("position") }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="experience">{{
+              translationService.getTranslation("join.form.experience")
+            }}</label>
+            <textarea
+              id="experience"
+              formControlName="experience"
+              [class.invalid]="isFieldInvalid('experience')"
+              rows="3"
+              [placeholder]="
+                translationService.getTranslation(
+                  'join.form.experience_placeholder'
+                )
+              "
+            ></textarea>
+            <div class="error-message" *ngIf="isFieldInvalid('experience')">
+              {{ getErrorMessage("experience") }}
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="message">{{
+              translationService.getTranslation("join.form.message")
+            }}</label>
+            <textarea
+              id="message"
+              formControlName="message"
+              [class.invalid]="isFieldInvalid('message')"
+              rows="4"
+              [placeholder]="
+                translationService.getTranslation(
+                  'join.form.message_placeholder'
+                )
+              "
+            ></textarea>
+            <div class="error-message" *ngIf="isFieldInvalid('message')">
+              {{ getErrorMessage("message") }}
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="cvFile">{{
+              translationService.getTranslation("join.form.cv")
+            }}</label>
+            <input
+              type="file"
+              id="cvFile"
+              (change)="onFileSelect($event)"
+              accept=".pdf,.doc,.docx"
+              [placeholder]="
+                translationService.getTranslation('join.form.cv_placeholder')
+              "
+            />
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="submit"
+              class="submit-btn"
+              [disabled]="isSubmitting || joinForm.invalid"
+            >
+              <i class="fas fa-paper-plane"></i>
+              <span *ngIf="!isSubmitting">{{
+                translationService.getTranslation("join.form.submit")
+              }}</span>
+              <span *ngIf="isSubmitting">جاري الإرسال...</span>
+            </button>
+          </div>
+
+          <!-- Success Message -->
+          <div class="message success" *ngIf="submitSuccess">
+            <i class="fas fa-check-circle"></i>
+            <span>{{ submitMessage }}</span>
+          </div>
+
+          <!-- Error Message -->
+          <div class="message error" *ngIf="submitMessage && !submitSuccess">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>{{ submitMessage }}</span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Join Us Section -->
+  <section class="why-join-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>{{ translationService.getTranslation("join.why.title") }}</h2>
+        <p>{{ translationService.getTranslation("join.why.subtitle") }}</p>
+      </div>
+
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon">💼</div>
+          <h3>
+            {{
+              translationService.getTranslation("join.why.career_growth.title")
+            }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation(
+                "join.why.career_growth.description"
+              )
+            }}
+          </p>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon">🎓</div>
+          <h3>
+            {{ translationService.getTranslation("join.why.training.title") }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation("join.why.training.description")
+            }}
+          </p>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon">💰</div>
+          <h3>
+            {{ translationService.getTranslation("join.why.benefits.title") }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation("join.why.benefits.description")
+            }}
+          </p>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon">🤝</div>
+          <h3>
+            {{
+              translationService.getTranslation("join.why.environment.title")
+            }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation(
+                "join.why.environment.description"
+              )
+            }}
+          </p>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon">🌍</div>
+          <h3>
+            {{ translationService.getTranslation("join.why.network.title") }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation("join.why.network.description")
+            }}
+          </p>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon">🚀</div>
+          <h3>
+            {{ translationService.getTranslation("join.why.technology.title") }}
+          </h3>
+          <p>
+            {{
+              translationService.getTranslation(
+                "join.why.technology.description"
+              )
+            }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

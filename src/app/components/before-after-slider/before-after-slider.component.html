@@ -1,0 +1,78 @@
+<div class="before-after-slider" #sliderContainer>
+  <!-- Section Header -->
+  <div class="slider-header">
+    <div class="container">
+      <div class="section-header" [class.rtl]="translationService.isRtl$">
+        <h2 class="main-title">
+          {{ translationService.getTranslation("home.beforeAfter.title") }}
+        </h2>
+        <p class="main-subtitle">
+          {{ translationService.getTranslation("home.beforeAfter.subtitle") }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Slider Container -->
+  <div class="slider-main">
+    <div class="container">
+      <div class="slider-wrapper">
+        <!-- Image Comparison Container -->
+        <div class="image-comparison-container">
+          <div class="image-wrapper">
+            <!-- Before Image -->
+            <div class="image-container before-image-container">
+              <img
+                #beforeImage
+                [src]="images[currentImageIndex].beforeImage"
+                [alt]="'Before: ' + images[currentImageIndex].title"
+                class="comparison-image before-image"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+              />
+            </div>
+
+            <!-- After Image -->
+            <div class="image-container after-image-container">
+              <img
+                #afterImage
+                [src]="images[currentImageIndex].afterImage"
+                [alt]="'After: ' + images[currentImageIndex].title"
+                class="comparison-image after-image"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+              />
+            </div>
+
+            <!-- Slider Track -->
+            <div
+              class="slider-track"
+              #sliderTrack
+              (mousedown)="onMouseDown($event)"
+              (touchstart)="onTouchStart($event)"
+            >
+              <!-- Moving Divider - الخط المتحرك الفاصل -->
+              <div class="moving-divider" #movingDivider></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image Navigation Dots -->
+        <div class="image-navigation">
+          <div class="nav-dots">
+            <button
+              *ngFor="let image of images; let i = index"
+              class="nav-dot"
+              [class.active]="i === currentImageIndex"
+              (click)="goToImage(i)"
+              [attr.aria-label]="'Go to image ' + (i + 1)"
+              type="button"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

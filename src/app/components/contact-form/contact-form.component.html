@@ -1,0 +1,224 @@
+<div class="contact-form-container">
+  <div class="form-header">
+    <h3>تواصل معنا</h3>
+    <p>أرسل لنا رسالة وسنرد عليك في أقرب وقت ممكن</p>
+  </div>
+
+  <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+    <!-- Form Error Summary -->
+    <div class="form-error-summary" *ngIf="hasFormErrors()">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span
+        >يوجد {{ getTotalErrorCount() }} خطأ في النموذج - يرجى تصحيح الأخطاء قبل
+        الإرسال</span
+      >
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="fullName">
+          الاسم الكامل
+          <span class="required-indicator" *ngIf="isFieldRequired('fullName')"
+            >*</span
+          >
+        </label>
+        <input
+          type="text"
+          id="fullName"
+          formControlName="fullName"
+          [class.invalid]="isFieldInvalid('fullName')"
+          [class.valid]="
+            !isFieldInvalid('fullName') && getFieldValue('fullName')
+          "
+          placeholder="أدخل اسمك الكامل"
+          autocomplete="name"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('fullName')">
+          {{ getErrorMessage("fullName") }}
+        </div>
+        <div
+          class="field-info"
+          *ngIf="!isFieldInvalid('fullName') && getFieldValue('fullName')"
+        >
+          <i class="fas fa-check-circle"></i>
+          <span>الاسم صحيح</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber">
+          رقم الهاتف
+          <span
+            class="required-indicator"
+            *ngIf="isFieldRequired('phoneNumber')"
+            >*</span
+          >
+        </label>
+        <input
+          type="tel"
+          id="phoneNumber"
+          formControlName="phoneNumber"
+          [class.invalid]="isFieldInvalid('phoneNumber')"
+          [class.valid]="
+            !isFieldInvalid('phoneNumber') && getFieldValue('phoneNumber')
+          "
+          placeholder="أدخل رقم هاتفك (مثال: 01234567890)"
+          autocomplete="tel"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('phoneNumber')">
+          {{ getErrorMessage("phoneNumber") }}
+        </div>
+        <div
+          class="field-info"
+          *ngIf="!isFieldInvalid('phoneNumber') && getFieldValue('phoneNumber')"
+        >
+          <i class="fas fa-check-circle"></i>
+          <span>رقم الهاتف صحيح</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="carType">
+          نوع السيارة
+          <span class="required-indicator" *ngIf="isFieldRequired('carType')"
+            >*</span
+          >
+        </label>
+        <select
+          id="carType"
+          formControlName="carType"
+          [class.invalid]="isFieldInvalid('carType')"
+          [class.valid]="!isFieldInvalid('carType') && getFieldValue('carType')"
+        >
+          <option value="">اختر نوع السيارة</option>
+          <option value="سيدان">سيدان</option>
+          <option value="SUV">SUV</option>
+          <option value="هاتشباك">هاتشباك</option>
+          <option value="كوبيه">كوبيه</option>
+          <option value="فان">فان</option>
+          <option value="شاحنة">شاحنة</option>
+          <option value="دراجة نارية">دراجة نارية</option>
+          <option value="أخرى">أخرى</option>
+        </select>
+        <div class="error-message" *ngIf="isFieldInvalid('carType')">
+          {{ getErrorMessage("carType") }}
+        </div>
+        <div
+          class="field-info"
+          *ngIf="!isFieldInvalid('carType') && getFieldValue('carType')"
+        >
+          <i class="fas fa-check-circle"></i>
+          <span>تم اختيار نوع السيارة</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="carModel">
+          موديل السيارة
+          <span class="required-indicator" *ngIf="isFieldRequired('carModel')"
+            >*</span
+          >
+        </label>
+        <input
+          type="text"
+          id="carModel"
+          formControlName="carModel"
+          [class.invalid]="isFieldInvalid('carModel')"
+          [class.valid]="
+            !isFieldInvalid('carModel') && getFieldValue('carModel')
+          "
+          placeholder="أدخل موديل السيارة (مثال: 2023)"
+          autocomplete="off"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('carModel')">
+          {{ getErrorMessage("carModel") }}
+        </div>
+        <div
+          class="field-info"
+          *ngIf="!isFieldInvalid('carModel') && getFieldValue('carModel')"
+        >
+          <i class="fas fa-check-circle"></i>
+          <span>موديل السيارة صحيح</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group full-width">
+      <label for="notes">
+        ملاحظات إضافية
+        <span class="optional-indicator">(اختياري)</span>
+      </label>
+      <textarea
+        id="notes"
+        formControlName="notes"
+        [class.invalid]="isFieldInvalid('notes')"
+        [class.valid]="!isFieldInvalid('notes') && getFieldValue('notes')"
+        rows="4"
+        placeholder="أضف أي ملاحظات أو تفاصيل إضافية تريد إخبارنا بها..."
+      ></textarea>
+      <div class="error-message" *ngIf="isFieldInvalid('notes')">
+        {{ getErrorMessage("notes") }}
+      </div>
+      <div
+        class="field-info"
+        *ngIf="!isFieldInvalid('notes') && getFieldValue('notes')"
+      >
+        <i class="fas fa-check-circle"></i>
+        <span>الملاحظات صحيحة</span>
+      </div>
+      <div class="character-count" *ngIf="getFieldValue('notes')">
+        <span [class.near-limit]="getFieldValue('notes').length > 400">
+          {{ getFieldValue("notes").length }}/500
+        </span>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="isSubmitting || contactForm.invalid"
+      >
+        <i class="fas fa-paper-plane"></i>
+        <span *ngIf="!isSubmitting">إرسال الرسالة</span>
+        <span *ngIf="isSubmitting">جاري الإرسال...</span>
+      </button>
+
+      <button
+        type="button"
+        class="reset-btn"
+        (click)="resetForm()"
+        [disabled]="isSubmitting"
+      >
+        <i class="fas fa-redo"></i>
+        <span>إعادة تعيين</span>
+      </button>
+    </div>
+
+    <!-- Success Message -->
+    <div class="message success" *ngIf="submitSuccess">
+      <i class="fas fa-check-circle"></i>
+      <span>تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.</span>
+    </div>
+
+    <!-- Error Message -->
+    <div class="message error" *ngIf="submitError">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ submitError }}</span>
+    </div>
+
+    <!-- Form Status -->
+    <div class="form-status" *ngIf="contactForm.touched">
+      <div class="status-item">
+        <i class="fas fa-info-circle"></i>
+        <span
+          >الحقول المطلوبة: {{ getTotalErrorCount() }}/{{
+            getFormControlsCount()
+          }}</span
+        >
+      </div>
+    </div>
+  </form>
+</div>

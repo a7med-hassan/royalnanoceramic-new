@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --configuration=production && npm run copy-browser",
+    "build": "ng build --configuration=production && npm run copy-browser && npm run verify-build",
     "build:prod": "ng build --configuration production",
     "build:dev": "ng build --configuration development",
     "watch": "ng build --watch --configuration development",
@@ -13,7 +13,8 @@
     "analyze": "ng build --stats-json && npx webpack-bundle-analyzer dist/royal-nano-ceramic/browser/stats.json",
     "deploy:prepare": "npm run build:prod && npm run copy-deployment-files",
     "copy-deployment-files": "cp .htaccess dist/royal-nano-ceramic/browser/ && cp robots.txt dist/royal-nano-ceramic/browser/ && cp sitemap.xml dist/royal-nano-ceramic/browser/",
-    "copy-browser": "cp -r dist/royal-nano-ceramic/browser/* dist/royal-nano-ceramic/ && rm -rf dist/royal-nano-ceramic/browser"
+    "copy-browser": "cp -r dist/royal-nano-ceramic/browser/* dist/royal-nano-ceramic/ && rm -rf dist/royal-nano-ceramic/browser",
+    "verify-build": "ls -la dist/royal-nano-ceramic/ && echo 'Build verification completed'"
   },
   "private": true,
   "dependencies": {

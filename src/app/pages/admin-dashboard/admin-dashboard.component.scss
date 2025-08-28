@@ -197,17 +197,126 @@
 // Responsive Design
 @media (max-width: 768px) {
   .admin-sidebar {
-    width: 100%;
-    position: relative;
-    height: auto;
+    width: 80px; // عرض أصغر للأيقونات فقط
+    position: fixed;
+    height: 100vh;
+
+    .sidebar-header {
+      padding: 20px 10px;
+
+      h2 {
+        display: none; // إخفاء العنوان
+      }
+
+      p {
+        display: none; // إخفاء النص الترحيبي
+      }
+    }
+
+    .nav-link {
+      justify-content: center; // توسيط الأيقونات
+      padding: 15px 10px;
+      position: relative;
+
+      span {
+        display: none; // إخفاء النصوص
+      }
+
+      i {
+        margin: 0; // إزالة المسافات
+        font-size: 1.2rem;
+      }
+
+      // Tooltip للأيقونات
+      &:hover::after {
+        content: attr(title);
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        z-index: 1001;
+        margin-right: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    .logout-btn {
+      justify-content: center; // توسيط أيقونة تسجيل الخروج
+      padding: 15px 10px;
+      position: relative;
+
+      span {
+        display: none; // إخفاء نص تسجيل الخروج
+      }
+
+      i {
+        margin: 0; // إزالة المسافات
+        font-size: 1.2rem;
+      }
+
+      // Tooltip لزر تسجيل الخروج
+      &:hover::after {
+        content: attr(title);
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        z-index: 1001;
+        margin-right: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+    }
   }
 
   .admin-main {
-    margin-right: 0;
+    margin-right: 80px; // تعديل المسافة للعرض الجديد
   }
 
   .main-content {
     padding: 20px;
+  }
+}
+
+// شاشات أصغر (أقل من 480px)
+@media (max-width: 480px) {
+  .admin-sidebar {
+    width: 70px; // عرض أصغر قليلاً
+
+    .nav-link {
+      padding: 12px 8px;
+
+      i {
+        font-size: 1.1rem;
+      }
+    }
+
+    .logout-btn {
+      padding: 12px 8px;
+
+      i {
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  .admin-main {
+    margin-right: 70px;
+  }
+
+  .main-content {
+    padding: 15px;
   }
 }
 

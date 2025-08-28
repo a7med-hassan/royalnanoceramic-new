@@ -13,7 +13,11 @@
           class="nav-item"
           [class.active]="item.active"
         >
-          <a (click)="navigateTo(item.route)" class="nav-link">
+          <a
+            (click)="navigateTo(item.route)"
+            class="nav-link"
+            [title]="item.title"
+          >
             <i [class]="item.icon"></i>
             <span>{{ item.title }}</span>
           </a>
@@ -22,7 +26,7 @@
     </nav>
 
     <div class="sidebar-footer">
-      <button class="logout-btn" (click)="logout()">
+      <button class="logout-btn" (click)="logout()" title="Logout">
         <i class="fas fa-sign-out-alt"></i>
         <span>Logout</span>
       </button>

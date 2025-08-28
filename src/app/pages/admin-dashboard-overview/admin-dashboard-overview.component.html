@@ -1,0 +1,146 @@
+<div class="dashboard-overview">
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-envelope"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stats.totalMessages }}</h3>
+        <p>Total Messages</p>
+        <div class="stat-breakdown">
+          <span>{{ stats.contactMessages }} Contact</span>
+          <span>{{ stats.joinMessages }} Join</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-cogs"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stats.totalServices }}</h3>
+        <p>Services</p>
+        <div class="stat-breakdown">
+          <span>Active Services</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-images"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stats.totalGalleryImages }}</h3>
+        <p>Gallery Images</p>
+        <div class="stat-breakdown">
+          <span>Total Images</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-blog"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stats.totalBlogPosts }}</h3>
+        <p>Blog Posts</p>
+        <div class="stat-breakdown">
+          <span>Total Posts</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="activity-grid">
+    <!-- Recent Messages -->
+    <div class="activity-card">
+      <div class="card-header">
+        <h3>Recent Messages</h3>
+        <a routerLink="/admin/messages" class="view-all-link">View All</a>
+      </div>
+      <div class="card-content">
+        <div
+          class="message-list"
+          *ngIf="recentMessages.length > 0; else noMessages"
+        >
+          <div *ngFor="let message of recentMessages" class="message-item">
+            <div class="message-info">
+              <h4>{{ message.name || message.fullName || "Unknown" }}</h4>
+              <p>{{ message.email || "No email" }}</p>
+              <span class="message-type">{{ message.type }}</span>
+            </div>
+            <div class="message-meta">
+              <span class="message-date">{{
+                formatDate(message.timestamp || message.createdAt)
+              }}</span>
+            </div>
+          </div>
+        </div>
+        <ng-template #noMessages>
+          <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>No messages yet</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Recent Services -->
+    <div class="activity-card">
+      <div class="card-header">
+        <h3>Recent Services</h3>
+        <a routerLink="/admin/services" class="view-all-link">View All</a>
+      </div>
+      <div class="card-content">
+        <div
+          class="service-list"
+          *ngIf="recentServices.length > 0; else noServices"
+        >
+          <div *ngFor="let service of recentServices" class="service-item">
+            <div class="service-info">
+              <h4>{{ service.title || service.name || "Untitled Service" }}</h4>
+              <p>{{ service.description || "No description" }}</p>
+            </div>
+            <div class="service-meta">
+              <span class="service-status">Active</span>
+            </div>
+          </div>
+        </div>
+        <ng-template #noServices>
+          <div class="empty-state">
+            <i class="fas fa-cogs"></i>
+            <p>No services yet</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h3>Quick Actions</h3>
+    <div class="actions-grid">
+      <a routerLink="/admin/messages" class="action-card">
+        <i class="fas fa-envelope"></i>
+        <span>View Messages</span>
+      </a>
+      <a routerLink="/admin/services" class="action-card">
+        <i class="fas fa-plus"></i>
+        <span>Add Service</span>
+      </a>
+      <a routerLink="/admin/gallery" class="action-card">
+        <i class="fas fa-upload"></i>
+        <span>Upload Image</span>
+      </a>
+      <a routerLink="/admin/dashboard/blog" class="action-card">
+        <i class="fas fa-blog"></i>
+        <span>Manage Blog</span>
+      </a>
+    </div>
+  </div>
+</div>

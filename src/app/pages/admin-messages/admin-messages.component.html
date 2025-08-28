@@ -4,29 +4,25 @@
   </div>
 
   <div class="header-buttons">
-    <button class="test-api-btn" (click)="testAPI()">
-      <i class="fas fa-vial"></i>
-      اختبار API
-    </button>
-    <button class="test-direct-btn" (click)="testDirectConnection()">
-      <i class="fas fa-network-wired"></i>
-      اختبار الاتصال المباشر
-    </button>
-    <button class="test-http-btn" (click)="testHttpClient()">
-      <i class="fas fa-code"></i>
-      اختبار HttpClient
-    </button>
-    <button class="test-contact-btn" (click)="testFormSubmission()">
-      <i class="fas fa-paper-plane"></i>
-      اختبار نموذج الاتصال
-    </button>
-    <button class="test-join-btn" (click)="testJoinFormSubmission()">
-      <i class="fas fa-user-plus"></i>
-      اختبار نموذج الانضمام
-    </button>
     <button class="refresh-btn" (click)="refreshData()">
       <i class="fas fa-sync-alt"></i>
       تحديث البيانات
+    </button>
+    <button
+      class="reset-deleted-btn"
+      (click)="resetDeletedMessages('contact')"
+      [disabled]="getDeletedCount('contact') === 0"
+    >
+      <i class="fas fa-undo"></i>
+      إعادة رسائل الاتصال المحذوفة ({{ getDeletedCount("contact") }})
+    </button>
+    <button
+      class="reset-deleted-btn"
+      (click)="resetDeletedMessages('join')"
+      [disabled]="getDeletedCount('join') === 0"
+    >
+      <i class="fas fa-undo"></i>
+      إعادة رسائل الانضمام المحذوفة ({{ getDeletedCount("join") }})
     </button>
   </div>
 
@@ -39,6 +35,24 @@
           <span class="data-source" [class]="apiStatus.contact">
             {{ getDataSourceText("contact") }}
           </span>
+        </div>
+        <div class="bulk-actions">
+          <button
+            class="select-all-btn"
+            (click)="toggleSelectAll('contact')"
+            [disabled]="contactMessages.length === 0"
+          >
+            <i class="fas fa-check-square"></i>
+            {{ isAllSelected("contact") ? "إلغاء تحديد الكل" : "تحديد الكل" }}
+          </button>
+          <button
+            class="delete-selected-btn"
+            (click)="deleteSelectedMessages('contact')"
+            [disabled]="getSelectedCount('contact') === 0"
+          >
+            <i class="fas fa-trash"></i>
+            حذف المحدد ({{ getSelectedCount("contact") }})
+          </button>
         </div>
         <button
           class="export-btn"
@@ -86,6 +100,14 @@
       >
         <thead>
           <tr>
+            <th class="checkbox-column">
+              <input
+                type="checkbox"
+                [checked]="isAllSelected('contact')"
+                (change)="toggleSelectAll('contact')"
+                [indeterminate]="isPartiallySelected('contact')"
+              />
+            </th>
             <th>الاسم</th>
             <th>رقم الهاتف</th>
             <th>نوع السيارة</th>
@@ -95,7 +117,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let message of contactMessages" class="message-row">
+          <tr
+            *ngFor="let message of contactMessages; let i = index"
+            class="message-row"
+          >
+            <td class="checkbox-column">
+              <input
+                type="checkbox"
+                [checked]="isMessageSelected('contact', i)"
+                (change)="toggleMessageSelection('contact', i)"
+              />
+            </td>
             <td>{{ message.fullName || "غير محدد" }}</td>
             <td>{{ message.phoneNumber || "غير محدد" }}</td>
             <td>{{ message.carType || "غير محدد" }}</td>
@@ -123,6 +155,24 @@
           <span class="data-source" [class]="apiStatus.join">
             {{ getDataSourceText("join") }}
           </span>
+        </div>
+        <div class="bulk-actions">
+          <button
+            class="select-all-btn"
+            (click)="toggleSelectAll('join')"
+            [disabled]="joinMessages.length === 0"
+          >
+            <i class="fas fa-check-square"></i>
+            {{ isAllSelected("join") ? "إلغاء تحديد الكل" : "تحديد الكل" }}
+          </button>
+          <button
+            class="delete-selected-btn"
+            (click)="deleteSelectedMessages('join')"
+            [disabled]="getSelectedCount('join') === 0"
+          >
+            <i class="fas fa-trash"></i>
+            حذف المحدد ({{ getSelectedCount("join") }})
+          </button>
         </div>
         <button
           class="export-btn"
@@ -168,6 +218,14 @@
       >
         <thead>
           <tr>
+            <th class="checkbox-column">
+              <input
+                type="checkbox"
+                [checked]="isAllSelected('join')"
+                (change)="toggleSelectAll('join')"
+                [indeterminate]="isPartiallySelected('join')"
+              />
+            </th>
             <th>الاسم</th>
             <th>رقم الهاتف</th>
             <th>البريد الإلكتروني</th>
@@ -175,10 +233,21 @@
             <th>الخبرة السابقة</th>
             <th>الرسالة</th>
             <th>التاريخ</th>
+            <th>ملف CV</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let message of joinMessages" class="message-row">
+          <tr
+            *ngFor="let message of joinMessages; let i = index"
+            class="message-row"
+          >
+            <td class="checkbox-column">
+              <input
+                type="checkbox"
+                [checked]="isMessageSelected('join', i)"
+                (change)="toggleMessageSelection('join', i)"
+              />
+            </td>
             <td>{{ message.fullName || "غير محدد" }}</td>
             <td>{{ message.phoneNumber || "غير محدد" }}</td>
             <td>{{ message.email || "غير محدد" }}</td>
@@ -191,6 +260,23 @@
                   ? (message.createdAt | date : "short")
                   : "غير محدد"
               }}
+            </td>
+            <td class="cv-column">
+              <div *ngIf="hasCV(message)" class="cv-actions">
+                <button
+                  class="download-cv-btn"
+                  (click)="downloadCV(message)"
+                  title="تحميل ملف CV"
+                >
+                  <i class="fas fa-download"></i>
+                  تحميل CV
+                </button>
+                <span class="cv-filename">{{ getCVFileName(message) }}</span>
+              </div>
+              <span *ngIf="!hasCV(message)" class="no-cv">
+                <i class="fas fa-times-circle"></i>
+                لا يوجد CV
+              </span>
             </td>
           </tr>
         </tbody>

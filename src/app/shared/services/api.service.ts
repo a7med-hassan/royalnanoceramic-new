@@ -17,6 +17,7 @@ export interface JoinFormData {
   phoneNumber: string;
   email: string;
   position: string;
+  jobPosition?: string; // Additional field for backend validation
   experience: string;
   message: string;
   cvFile?: File | null;
@@ -113,7 +114,36 @@ export class ApiService {
     console.log('🔧 BASE_URL:', this.BASE_URL);
     console.log('🔧 Full URL:', `${this.JOIN_URL}`);
 
-    return this.http.post<ApiResponse>(`${this.JOIN_URL}`, data).pipe(
+    // Create FormData for file upload
+    const formData = new FormData();
+
+    // Add text fields
+    formData.append('fullName', data.fullName);
+    formData.append('phoneNumber', data.phoneNumber);
+    formData.append('email', data.email);
+    formData.append('position', data.position);
+    formData.append('jobPosition', data.jobPosition || data.position);
+    formData.append('experience', data.experience);
+    formData.append('message', data.message);
+
+    // Add CV file if exists
+    if (data.cvFile) {
+      formData.append('cv', data.cvFile);
+      console.log(
+        '📎 CV file attached:',
+        data.cvFile.name,
+        'Size:',
+        data.cvFile.size
+      );
+    }
+
+    console.log(
+      '📤 FormData created with',
+      formData.getAll('fullName').length,
+      'fields'
+    );
+
+    return this.http.post<ApiResponse>(`${this.JOIN_URL}`, formData).pipe(
       tap((response) =>
         console.log('✅ Join form submitted successfully:', response)
       ),
@@ -151,7 +181,9 @@ export class ApiService {
   testConnection(): Observable<any> {
     console.log('🧪 Testing connection with HttpClient...');
     console.log('🔗 Base URL:', this.BASE_URL);
-    console.log('🔗 Full URL:', `${this.HEALTH_URL}`);
+    console.log('🔗 Contact URL:', this.CONTACT_URL);
+    console.log('🔗 Join URL:', this.JOIN_URL);
+    console.log('🔗 Health URL:', this.HEALTH_URL);
 
     // Test with different HTTP methods
     return this.http
@@ -178,6 +210,64 @@ export class ApiService {
   }
 
   /**
+   * Test backend connectivity specifically
+   */
+  testBackendConnectivity(): Observable<any> {
+    console.log('🔗 Testing backend connectivity...');
+
+    // Test health endpoint first
+    return this.http.get(`${this.HEALTH_URL}`).pipe(
+      tap((response) => {
+        console.log('✅ Backend health check successful:', response);
+      }),
+      catchError((error) => {
+        console.error('❌ Backend health check failed:', error);
+        console.error('❌ Error details:', {
+          status: error.status,
+          statusText: error.statusText,
+          message: error.message,
+          url: error.url,
+        });
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Test contact form submission with sample data
+   */
+  testContactFormSubmission(): Observable<any> {
+    console.log('🧪 Testing contact form submission...');
+
+    const testData: ContactFormData = {
+      fullName: 'اختبار الاتصال',
+      phoneNumber: '01234567890',
+      carType: 'سيدان',
+      carModel: '2024',
+      notes: 'هذا اختبار للاتصال بالـ backend',
+    };
+
+    console.log('📤 Test data:', testData);
+    console.log('🔗 Sending to:', this.CONTACT_URL);
+
+    return this.http.post<any>(`${this.CONTACT_URL}`, testData).pipe(
+      tap((response) => {
+        console.log('✅ Test contact form submission successful:', response);
+      }),
+      catchError((error) => {
+        console.error('❌ Test contact form submission failed:', error);
+        console.error('❌ Error details:', {
+          status: error.status,
+          statusText: error.statusText,
+          message: error.message,
+          url: error.url,
+        });
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
    * Get contact messages (for admin) with fallback endpoints
    */
   getContactMessages(): Observable<any[]> {
@@ -193,6 +283,35 @@ export class ApiService {
     console.log('📥 Fetching join messages...');
     const endpoints = [`${this.JOIN_URL}`];
     return this.tryEndpoints(endpoints, 'join messages');
+  }
+
+  /**
+   * Delete multiple messages by IDs
+   * @param type Message type ('contact' or 'join')
+   * @param messageIds Array of message IDs to delete
+   * @returns Observable of deletion response
+   */
+  deleteMessages(
+    type: 'contact' | 'join',
+    messageIds: string[]
+  ): Observable<ApiResponse> {
+    console.log(`🗑️ Deleting ${messageIds.length} ${type} messages...`);
+    console.log(`🗑️ Message IDs:`, messageIds);
+
+    const endpoint = type === 'contact' ? this.CONTACT_URL : this.JOIN_URL;
+    const deleteUrl = `${endpoint}/delete`;
+
+    console.log(`🗑️ Delete URL:`, deleteUrl);
+
+    return this.http.post<ApiResponse>(deleteUrl, { messageIds }).pipe(
+      tap((response) =>
+        console.log(`✅ Successfully deleted ${type} messages:`, response)
+      ),
+      catchError((error) => {
+        console.error(`❌ Error deleting ${type} messages:`, error);
+        return this.handleError(error);
+      })
+    );
   }
 
   private tryEndpoints(

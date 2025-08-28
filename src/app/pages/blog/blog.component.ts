@@ -38,7 +38,7 @@ export class BlogComponent implements OnInit, OnDestroy {
   selectedPost: BlogPost | null = null;
   searchTerm: string = '';
   currentCategory: string = 'all';
-  postsPerPage: number = 12;
+  postsPerPage: number = 50; // Show more posts initially
   currentPage: number = 1;
   hasMorePosts: boolean = true;
   newsletterEmail: string = '';
@@ -252,6 +252,17 @@ export class BlogComponent implements OnInit, OnDestroy {
       this.currentPage * this.postsPerPage
     );
     this.hasMorePosts = this.filteredPosts.length < filtered.length;
+
+    // Debug logging
+    console.log('📝 Blog Posts Debug:', {
+      totalPosts: this.allPosts.length,
+      filteredPosts: filtered.length,
+      displayedPosts: this.filteredPosts.length,
+      currentCategory: this.currentCategory,
+      searchTerm: this.searchTerm,
+      postsPerPage: this.postsPerPage,
+      currentPage: this.currentPage,
+    });
   }
 
   setFeaturedPost(): void {

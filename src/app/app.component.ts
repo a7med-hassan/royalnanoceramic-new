@@ -9,30 +9,25 @@ import { filter } from 'rxjs/operators';
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent],
-  template: `
-    <app-header></app-header>
-    <router-outlet></router-outlet>
-    <app-footer></app-footer>
-  `,
-  styles: [
-    `
-      div {
-        padding: 20px;
-        text-align: center;
-      }
-    `,
-  ],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
   title = 'royal-nano-ceramic';
   currentLang = 'ar';
   isRtl = true;
+  currentRoute = '';
+  isAdminRoute = false;
 
   constructor(private router: Router) {
     // Subscribe to router events to scroll to top on navigation
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
+      .subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.currentRoute = event.url;
+          this.isAdminRoute = this.currentRoute.startsWith('/admin');
+        }
         this.scrollToTop();
       });
   }
@@ -43,6 +38,10 @@ export class AppComponent implements OnInit {
       document.documentElement.lang = 'ar';
       document.documentElement.dir = 'rtl';
       document.body.className = 'rtl arabic-font';
+
+      // Initialize route tracking
+      this.currentRoute = this.router.url;
+      this.isAdminRoute = this.currentRoute.startsWith('/admin');
     } catch (error) {
       console.error('Error initializing app:', error);
     }

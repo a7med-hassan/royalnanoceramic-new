@@ -1,0 +1,258 @@
+<div class="admin-services">
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Services Management</h1>
+    <button class="add-btn" (click)="showAddServiceForm()">
+      <i class="fas fa-plus"></i>
+      Add New Service
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input
+        type="text"
+        placeholder="Search services..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+        class="search-input"
+      />
+    </div>
+
+    <select
+      [(ngModel)]="selectedCategory"
+      (change)="onCategoryChange()"
+      class="category-select"
+    >
+      <option *ngFor="let category of categories" [value]="category.value">
+        {{ category.label }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Services Grid -->
+  <div
+    class="services-grid"
+    *ngIf="filteredServices.length > 0; else noServices"
+  >
+    <div
+      *ngFor="let service of filteredServices"
+      class="service-card"
+      [class.inactive]="!service.isActive"
+    >
+      <div class="service-header">
+        <div class="service-icon">
+          <i [class]="service.icon"></i>
+        </div>
+        <div class="service-actions">
+          <button
+            class="action-btn edit-btn"
+            (click)="editService(service)"
+            title="Edit Service"
+          >
+            <i class="fas fa-edit"></i>
+          </button>
+          <button
+            class="action-btn delete-btn"
+            (click)="deleteService(service)"
+            title="Delete Service"
+          >
+            <i class="fas fa-trash"></i>
+          </button>
+          <button
+            class="action-btn toggle-btn"
+            [class.active]="service.isActive"
+            (click)="toggleServiceStatus(service)"
+            [title]="service.isActive ? 'Deactivate' : 'Activate'"
+          >
+            <i
+              [class]="service.isActive ? 'fas fa-eye' : 'fas fa-eye-slash'"
+            ></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="service-content">
+        <h3>{{ service.title }}</h3>
+        <p>{{ service.description }}</p>
+
+        <div
+          class="service-features"
+          *ngIf="service.features && service.features.length > 0"
+        >
+          <h4>Features:</h4>
+          <ul>
+            <li *ngFor="let feature of service.features">{{ feature }}</li>
+          </ul>
+        </div>
+
+        <div class="service-meta">
+          <span class="category-badge">{{ service.category }}</span>
+          <span class="created-date">{{ formatDate(service.createdAt) }}</span>
+        </div>
+
+        <div class="service-details" *ngIf="service.price || service.duration">
+          <div *ngIf="service.price" class="detail-item">
+            <i class="fas fa-dollar-sign"></i>
+            <span>{{ service.price }}</span>
+          </div>
+          <div *ngIf="service.duration" class="detail-item">
+            <i class="fas fa-clock"></i>
+            <span>{{ service.duration }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noServices>
+    <div class="empty-state">
+      <i class="fas fa-cogs"></i>
+      <h3>No Services Found</h3>
+      <p>No services match your current filters.</p>
+      <button class="add-btn" (click)="showAddServiceForm()">
+        <i class="fas fa-plus"></i>
+        Add Your First Service
+      </button>
+    </div>
+  </ng-template>
+
+  <!-- Add/Edit Service Modal -->
+  <div class="modal-overlay" *ngIf="showAddForm" (click)="cancelForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editingService ? "Edit Service" : "Add New Service" }}</h2>
+        <button class="close-btn" (click)="cancelForm()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form (ngSubmit)="saveService()" class="service-form">
+        <div class="form-group">
+          <label for="title">Service Title *</label>
+          <input
+            type="text"
+            id="title"
+            [(ngModel)]="newService.title"
+            name="title"
+            placeholder="Enter service title"
+            required
+            class="form-input"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea
+            id="description"
+            [(ngModel)]="newService.description"
+            name="description"
+            placeholder="Enter service description"
+            required
+            rows="4"
+            class="form-textarea"
+          ></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="icon">Icon Class</label>
+            <input
+              type="text"
+              id="icon"
+              [(ngModel)]="newService.icon"
+              name="icon"
+              placeholder="fas fa-shield-alt"
+              class="form-input"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select
+              id="category"
+              [(ngModel)]="newService.category"
+              name="category"
+              class="form-select"
+            >
+              <option value="ceramic">Ceramic Coating</option>
+              <option value="protection">Protection</option>
+              <option value="detailing">Detailing</option>
+              <option value="interior">Interior</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="price">Price</label>
+            <input
+              type="text"
+              id="price"
+              [(ngModel)]="newService.price"
+              name="price"
+              placeholder="Starting from $299"
+              class="form-input"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="duration">Duration</label>
+            <input
+              type="text"
+              id="duration"
+              [(ngModel)]="newService.duration"
+              name="duration"
+              placeholder="4-6 hours"
+              class="form-input"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Features</label>
+          <div class="features-list">
+            <div
+              *ngFor="let feature of newService.features; let i = index"
+              class="feature-item"
+            >
+              <input
+                type="text"
+                [(ngModel)]="newService.features![i]"
+                [name]="'feature' + i"
+                placeholder="Enter feature"
+                class="form-input"
+              />
+              <button
+                type="button"
+                class="remove-feature-btn"
+                (click)="removeFeature(i)"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <button
+              type="button"
+              class="add-feature-btn"
+              (click)="addFeature()"
+            >
+              <i class="fas fa-plus"></i>
+              Add Feature
+            </button>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="cancelForm()">
+            Cancel
+          </button>
+          <button type="submit" class="save-btn">
+            {{ editingService ? "Update Service" : "Add Service" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

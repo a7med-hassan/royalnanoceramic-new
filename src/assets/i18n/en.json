@@ -135,6 +135,23 @@
       "title": "Gallery",
       "subtitle": "See our outstanding work in car protection"
     },
+    "categories": {
+      "all": "All",
+      "ceramic": "Ceramic",
+      "protection": "Protection",
+      "detailing": "Detailing",
+      "interior": "Interior",
+      "wheels": "Wheels"
+    },
+    "services": {
+      "nano_ceramic": "Nano Ceramic Coating",
+      "paint_protection": "Paint Protection Film",
+      "graphene": "Graphene Coating",
+      "glass_ceramic": "Glass Ceramic Coating",
+      "wheel_ceramic": "Wheel Ceramic Coating",
+      "click_to_inquire": "Click to Inquire",
+      "contact_us": "Contact Us"
+    },
     "lightbox": {
       "protection_details": "Protection Details",
       "features": "Features"
@@ -169,6 +186,7 @@
     "services_list": "Our Services",
     "contact_info": "Contact Info",
     "follow_us": "Follow Us",
+    "address": "October, Giza",
     "rights": "All Rights Reserved"
   },
   "common": {

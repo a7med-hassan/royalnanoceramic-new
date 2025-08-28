@@ -1,0 +1,46 @@
+<div class="admin-dashboard" *ngIf="isLoggedIn">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <h2>Admin Panel</h2>
+      <p>Welcome, {{ adminUser }}</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        <li
+          *ngFor="let item of menuItems"
+          class="nav-item"
+          [class.active]="item.active"
+        >
+          <a (click)="navigateTo(item.route)" class="nav-link">
+            <i [class]="item.icon"></i>
+            <span>{{ item.title }}</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+
+<div class="access-denied" *ngIf="!isLoggedIn">
+  <h1>Access Denied</h1>
+  <p>Please login to access the admin panel.</p>
+  <button (click)="navigateTo('/admin')" class="login-redirect-btn">
+    Go to Login
+  </button>
+</div>

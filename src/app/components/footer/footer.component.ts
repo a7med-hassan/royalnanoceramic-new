@@ -64,13 +64,13 @@ export class FooterComponent implements OnInit, OnDestroy {
       icon: 'fab fa-instagram',
     },
     {
-      name: 'twitter',
-      url: 'https://twitter.com/royalnanoceramic',
-      icon: 'fab fa-twitter',
+      name: 'linkedin',
+      url: 'https://www.linkedin.com/company/royal-nano-ceramic/',
+      icon: 'fab fa-linkedin',
     },
     {
       name: 'youtube',
-      url: 'https://youtube.com/royalnanoceramic',
+      url: 'https://www.youtube.com/@RoyalNanoCeramic',
       icon: 'fab fa-youtube',
     },
   ];

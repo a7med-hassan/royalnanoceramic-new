@@ -3,19 +3,20 @@
   [class.rtl]="isRtl"
   [class.arabic]="currentLang === 'ar'"
 >
-  <!-- Header Component -->
-  <app-header></app-header>
+  <!-- Header Component - Hidden for admin routes -->
+  <app-header *ngIf="!isAdminRoute"></app-header>
 
   <!-- Main Content -->
   <main class="main-content">
     <router-outlet></router-outlet>
   </main>
 
-  <!-- Footer Component -->
-  <app-footer></app-footer>
+  <!-- Footer Component - Hidden for admin routes -->
+  <app-footer *ngIf="!isAdminRoute"></app-footer>
 
-  <!-- Floating WhatsApp Button -->
+  <!-- Floating WhatsApp Button - Hidden for admin routes -->
   <a
+    *ngIf="!isAdminRoute"
     href="https://wa.me/201234567890"
     target="_blank"
     class="floating-whatsapp"

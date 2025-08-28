@@ -1,8 +1,174 @@
 <div class="about-page" [class.rtl]="isRtl">
-  <section class="hero-section">
-    <div class="container">
-      <h1>{{ translationService.getTranslation("about.hero.title") }}</h1>
-      <p>{{ translationService.getTranslation("about.hero.subtitle") }}</p>
+  <!-- Why Choose Royal Nano Section -->
+  <section class="why-choose-section">
+    <div
+      class="slider-container"
+      (mouseenter)="onSliderHover()"
+      (mouseleave)="onSliderLeave()"
+    >
+      <div class="slider-wrapper">
+        <!-- Slide 1 - Speed -->
+        <div class="slide active" data-slide="0">
+          <div class="slide-content">
+            <div class="image-section">
+              <img
+                src="assets/images/services/close-up-car-care-process.jpg"
+                alt="Speed & Efficiency"
+              />
+            </div>
+            <div class="text-section">
+              <h2 class="section-title">
+                {{
+                  translationService.getTranslation(
+                    "about.why_choose.main_title"
+                  )
+                }}
+              </h2>
+              <div class="feature-icon">⚡</div>
+              <h3>
+                {{
+                  translationService.getTranslation(
+                    "about.why_choose.speed.title"
+                  )
+                }}
+              </h3>
+              <p>
+                {{
+                  translationService.getTranslation(
+                    "about.why_choose.speed.description"
+                  )
+                }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 - Leadership -->
+        <div class="slide" data-slide="1">
+          <div class="slide-content">
+            <div class="image-section">
+              <img
+                src="assets/images/services/male-worker-wrapping-car-with-ptotective-foil.jpg"
+                alt="Leadership"
+              />
+            </div>
+            <div class="text-section">
+              <h2 class="section-title">
+                {{
+                  translationService.getTranslation(
+                    "about.why_choose.main_title"
+                  )
+                }}
+              </h2>
+              <div class="feature-icon">👑</div>
+              <h3>
+                {{
+                  translationService.getTranslation(
+                    "about.why_choose.leadership.title"
+                  )
+                }}
+              </h3>
+              <p>
+                {{
+                  translationService.getTranslation(
+                    "about.why_choose.leadership.description"
+                  )
+                }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 - Support -->
+        <div class="slide" data-slide="2">
+          <div class="slide-content">
+            <div class="image-section">
+              <img
+                src="assets/images/services/male-worker-wrapping-car-with-ptotective-foil (1).jpg"
+                alt="Support"
+              />
+            </div>
+            <div class="text-section">
+              <h2 class="section-title">
+                {{
+                  translationService.getTranslation(
+                    "about.why_choose.main_title"
+                  )
+                }}
+              </h2>
+              <div class="feature-icon">🛠️</div>
+              <h3>
+                {{
+                  translationService.getTranslation(
+                    "about.why_choose.support.title"
+                  )
+                }}
+              </h3>
+              <p>
+                {{
+                  translationService.getTranslation(
+                    "about.why_choose.support.description"
+                  )
+                }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 4 - Sustainability -->
+        <div class="slide" data-slide="3">
+          <div class="slide-content">
+            <div class="image-section">
+              <img
+                src="assets/images/services/close-up-car-care-process.jpg"
+                alt="Sustainability"
+              />
+            </div>
+            <div class="text-section">
+              <h2 class="section-title">
+                {{
+                  translationService.getTranslation(
+                    "about.why_choose.main_title"
+                  )
+                }}
+              </h2>
+              <div class="feature-icon">🌱</div>
+              <h3>
+                {{
+                  translationService.getTranslation(
+                    "about.why_choose.sustainability.title"
+                  )
+                }}
+              </h3>
+              <p>
+                {{
+                  translationService.getTranslation(
+                    "about.why_choose.sustainability.description"
+                  )
+                }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Dots -->
+      <div class="slider-nav">
+        <div class="nav-dot active" data-slide="0" (click)="goToSlide(0)"></div>
+        <div class="nav-dot" data-slide="1" (click)="goToSlide(1)"></div>
+        <div class="nav-dot" data-slide="2" (click)="goToSlide(2)"></div>
+        <div class="nav-dot" data-slide="3" (click)="goToSlide(3)"></div>
+      </div>
+
+      <!-- Navigation Arrows -->
+      <div class="slider-arrows">
+        <button class="arrow prev" (click)="previousSlide()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="arrow next" (click)="nextSlide()">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
     </div>
   </section>
 

@@ -1,23 +1,20 @@
 <div class="contact-form-container">
   <div class="form-header">
-    <h3>تواصل معنا</h3>
-    <p>أرسل لنا رسالة وسنرد عليك في أقرب وقت ممكن</p>
+    <h3>{{ translationService.getTranslation("contact.form.title") }}</h3>
+    <p>{{ translationService.getTranslation("contact.hero.subtitle") }}</p>
   </div>
 
   <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
     <!-- Form Error Summary -->
     <div class="form-error-summary" *ngIf="hasFormErrors()">
       <i class="fas fa-exclamation-triangle"></i>
-      <span
-        >يوجد {{ getTotalErrorCount() }} خطأ في النموذج - يرجى تصحيح الأخطاء قبل
-        الإرسال</span
-      >
+      <span>{{ translationService.getTranslation("common.error") }}</span>
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label for="fullName">
-          الاسم الكامل
+          {{ translationService.getTranslation("contact.form.full_name") }}
           <span class="required-indicator" *ngIf="isFieldRequired('fullName')"
             >*</span
           >
@@ -30,7 +27,11 @@
           [class.valid]="
             !isFieldInvalid('fullName') && getFieldValue('fullName')
           "
-          placeholder="أدخل اسمك الكامل"
+          [placeholder]="
+            translationService.getTranslation(
+              'contact.form.full_name_placeholder'
+            )
+          "
           autocomplete="name"
         />
         <div class="error-message" *ngIf="isFieldInvalid('fullName')">
@@ -41,13 +42,13 @@
           *ngIf="!isFieldInvalid('fullName') && getFieldValue('fullName')"
         >
           <i class="fas fa-check-circle"></i>
-          <span>الاسم صحيح</span>
+          <span>{{ translationService.getTranslation("common.success") }}</span>
         </div>
       </div>
 
       <div class="form-group">
         <label for="phoneNumber">
-          رقم الهاتف
+          {{ translationService.getTranslation("contact.form.phone") }}
           <span
             class="required-indicator"
             *ngIf="isFieldRequired('phoneNumber')"
@@ -62,7 +63,9 @@
           [class.valid]="
             !isFieldInvalid('phoneNumber') && getFieldValue('phoneNumber')
           "
-          placeholder="أدخل رقم هاتفك (مثال: 01234567890)"
+          [placeholder]="
+            translationService.getTranslation('contact.form.phone_placeholder')
+          "
           autocomplete="tel"
         />
         <div class="error-message" *ngIf="isFieldInvalid('phoneNumber')">
@@ -73,7 +76,7 @@
           *ngIf="!isFieldInvalid('phoneNumber') && getFieldValue('phoneNumber')"
         >
           <i class="fas fa-check-circle"></i>
-          <span>رقم الهاتف صحيح</span>
+          <span>{{ translationService.getTranslation("common.success") }}</span>
         </div>
       </div>
     </div>
@@ -81,7 +84,7 @@
     <div class="form-row">
       <div class="form-group">
         <label for="carType">
-          نوع السيارة
+          {{ translationService.getTranslation("contact.form.car_type") }}
           <span class="required-indicator" *ngIf="isFieldRequired('carType')"
             >*</span
           >
@@ -92,15 +95,41 @@
           [class.invalid]="isFieldInvalid('carType')"
           [class.valid]="!isFieldInvalid('carType') && getFieldValue('carType')"
         >
-          <option value="">اختر نوع السيارة</option>
-          <option value="سيدان">سيدان</option>
-          <option value="SUV">SUV</option>
-          <option value="هاتشباك">هاتشباك</option>
-          <option value="كوبيه">كوبيه</option>
-          <option value="فان">فان</option>
-          <option value="شاحنة">شاحنة</option>
-          <option value="دراجة نارية">دراجة نارية</option>
-          <option value="أخرى">أخرى</option>
+          <option value="">
+            {{
+              translationService.getTranslation(
+                "contact.form.car_type_placeholder"
+              )
+            }}
+          </option>
+          <option value="sedan">
+            {{ translationService.getTranslation("contact.car_types.sedan") }}
+          </option>
+          <option value="suv">
+            {{ translationService.getTranslation("contact.car_types.suv") }}
+          </option>
+          <option value="hatchback">
+            {{
+              translationService.getTranslation("contact.car_types.hatchback")
+            }}
+          </option>
+          <option value="coupe">
+            {{ translationService.getTranslation("contact.car_types.coupe") }}
+          </option>
+          <option value="van">
+            {{ translationService.getTranslation("contact.car_types.van") }}
+          </option>
+          <option value="truck">
+            {{ translationService.getTranslation("contact.car_types.truck") }}
+          </option>
+          <option value="motorcycle">
+            {{
+              translationService.getTranslation("contact.car_types.motorcycle")
+            }}
+          </option>
+          <option value="other">
+            {{ translationService.getTranslation("contact.car_types.other") }}
+          </option>
         </select>
         <div class="error-message" *ngIf="isFieldInvalid('carType')">
           {{ getErrorMessage("carType") }}
@@ -110,13 +139,13 @@
           *ngIf="!isFieldInvalid('carType') && getFieldValue('carType')"
         >
           <i class="fas fa-check-circle"></i>
-          <span>تم اختيار نوع السيارة</span>
+          <span>{{ translationService.getTranslation("common.success") }}</span>
         </div>
       </div>
 
       <div class="form-group">
         <label for="carModel">
-          موديل السيارة
+          {{ translationService.getTranslation("contact.form.car_model") }}
           <span class="required-indicator" *ngIf="isFieldRequired('carModel')"
             >*</span
           >
@@ -129,7 +158,11 @@
           [class.valid]="
             !isFieldInvalid('carModel') && getFieldValue('carModel')
           "
-          placeholder="أدخل موديل السيارة (مثال: 2023)"
+          [placeholder]="
+            translationService.getTranslation(
+              'contact.form.car_model_placeholder'
+            )
+          "
           autocomplete="off"
         />
         <div class="error-message" *ngIf="isFieldInvalid('carModel')">
@@ -140,15 +173,17 @@
           *ngIf="!isFieldInvalid('carModel') && getFieldValue('carModel')"
         >
           <i class="fas fa-check-circle"></i>
-          <span>موديل السيارة صحيح</span>
+          <span>{{ translationService.getTranslation("common.success") }}</span>
         </div>
       </div>
     </div>
 
     <div class="form-group full-width">
       <label for="notes">
-        ملاحظات إضافية
-        <span class="optional-indicator">(اختياري)</span>
+        {{ translationService.getTranslation("contact.form.notes") }}
+        <span class="optional-indicator"
+          >({{ translationService.getTranslation("common.optional") }})</span
+        >
       </label>
       <textarea
         id="notes"
@@ -156,7 +191,9 @@
         [class.invalid]="isFieldInvalid('notes')"
         [class.valid]="!isFieldInvalid('notes') && getFieldValue('notes')"
         rows="4"
-        placeholder="أضف أي ملاحظات أو تفاصيل إضافية تريد إخبارنا بها..."
+        [placeholder]="
+          translationService.getTranslation('contact.form.notes_placeholder')
+        "
       ></textarea>
       <div class="error-message" *ngIf="isFieldInvalid('notes')">
         {{ getErrorMessage("notes") }}
@@ -166,7 +203,7 @@
         *ngIf="!isFieldInvalid('notes') && getFieldValue('notes')"
       >
         <i class="fas fa-check-circle"></i>
-        <span>الملاحظات صحيحة</span>
+        <span>{{ translationService.getTranslation("common.success") }}</span>
       </div>
       <div class="character-count" *ngIf="getFieldValue('notes')">
         <span [class.near-limit]="getFieldValue('notes').length > 400">
@@ -182,8 +219,12 @@
         [disabled]="isSubmitting || contactForm.invalid"
       >
         <i class="fas fa-paper-plane"></i>
-        <span *ngIf="!isSubmitting">إرسال الرسالة</span>
-        <span *ngIf="isSubmitting">جاري الإرسال...</span>
+        <span *ngIf="!isSubmitting">{{
+          translationService.getTranslation("contact.form.submit")
+        }}</span>
+        <span *ngIf="isSubmitting">{{
+          translationService.getTranslation("common.loading")
+        }}</span>
       </button>
 
       <button
@@ -193,14 +234,16 @@
         [disabled]="isSubmitting"
       >
         <i class="fas fa-redo"></i>
-        <span>إعادة تعيين</span>
+        <span>{{ translationService.getTranslation("common.reset") }}</span>
       </button>
     </div>
 
     <!-- Success Message -->
     <div class="message success" *ngIf="submitSuccess">
       <i class="fas fa-check-circle"></i>
-      <span>تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.</span>
+      <span>{{
+        translationService.getTranslation("contact.form.success_message")
+      }}</span>
     </div>
 
     <!-- Error Message -->
@@ -213,11 +256,9 @@
     <div class="form-status" *ngIf="contactForm.touched">
       <div class="status-item">
         <i class="fas fa-info-circle"></i>
-        <span
-          >الحقول المطلوبة: {{ getTotalErrorCount() }}/{{
-            getFormControlsCount()
-          }}</span
-        >
+        <span>{{
+          translationService.getTranslation("common.form_status")
+        }}</span>
       </div>
     </div>
   </form>

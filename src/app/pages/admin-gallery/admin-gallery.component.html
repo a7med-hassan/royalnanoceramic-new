@@ -1,0 +1,217 @@
+<div class="admin-gallery">
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Gallery Management</h1>
+    <div class="header-actions">
+      <button class="clear-btn" (click)="clearAllAdminImages()">
+        <i class="fas fa-trash"></i>
+        Clear All Admin Images
+      </button>
+      <button class="upload-btn" (click)="showUploadImageForm()">
+        <i class="fas fa-upload"></i>
+        Upload Images
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input
+        type="text"
+        placeholder="Search images..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+        class="search-input"
+      />
+    </div>
+
+    <select
+      [(ngModel)]="selectedCategory"
+      (change)="onCategoryChange()"
+      class="category-select"
+    >
+      <option *ngFor="let category of categories" [value]="category.value">
+        {{ category.label }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Gallery Grid -->
+  <div class="gallery-grid" *ngIf="filteredImages.length > 0; else noImages">
+    <div
+      *ngFor="let image of filteredImages"
+      class="image-card"
+      [class.inactive]="!image.isActive"
+    >
+      <div class="image-container">
+        <img [src]="image.src" [alt]="image.alt" class="gallery-image" />
+        <div class="image-overlay">
+          <div class="image-actions">
+            <button
+              class="action-btn delete-btn"
+              (click)="deleteImage(image)"
+              title="Delete Image"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+            <button
+              class="action-btn toggle-btn"
+              [class.active]="image.isActive"
+              (click)="toggleImageStatus(image)"
+              [title]="image.isActive ? 'Hide Image' : 'Show Image'"
+            >
+              <i
+                [class]="image.isActive ? 'fas fa-eye' : 'fas fa-eye-slash'"
+              ></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="image-info">
+        <h3>{{ image.alt }}</h3>
+        <div class="image-meta">
+          <span class="category-badge">{{ image.category }}</span>
+          <span class="service-type">{{ image.serviceType }}</span>
+        </div>
+        <div class="image-details">
+          <span class="upload-date">{{ formatDate(image.uploadedAt) }}</span>
+          <span class="status-badge" [class.active]="image.isActive">
+            {{ image.isActive ? "Active" : "Hidden" }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noImages>
+    <div class="empty-state">
+      <i class="fas fa-images"></i>
+      <h3>No Images Found</h3>
+      <p>No images match your current filters.</p>
+      <button class="upload-btn" (click)="showUploadImageForm()">
+        <i class="fas fa-upload"></i>
+        Upload Your First Image
+      </button>
+    </div>
+  </ng-template>
+
+  <!-- Upload Modal -->
+  <div class="modal-overlay" *ngIf="showUploadForm" (click)="cancelForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Upload Images</h2>
+        <button class="close-btn" (click)="cancelForm()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form (ngSubmit)="uploadImages()" class="upload-form">
+        <div class="form-group">
+          <label for="alt">Image Description *</label>
+          <input
+            type="text"
+            id="alt"
+            [(ngModel)]="newImage.alt"
+            name="alt"
+            placeholder="Enter image description"
+            required
+            class="form-input"
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select
+              id="category"
+              [(ngModel)]="newImage.category"
+              name="category"
+              class="form-select"
+            >
+              <option value="ceramic">Ceramic Coating</option>
+              <option value="protection">Protection</option>
+              <option value="detailing">Detailing</option>
+              <option value="interior">Interior</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="serviceType">Service Type</label>
+            <select
+              id="serviceType"
+              [(ngModel)]="newImage.serviceType"
+              name="serviceType"
+              (change)="onServiceTypeChange()"
+              class="form-select"
+            >
+              <option
+                *ngFor="let service of serviceTypes"
+                [value]="service.value"
+              >
+                {{ service.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="serviceTypeAr">Service Type (Arabic)</label>
+          <input
+            type="text"
+            id="serviceTypeAr"
+            [(ngModel)]="newImage.serviceTypeAr"
+            name="serviceTypeAr"
+            placeholder="Service type in Arabic"
+            class="form-input"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="images">Select Images *</label>
+          <div class="file-upload-area">
+            <input
+              type="file"
+              id="images"
+              (change)="onFileSelected($event)"
+              multiple
+              accept="image/*"
+              class="file-input"
+            />
+            <div class="file-upload-content">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Click to select images or drag and drop</p>
+              <span class="file-info" *ngIf="selectedFiles">
+                {{ selectedFiles.length }} file(s) selected
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Progress -->
+        <div class="upload-progress" *ngIf="isUploading">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+          </div>
+          <span class="progress-text">{{ uploadProgress }}% uploaded</span>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="cancelForm()">
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="upload-submit-btn"
+            [disabled]="isUploading"
+          >
+            <span *ngIf="!isUploading">Upload Images</span>
+            <span *ngIf="isUploading">Uploading...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

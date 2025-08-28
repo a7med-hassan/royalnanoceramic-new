@@ -136,23 +136,18 @@
     }
 
     &.premium {
-      border-color: rgba(255, 215, 0, 0.8);
-      box-shadow: 0 15px 40px rgba(255, 215, 0, 0.15);
+      // Remove premium-specific styling to make all cards uniform
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 
       &:hover {
-        box-shadow: 0 35px 90px rgba(255, 215, 0, 0.35);
-        border-color: rgba(255, 215, 0, 1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        border-color: rgba(255, 255, 255, 0.3);
       }
 
+      // Remove the yellow top border
       &::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #e6c200, #b8860b, #e6c200);
-        z-index: 3;
+        display: none;
       }
     }
 

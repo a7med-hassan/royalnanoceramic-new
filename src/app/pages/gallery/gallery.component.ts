@@ -1,8 +1,16 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  HostListener,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TranslationService } from '../../shared/services/translation.service';
+import { Swiper } from 'swiper';
+import { Navigation, Autoplay } from 'swiper/modules';
 
 interface GalleryImage {
   src: string;
@@ -12,6 +20,9 @@ interface GalleryImage {
   protectionInfo: string;
   protectionType: string;
   features: string[];
+  category: string;
+  serviceType?: string;
+  serviceTypeAr?: string;
 }
 
 @Component({
@@ -21,7 +32,7 @@ interface GalleryImage {
   templateUrl: './gallery.component.html',
   styleUrls: ['./gallery.component.scss'],
 })
-export class GalleryComponent implements OnInit, OnDestroy {
+export class GalleryComponent implements OnInit, OnDestroy, AfterViewInit {
   private destroy$ = new Subject<void>();
   currentLang = 'ar';
   isRtl = true;
@@ -30,6 +41,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
   currentImageIndex = 0;
   imageLoading = false;
   imageError = false;
+
+  // New properties for the redesigned gallery
+  filteredImages: GalleryImage[] = [];
+  featuredImages: GalleryImage[] = [];
+  private swiper: Swiper | null = null;
 
   galleryImages: GalleryImage[] = [
     {
@@ -46,6 +62,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'لمعان طويل المدى',
         'حماية من الأشعة فوق البنفسجية',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
 
     {
@@ -61,6 +80,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'مقاومة للاتساخ',
         'رائحة منعشة',
       ],
+      category: 'interior',
+      serviceType: 'Paint Protection Film',
+      serviceTypeAr: 'فيلم حماية الطلاء',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-10-28.jpg',
@@ -75,6 +97,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'معالجة الخدوش',
         'حماية إضافية',
       ],
+      category: 'ceramic',
+      serviceType: 'Graphene Coating',
+      serviceTypeAr: 'حماية الجرافين',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-12-01.jpg',
@@ -89,6 +114,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'سهولة التركيب',
         'حماية طويلة المدى',
       ],
+      category: 'protection',
+      serviceType: 'Paint Protection Film',
+      serviceTypeAr: 'فيلم حماية الطلاء',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-16-20.jpg',
@@ -103,6 +131,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'رؤية أوضح',
         'سهولة التنظيف',
       ],
+      category: 'protection',
+      serviceType: 'Glass Ceramic Coating',
+      serviceTypeAr: 'حماية زجاج سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-17-00.jpg',
@@ -118,6 +149,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'لمعان دائم',
         'حماية من المواد الكيميائية',
       ],
+      category: 'wheels',
+      serviceType: 'Wheel Ceramic Coating',
+      serviceTypeAr: 'حماية عجلات سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-17-20.jpg',
@@ -133,6 +167,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'تبريد أفضل',
         'حماية من التآكل',
       ],
+      category: 'protection',
+      serviceType: 'Paint Protection Film',
+      serviceTypeAr: 'فيلم حماية الطلاء',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-17-28.jpg',
@@ -147,20 +184,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'لمعان طبيعي',
         'حماية من الأشعة',
       ],
-    },
-    {
-      src: 'assets/images/gallery/photo_2025-08-14_11-18-00.jpg',
-      alt: 'معالجة سيراميك للكروم',
-      title: 'معالجة سيراميك للكروم',
-      description: 'حماية متقدمة للكروم من الصدأ والتأكسد',
-      protectionInfo: 'معالجة سيراميك خاصة للكروم تحميه من الصدأ والتأكسد',
-      protectionType: 'حماية كروم',
-      features: [
-        'منع الصدأ',
-        'لمعان دائم',
-        'حماية من التأكسد',
-        'سهولة الصيانة',
-      ],
+      category: 'interior',
+      serviceType: 'Paint Protection Film',
+      serviceTypeAr: 'فيلم حماية الطلاء',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-18-21.jpg',
@@ -175,6 +201,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'لمعان طبيعي',
         'مقاومة للاتساخ',
       ],
+      category: 'interior',
+      serviceType: 'Paint Protection Film',
+      serviceTypeAr: 'فيلم حماية الطلاء',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-18-57.jpg',
@@ -189,6 +218,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'لمعان طبيعي',
         'حماية طويلة المدى',
       ],
+      category: 'interior',
+      serviceType: 'Paint Protection Film',
+      serviceTypeAr: 'فيلم حماية الطلاء',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-19-05.jpg',
@@ -199,6 +231,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'حماية متكاملة لجميع أجزاء السيارة باستخدام تقنية النانو سيراميك',
       protectionType: 'حماية شاملة',
       features: ['حماية متكاملة', 'تقنية متطورة', 'نتائج مضمونة', 'ضمان شامل'],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-19-08.jpg',
@@ -213,6 +248,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'لمعان طبيعي',
         'حماية طويلة المدى',
       ],
+      category: 'protection',
+      serviceType: 'Paint Protection Film',
+      serviceTypeAr: 'فيلم حماية الطلاء',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-19-54.jpg',
@@ -227,6 +265,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'حماية من الخدوش',
         'سهولة التنظيف',
       ],
+      category: 'protection',
+      serviceType: 'Paint Protection Film',
+      serviceTypeAr: 'فيلم حماية الطلاء',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-20-44.jpg',
@@ -242,6 +283,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'سهولة التنظيف',
         'حماية من المواد الكيميائية',
       ],
+      category: 'wheels',
+      serviceType: 'Wheel Ceramic Coating',
+      serviceTypeAr: 'حماية عجلات سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-14_11-24-31.jpg',
@@ -252,6 +296,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'المرحلة النهائية من معالجة السيراميك لضمان الحماية الكاملة',
       protectionType: 'حماية نهائية',
       features: ['حماية كاملة', 'لمعان نهائي', 'ضمان شامل', 'نتائج مثالية'],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     // الصور الجديدة من 18 أغسطس
     {
@@ -268,6 +315,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'لمعان استثنائي',
         'ضمان طويل المدى',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-08-50.jpg',
@@ -282,6 +332,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'لمعان طبيعي',
         'حماية طويلة المدى',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-08-51.jpg',
@@ -296,6 +349,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'سهولة التنظيف',
         'حماية شاملة',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-08-52.jpg',
@@ -310,6 +366,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'لمعان مشرق',
         'حماية طويلة المدى',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-08-54.jpg',
@@ -319,6 +378,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
       protectionInfo: 'حماية فعالة للطلاء الأزرق من التلف والعوامل الجوية',
       protectionType: 'حماية طلاء أزرق',
       features: ['حماية من التلف', 'لمعان طبيعي', 'حماية شاملة', 'ضمان شامل'],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-09-10.jpg',
@@ -333,6 +395,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'سهولة التنظيف',
         'حماية شاملة',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-09-13.jpg',
@@ -347,6 +412,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'لمعان طبيعي',
         'حماية طويلة المدى',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-09-16.jpg',
@@ -356,6 +424,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
       protectionInfo: 'حماية فعالة للطلاء الأصفر من التلف والعوامل الجوية',
       protectionType: 'حماية طلاء أصفر',
       features: ['حماية من التلف', 'لمعان مشرق', 'حماية شاملة', 'ضمان شامل'],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-09-22.jpg',
@@ -370,6 +441,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'لمعان مشرق',
         'حماية طويلة المدى',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-09-30.jpg',
@@ -379,6 +453,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
       protectionInfo: 'حماية فعالة للطلاء البنفسجي من التلف والعوامل الجوية',
       protectionType: 'حماية طلاء بنفسجي',
       features: ['حماية من التلف', 'لمعان طبيعي', 'حماية شاملة', 'ضمان شامل'],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-09-32.jpg',
@@ -393,35 +470,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'لمعان طبيعي',
         'حماية طويلة المدى',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
-    {
-      src: 'assets/images/gallery/photo_2025-08-18_11-09-38.jpg',
-      alt: 'معالجة سيراميك للطلاء البني',
-      title: 'حماية خاصة للطلاء البني',
-      description: 'معالجة سيراميك متخصصة للطلاء البني لحمايته من الخدوش',
-      protectionInfo: 'حماية فعالة للطلاء البني من الخدوش والاتساخ',
-      protectionType: 'حماية طلاء بني',
-      features: [
-        'حماية من الخدوش',
-        'لمعان طبيعي',
-        'سهولة التنظيف',
-        'حماية شاملة',
-      ],
-    },
-    {
-      src: 'assets/images/gallery/photo_2025-08-18_11-10-21.jpg',
-      alt: 'معالجة سيراميك للطلاء الفضي',
-      title: 'حماية خاصة للطلاء الفضي',
-      description: 'معالجة سيراميك متخصصة للطلاء الفضي لحمايته من الخدوش',
-      protectionInfo: 'حماية فعالة للطلاء الفضي من الخدوش والاتساخ',
-      protectionType: 'حماية طلاء فضي',
-      features: [
-        'حماية من الخدوش',
-        'لمعان معدني',
-        'سهولة التنظيف',
-        'حماية شاملة',
-      ],
-    },
+
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-10-58.jpg',
       alt: 'معالجة سيراميك للطلاء الذهبي',
@@ -435,6 +488,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'سهولة التنظيف',
         'حماية شاملة',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-11-07.jpg',
@@ -444,16 +500,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
       protectionInfo: 'حماية فعالة للطلاء النحاسي من التأكسد والعوامل الجوية',
       protectionType: 'حماية طلاء نحاسي',
       features: ['منع التأكسد', 'لمعان نحاسي', 'حماية شاملة', 'ضمان شامل'],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
-    {
-      src: 'assets/images/gallery/photo_2025-08-18_11-11-16.jpg',
-      alt: 'معالجة سيراميك للطلاء البرونزي',
-      title: 'حماية خاصة للطلاء البرونزي',
-      description: 'معالجة سيراميك متخصصة للطلاء البرونزي لحمايته من التأكسد',
-      protectionInfo: 'حماية فعالة للطلاء البرونزي من التأكسد والعوامل الجوية',
-      protectionType: 'حماية طلاء برونزي',
-      features: ['منع التأكسد', 'لمعان برونزي', 'حماية شاملة', 'ضمان شامل'],
-    },
+
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-11-18.jpg',
       alt: 'معالجة سيراميك للطلاء البلاتيني',
@@ -467,6 +518,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'سهولة التنظيف',
         'حماية شاملة',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-11-25.jpg',
@@ -476,6 +530,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
       protectionInfo: 'حماية فعالة للطلاء الكرومي من الصدأ والتأكسد',
       protectionType: 'حماية طلاء كرومي',
       features: ['منع الصدأ', 'لمعان كرومي', 'حماية شاملة', 'ضمان شامل'],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-11-46.jpg',
@@ -490,6 +547,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'سهولة التنظيف',
         'حماية شاملة',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-12-10.jpg',
@@ -504,6 +564,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'سهولة التنظيف',
         'حماية شاملة',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-12-20.jpg',
@@ -518,6 +581,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'سهولة التنظيف',
         'حماية شاملة',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-12-41.jpg',
@@ -532,6 +598,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'سهولة التنظيف',
         'حماية شاملة',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-12-48.jpg',
@@ -546,6 +615,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'سهولة التنظيف',
         'حماية شاملة',
       ],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
     {
       src: 'assets/images/gallery/photo_2025-08-18_11-12-59.jpg',
@@ -560,31 +632,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         'سهولة التنظيف',
         'حماية شاملة',
       ],
-    },
-    {
-      src: 'assets/images/gallery/photo_2025-08-18_11-13-03.jpg',
-      alt: 'معالجة سيراميك للطلاء البودري',
-      title: 'حماية خاصة للطلاء البودري',
-      description: 'معالجة سيراميك متخصصة للطلاء البودري لحمايته من الخدوش',
-      protectionInfo: 'حماية فعالة للطلاء البودري من الخدوش والاتساخ',
-      protectionType: 'حماية طلاء بودري',
-      features: [
-        'حماية من الخدوش',
-        'لمعان بودري',
-        'سهولة التنظيف',
-        'حماية شاملة',
-      ],
-    },
-    {
-      src: 'assets/images/gallery/photo_2025-08-18_11-13-22.jpg',
-      alt: 'معالجة سيراميك نهائية شاملة',
-      title: 'معالجة سيراميك نهائية شاملة',
-      description:
-        'المرحلة النهائية من معالجة السيراميك الشاملة لجميع أنواع الطلاء',
-      protectionInfo:
-        'حماية نهائية شاملة لجميع أنواع الطلاء مع ضمان الحماية الكاملة',
-      protectionType: 'حماية نهائية شاملة',
-      features: ['حماية كاملة', 'لمعان نهائي', 'ضمان شامل', 'نتائج مثالية'],
+      category: 'ceramic',
+      serviceType: 'Nano Ceramic Coating',
+      serviceTypeAr: 'حماية نانو سيراميك',
     },
   ];
 
@@ -594,12 +644,80 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
   constructor(public translationService: TranslationService) {}
 
+  private loadGalleryImages(): void {
+    const savedImages = localStorage.getItem('galleryImages');
+    if (savedImages) {
+      const parsedImages = JSON.parse(savedImages);
+      // Filter only active images and add them to the existing gallery
+      const adminImages = parsedImages.filter(
+        (img: any) => img.isActive !== false
+      );
+      // Add admin images to the existing gallery images
+      this.galleryImages = [...this.galleryImages, ...adminImages];
+    }
+    // If no saved images, use the default array that's already defined
+  }
+
   ngOnInit(): void {
     // Get initial language and RTL settings
     this.currentLang = this.translationService.getCurrentLanguage();
     this.isRtl = this.translationService.isRtl$;
 
-    // Language initialized
+    // Load gallery images from localStorage
+    this.loadGalleryImages();
+
+    // Initialize gallery
+    this.initializeGallery();
+  }
+
+  initializeGallery(): void {
+    // Set featured images (first 8 images)
+    this.featuredImages = this.galleryImages.slice(0, 8);
+
+    // Initialize filtered images
+    this.filteredImages = [...this.galleryImages];
+  }
+
+  ngAfterViewInit(): void {
+    // Initialize Swiper after view is initialized
+    this.initializeSwiper();
+  }
+
+  private initializeSwiper(): void {
+    this.swiper = new Swiper('.featured-swiper', {
+      modules: [Autoplay],
+      slidesPerView: 1.2,
+      centeredSlides: true,
+      spaceBetween: 20,
+      loop: true,
+      speed: 2000,
+      effect: 'slide',
+      grabCursor: true,
+      autoplay: {
+        delay: 4000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      },
+      breakpoints: {
+        768: {
+          slidesPerView: 1.3,
+          spaceBetween: 30,
+        },
+        1024: {
+          slidesPerView: 1.4,
+          spaceBetween: 40,
+        },
+        1200: {
+          slidesPerView: 1.5,
+          spaceBetween: 50,
+        },
+      },
+    });
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    this.onKeyDown(event);
   }
 
   refreshGalleryImages(): void {
@@ -619,6 +737,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'لمعان طويل المدى',
           'حماية من الأشعة فوق البنفسجية',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-10-16.jpg',
@@ -628,6 +747,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
         protectionInfo: 'حماية شاملة للطلاء مع ضمان الجودة والكفاءة',
         protectionType: 'سيراميك احترافي',
         features: ['حماية شاملة', 'جودة عالية', 'ضمان شامل', 'نتائج مضمونة'],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-10-20.jpg',
@@ -642,6 +762,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'مقاومة للاتساخ',
           'رائحة منعشة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-10-28.jpg',
@@ -656,6 +777,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'معالجة الخدوش',
           'حماية إضافية',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-12-01.jpg',
@@ -670,6 +792,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التركيب',
           'حماية طويلة المدى',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-16-20.jpg',
@@ -684,6 +807,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'رؤية أوضح',
           'سهولة التنظيف',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-17-00.jpg',
@@ -699,6 +823,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'لمعان دائم',
           'حماية من المواد الكيميائية',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-17-20.jpg',
@@ -714,6 +839,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'تبريد أفضل',
           'حماية من التآكل',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-17-28.jpg',
@@ -729,21 +855,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'لمعان طبيعي',
           'حماية من الأشعة',
         ],
+        category: 'ceramic',
       },
-      {
-        src: 'assets/images/gallery/photo_2025-08-14_11-18-00.jpg',
-        alt: 'معالجة سيراميك للكروم',
-        title: 'معالجة سيراميك للكروم',
-        description: 'حماية متقدمة للكروم من الصدأ والتأكسد',
-        protectionInfo: 'معالجة سيراميك خاصة للكروم تحميه من الصدأ والتأكسد',
-        protectionType: 'حماية كروم',
-        features: [
-          'منع الصدأ',
-          'لمعان دائم',
-          'حماية من التأكسد',
-          'سهولة الصيانة',
-        ],
-      },
+
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-18-21.jpg',
         alt: 'حماية سيراميك للجلد',
@@ -757,6 +871,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'لمعان طبيعي',
           'مقاومة للاتساخ',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-18-57.jpg',
@@ -771,6 +886,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'لمعان طبيعي',
           'حماية طويلة المدى',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-19-05.jpg',
@@ -786,6 +902,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'نتائج مضمونة',
           'ضمان شامل',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-19-08.jpg',
@@ -800,6 +917,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'لمعان طبيعي',
           'حماية طويلة المدى',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-19-54.jpg',
@@ -814,6 +932,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'حماية من الخدوش',
           'سهولة التنظيف',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-20-44.jpg',
@@ -829,6 +948,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية من المواد الكيميائية',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-14_11-24-31.jpg',
@@ -839,6 +959,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'المرحلة النهائية من معالجة السيراميك لضمان الحماية الكاملة',
         protectionType: 'حماية نهائية',
         features: ['حماية كاملة', 'لمعان نهائي', 'ضمان شامل', 'نتائج مثالية'],
+        category: 'ceramic',
       },
       // الصور الجديدة من 18 أغسطس
       {
@@ -855,6 +976,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'لمعان استثنائي',
           'ضمان طويل المدى',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-08-50.jpg',
@@ -869,6 +991,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'لمعان طبيعي',
           'حماية طويلة المدى',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-08-51.jpg',
@@ -883,6 +1006,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية شاملة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-08-52.jpg',
@@ -897,6 +1021,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'لمعان مشرق',
           'حماية طويلة المدى',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-08-54.jpg',
@@ -906,6 +1031,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
         protectionInfo: 'حماية فعالة للطلاء الأزرق من التلف والعوامل الجوية',
         protectionType: 'حماية طلاء أزرق',
         features: ['حماية من التلف', 'لمعان طبيعي', 'حماية شاملة', 'ضمان شامل'],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-09-10.jpg',
@@ -920,6 +1046,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية شاملة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-09-13.jpg',
@@ -934,6 +1061,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'لمعان طبيعي',
           'حماية طويلة المدى',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-09-16.jpg',
@@ -943,6 +1071,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
         protectionInfo: 'حماية فعالة للطلاء الأصفر من التلف والعوامل الجوية',
         protectionType: 'حماية طلاء أصفر',
         features: ['حماية من التلف', 'لمعان مشرق', 'حماية شاملة', 'ضمان شامل'],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-09-22.jpg',
@@ -959,6 +1088,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'لمعان مشرق',
           'حماية طويلة المدى',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-09-30.jpg',
@@ -968,6 +1098,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
         protectionInfo: 'حماية فعالة للطلاء البنفسجي من التلف والعوامل الجوية',
         protectionType: 'حماية طلاء بنفسجي',
         features: ['حماية من التلف', 'لمعان طبيعي', 'حماية شاملة', 'ضمان شامل'],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-09-32.jpg',
@@ -982,21 +1113,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'لمعان طبيعي',
           'حماية طويلة المدى',
         ],
+        category: 'ceramic',
       },
-      {
-        src: 'assets/images/gallery/photo_2025-08-18_11-09-38.jpg',
-        alt: 'معالجة سيراميك للطلاء البني',
-        title: 'حماية خاصة للطلاء البني',
-        description: 'معالجة سيراميك متخصصة للطلاء البني لحمايته من الخدوش',
-        protectionInfo: 'حماية فعالة للطلاء البني من الخدوش والاتساخ',
-        protectionType: 'حماية طلاء بني',
-        features: [
-          'حماية من الخدوش',
-          'لمعان طبيعي',
-          'سهولة التنظيف',
-          'حماية شاملة',
-        ],
-      },
+
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-10-21.jpg',
         alt: 'معالجة سيراميك للطلاء الفضي',
@@ -1010,6 +1129,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية شاملة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-10-58.jpg',
@@ -1024,6 +1144,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية شاملة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-11-07.jpg',
@@ -1033,17 +1154,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
         protectionInfo: 'حماية فعالة للطلاء النحاسي من التأكسد والعوامل الجوية',
         protectionType: 'حماية طلاء نحاسي',
         features: ['منع التأكسد', 'لمعان نحاسي', 'حماية شاملة', 'ضمان شامل'],
+        category: 'ceramic',
       },
-      {
-        src: 'assets/images/gallery/photo_2025-08-18_11-11-16.jpg',
-        alt: 'معالجة سيراميك للطلاء البرونزي',
-        title: 'حماية خاصة للطلاء البرونزي',
-        description: 'معالجة سيراميك متخصصة للطلاء البرونزي لحمايته من التأكسد',
-        protectionInfo:
-          'حماية فعالة للطلاء البرونزي من التأكسد والعوامل الجوية',
-        protectionType: 'حماية طلاء برونزي',
-        features: ['منع التأكسد', 'لمعان برونزي', 'حماية شاملة', 'ضمان شامل'],
-      },
+
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-11-18.jpg',
         alt: 'معالجة سيراميك للطلاء البلاتيني',
@@ -1057,6 +1170,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية شاملة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-11-25.jpg',
@@ -1066,6 +1180,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
         protectionInfo: 'حماية فعالة للطلاء الكرومي من الصدأ والتأكسد',
         protectionType: 'حماية طلاء كرومي',
         features: ['منع الصدأ', 'لمعان كرومي', 'حماية شاملة', 'ضمان شامل'],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-11-46.jpg',
@@ -1080,6 +1195,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية شاملة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-12-10.jpg',
@@ -1094,6 +1210,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية شاملة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-12-20.jpg',
@@ -1108,6 +1225,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية شاملة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-12-41.jpg',
@@ -1122,6 +1240,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية شاملة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-12-48.jpg',
@@ -1137,6 +1256,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية شاملة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-12-59.jpg',
@@ -1151,6 +1271,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية شاملة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-13-03.jpg',
@@ -1165,6 +1286,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'سهولة التنظيف',
           'حماية شاملة',
         ],
+        category: 'ceramic',
       },
       {
         src: 'assets/images/gallery/photo_2025-08-18_11-13-22.jpg',
@@ -1176,13 +1298,26 @@ export class GalleryComponent implements OnInit, OnDestroy {
           'حماية نهائية شاملة لجميع أنواع الطلاء مع ضمان الحماية الكاملة',
         protectionType: 'حماية نهائية شاملة',
         features: ['حماية كاملة', 'لمعان نهائي', 'ضمان شامل', 'نتائج مثالية'],
+        category: 'ceramic',
       },
     ];
   }
 
   ngOnDestroy(): void {
+    if (this.swiper) {
+      this.swiper.destroy(true, true);
+    }
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // Navigate to contact form with service information
+  navigateToContact(serviceType: string): void {
+    // Create URL with service parameter
+    const contactUrl = `/contact?service=${encodeURIComponent(serviceType)}`;
+
+    // Navigate to contact page
+    window.location.href = contactUrl;
   }
 
   openLightbox(index: number): void {

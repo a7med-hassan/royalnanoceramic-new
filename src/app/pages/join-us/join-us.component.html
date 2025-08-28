@@ -199,6 +199,32 @@
                 translationService.getTranslation('join.form.cv_placeholder')
               "
             />
+            <!-- File info display -->
+            <div class="file-info" *ngIf="joinForm.value.cvFile">
+              <i class="fas fa-file-alt"></i>
+              <span class="file-name">{{ joinForm.value.cvFile.name }}</span>
+              <span class="file-size"
+                >({{
+                  (joinForm.value.cvFile.size / 1024 / 1024).toFixed(2)
+                }}
+                MB)</span
+              >
+              <button
+                type="button"
+                class="remove-file-btn"
+                (click)="removeFile()"
+                title="إزالة الملف"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <!-- File requirements -->
+            <div class="file-requirements">
+              <small>
+                <i class="fas fa-info-circle"></i>
+                الملفات المسموحة: PDF, DOC, DOCX - الحد الأقصى: 5 ميجابايت
+              </small>
+            </div>
           </div>
 
           <div class="form-actions">
@@ -212,6 +238,16 @@
                 translationService.getTranslation("join.form.submit")
               }}</span>
               <span *ngIf="isSubmitting">جاري الإرسال...</span>
+            </button>
+
+            <button
+              type="button"
+              class="reset-btn"
+              (click)="resetForm()"
+              [disabled]="isSubmitting"
+            >
+              <i class="fas fa-redo"></i>
+              <span>إعادة تعيين</span>
             </button>
           </div>
 

@@ -8,6 +8,7 @@ import {
   AbstractControl,
 } from '@angular/forms';
 import { ApiService, ContactFormData } from '../../shared/services/api.service';
+import { TranslationService } from '../../shared/services/translation.service';
 
 @Component({
   selector: 'app-contact-form',
@@ -23,7 +24,11 @@ export class ContactFormComponent implements OnInit {
   submitError = '';
   errorMessage = '';
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    public translationService: TranslationService
+  ) {
     this.contactForm = this.fb.group({
       fullName: [
         '',
@@ -107,22 +112,30 @@ export class ContactFormComponent implements OnInit {
     const control = this.contactForm.get(controlName);
     if (control?.errors && control.touched) {
       if (control.errors['required']) {
-        return 'هذا الحقل مطلوب';
+        return this.translationService.getTranslation('common.field_required');
       }
       if (control.errors['minlength']) {
-        return `يجب أن يكون الطول على الأقل ${control.errors['minlength'].requiredLength} أحرف`;
+        return this.translationService
+          .getTranslation('common.min_length_error')
+          .replace('{0}', control.errors['minlength'].requiredLength);
       }
       if (control.errors['maxlength']) {
-        return `يجب أن لا يتجاوز الطول ${control.errors['maxlength'].requiredLength} حرف`;
+        return this.translationService
+          .getTranslation('common.max_length_error')
+          .replace('{0}', control.errors['maxlength'].requiredLength);
       }
       if (control.errors['pattern']) {
         if (controlName === 'fullName') {
-          return 'يجب أن يحتوي الاسم على أحرف عربية أو إنجليزية فقط';
+          return this.translationService.getTranslation(
+            'common.name_format_error'
+          );
         }
         if (controlName === 'phoneNumber') {
-          return 'صيغة رقم الهاتف غير صحيحة - استخدم رقم مصري صحيح';
+          return this.translationService.getTranslation(
+            'common.phone_format_error'
+          );
         }
-        return 'صيغة غير صحيحة';
+        return this.translationService.getTranslation('common.invalid_format');
       }
     }
     return '';
@@ -155,15 +168,17 @@ export class ContactFormComponent implements OnInit {
       return error.message;
     }
     if (error.status === 0) {
-      return 'لا يمكن الاتصال بالخادم - تحقق من الاتصال بالإنترنت';
+      return this.translationService.getTranslation(
+        'common.server_connection_error'
+      );
     }
     if (error.status === 400) {
-      return 'بيانات النموذج غير صحيحة';
+      return this.translationService.getTranslation('common.invalid_form_data');
     }
     if (error.status === 500) {
-      return 'خطأ في الخادم - يرجى المحاولة لاحقاً';
+      return this.translationService.getTranslation('common.server_error');
     }
-    return 'حدث خطأ أثناء إرسال النموذج';
+    return this.translationService.getTranslation('common.general_error');
   }
 
   private showSuccessMessage(): void {

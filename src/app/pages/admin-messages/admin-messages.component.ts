@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AdminMessagesService } from '../../shared/services/admin-messages.service';
 
 @Component({
   selector: 'app-admin-messages',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './admin-messages.component.html',
   styleUrls: ['./admin-messages.component.scss'],
 })
@@ -28,11 +29,66 @@ export class AdminMessagesComponent implements OnInit {
     join: 'loading',
   };
 
+  // Selection tracking
+  selectedContactMessages = new Set<number>();
+  selectedJoinMessages = new Set<number>();
+
+  // Deleted messages tracking (local storage)
+  deletedContactMessages = new Set<string>();
+  deletedJoinMessages = new Set<string>();
+
   constructor(private adminMessagesService: AdminMessagesService) {}
+
+  private loadDataFromLocalStorage(): void {
+    // Load contact messages from localStorage
+    const savedContactMessages = localStorage.getItem('contactMessages');
+    if (savedContactMessages) {
+      this.contactMessages = JSON.parse(savedContactMessages);
+    }
+
+    // Load join messages from localStorage
+    const savedJoinMessages = localStorage.getItem('joinMessages');
+    if (savedJoinMessages) {
+      this.joinMessages = JSON.parse(savedJoinMessages);
+    }
+
+    // Load deleted messages tracking
+    const savedDeletedContact = localStorage.getItem('deletedContactMessages');
+    if (savedDeletedContact) {
+      this.deletedContactMessages = new Set(JSON.parse(savedDeletedContact));
+    }
+
+    const savedDeletedJoin = localStorage.getItem('deletedJoinMessages');
+    if (savedDeletedJoin) {
+      this.deletedJoinMessages = new Set(JSON.parse(savedDeletedJoin));
+    }
+  }
+
+  private saveDataToLocalStorage(): void {
+    // Save contact messages to localStorage
+    localStorage.setItem(
+      'contactMessages',
+      JSON.stringify(this.contactMessages)
+    );
+
+    // Save join messages to localStorage
+    localStorage.setItem('joinMessages', JSON.stringify(this.joinMessages));
+
+    // Save deleted messages tracking
+    localStorage.setItem(
+      'deletedContactMessages',
+      JSON.stringify(Array.from(this.deletedContactMessages))
+    );
+    localStorage.setItem(
+      'deletedJoinMessages',
+      JSON.stringify(Array.from(this.deletedJoinMessages))
+    );
+  }
 
   ngOnInit(): void {
     // Load data from API only
     this.loadDataFromAPI();
+    this.loadDataFromLocalStorage();
   }
 
   private loadDataFromAPI(): void {
@@ -52,12 +108,32 @@ export class AdminMessagesComponent implements OnInit {
         console.log('📊 Is array:', Array.isArray(messages));
 
         if (messages && Array.isArray(messages) && messages.length > 0) {
-          this.contactMessages = messages;
+          // Debug: Log first message structure
+          console.log('🔍 First contact message structure:', messages[0]);
+          console.log(
+            '🔍 First contact message keys:',
+            Object.keys(messages[0])
+          );
+
+          // Filter out deleted messages
+          const filteredMessages = messages.filter((message) => {
+            const messageId = this.getMessageId(message);
+            return !this.deletedContactMessages.has(messageId);
+          });
+
+          console.log(
+            `🔍 Original messages: ${messages.length}, Filtered: ${filteredMessages.length}`
+          );
+
+          this.contactMessages = filteredMessages;
           this.apiStatus.contact = 'success';
           console.log(
             '✅ Contact messages loaded successfully:',
             this.contactMessages
           );
+
+          // Save to localStorage
+          this.saveDataToLocalStorage();
         } else {
           this.contactMessages = [];
           this.apiStatus.contact = 'success';
@@ -95,12 +171,29 @@ export class AdminMessagesComponent implements OnInit {
         console.log('📊 Is array:', Array.isArray(messages));
 
         if (messages && Array.isArray(messages) && messages.length > 0) {
-          this.joinMessages = messages;
+          // Debug: Log first message structure
+          console.log('🔍 First join message structure:', messages[0]);
+          console.log('🔍 First join message keys:', Object.keys(messages[0]));
+
+          // Filter out deleted messages
+          const filteredMessages = messages.filter((message) => {
+            const messageId = this.getMessageId(message);
+            return !this.deletedJoinMessages.has(messageId);
+          });
+
+          console.log(
+            `🔍 Original join messages: ${messages.length}, Filtered: ${filteredMessages.length}`
+          );
+
+          this.joinMessages = filteredMessages;
           this.apiStatus.join = 'success';
           console.log(
             '✅ Join messages loaded successfully:',
             this.joinMessages
           );
+
+          // Save to localStorage
+          this.saveDataToLocalStorage();
         } else {
           this.joinMessages = [];
           this.apiStatus.join = 'success';
@@ -137,208 +230,134 @@ export class AdminMessagesComponent implements OnInit {
     let csvContent = '';
 
     if (type === 'contact') {
-      // Contact messages CSV
+      // Contact messages CSV with Arabic headers
       csvContent =
         'الاسم,رقم الهاتف,نوع السيارة,موديل السيارة,ملاحظات إضافية,التاريخ\n';
       messages.forEach((message) => {
-        csvContent += `"${message.fullName || ''}","${
-          message.phoneNumber || ''
-        }","${message.carType || ''}","${message.carModel || ''}","${
-          message.notes || ''
-        }","${message.createdAt || ''}"\n`;
+        // Clean and format data for CSV
+        const fullName = this.cleanCSVField(message.fullName || 'غير محدد');
+        const phoneNumber = this.cleanCSVField(
+          message.phoneNumber || 'غير محدد'
+        );
+        const carType = this.cleanCSVField(message.carType || 'غير محدد');
+        const carModel = this.cleanCSVField(message.carModel || 'غير محدد');
+        const notes = this.cleanCSVField(message.notes || 'لا توجد ملاحظات');
+        const createdAt = this.formatDate(message.createdAt);
+
+        csvContent += `"${fullName}","${phoneNumber}","${carType}","${carModel}","${notes}","${createdAt}"\n`;
       });
     } else {
-      // Join messages CSV
+      // Join messages CSV with Arabic headers
       csvContent =
         'الاسم,رقم الهاتف,البريد الإلكتروني,المنصب المطلوب,الخبرة السابقة,الرسالة,التاريخ\n';
       messages.forEach((message) => {
-        csvContent += `"${message.fullName || ''}","${
-          message.phoneNumber || ''
-        }","${message.email || ''}","${message.position || ''}","${
-          message.experience || ''
-        }","${message.message || ''}","${message.createdAt || ''}"\n`;
+        // Clean and format data for CSV
+        const fullName = this.cleanCSVField(message.fullName || 'غير محدد');
+        const phoneNumber = this.cleanCSVField(
+          message.phoneNumber || 'غير محدد'
+        );
+        const email = this.cleanCSVField(message.email || 'غير محدد');
+        const position = this.cleanCSVField(message.position || 'غير محدد');
+        const experience = this.cleanCSVField(message.experience || 'غير محدد');
+        const messageText = this.cleanCSVField(
+          message.message || 'لا توجد رسالة'
+        );
+        const createdAt = this.formatDate(message.createdAt);
+
+        csvContent += `"${fullName}","${phoneNumber}","${email}","${position}","${experience}","${messageText}","${createdAt}"\n`;
       });
     }
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    // Add BOM (Byte Order Mark) for proper Arabic support in Excel
+    const BOM = '\uFEFF';
+    const csvWithBOM = BOM + csvContent;
+
+    // Create blob with proper encoding
+    const blob = new Blob([csvWithBOM], {
+      type: 'text/csv;charset=utf-8;',
+    });
+
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
     link.setAttribute(
       'download',
-      `${type === 'contact' ? 'contact' : 'join'}_messages.csv`
+      `${
+        type === 'contact' ? 'رسائل_الاتصال' : 'رسائل_الانضمام'
+      }_${this.getCurrentDate()}.csv`
     );
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    // Clean up
+    URL.revokeObjectURL(url);
+
+    console.log(`✅ CSV exported successfully: ${type} messages`);
   }
 
-  // Add test API button
-  testAPI(): void {
-    console.log('🧪 Testing API connection...');
+  /**
+   * Clean CSV field to prevent issues with quotes and commas
+   */
+  private cleanCSVField(field: string): string {
+    if (!field) return '';
 
-    // Test health check
-    this.adminMessagesService.healthCheck().subscribe({
-      next: (response) => {
-        console.log('✅ Health check successful:', response);
-        alert(
-          '✅ API يعمل بشكل صحيح!\n\nالبيانات: ' +
-            JSON.stringify(response, null, 2)
-        );
-      },
-      error: (error) => {
-        console.error('❌ Health check failed:', error);
-        alert(
-          `❌ API لا يعمل!\n\nالخطأ: ${error.message}\n\nالحالة: ${error.status}`
-        );
-      },
-    });
+    // Remove quotes and escape them properly
+    let cleaned = field.toString().replace(/"/g, '""');
+
+    // Remove newlines and tabs
+    cleaned = cleaned.replace(/[\r\n\t]/g, ' ');
+
+    // Trim whitespace
+    cleaned = cleaned.trim();
+
+    return cleaned;
   }
 
-  // Test direct connection to backend
-  testDirectConnection(): void {
-    console.log('🧪 Testing direct connection to backend...');
+  /**
+   * Format date for CSV export
+   */
+  private formatDate(dateString: string | Date): string {
+    if (!dateString) return 'غير محدد';
 
-    const backendUrl = 'https://royal-nano-backend.vercel.app';
-    const healthUrl = `${backendUrl}/api/health`;
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'غير محدد';
 
-    console.log('🔗 Testing URL:', healthUrl);
-
-    // Test with fetch API
-    fetch(healthUrl)
-      .then((response) => {
-        console.log('📡 Fetch response:', {
-          ok: response.ok,
-          status: response.status,
-          statusText: response.statusText,
-          headers: response.headers,
-        });
-
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-      })
-      .then((data) => {
-        console.log('✅ Direct connection successful:', data);
-        alert(
-          '✅ الاتصال المباشر يعمل!\n\nالبيانات: ' +
-            JSON.stringify(data, null, 2)
-        );
-      })
-      .catch((error) => {
-        console.error('❌ Direct connection failed:', error);
-        alert(
-          `❌ الاتصال المباشر فشل!\n\nالخطأ: ${error.message}\n\n` +
-            `جرب فتح هذا الرابط في المتصفح:\n${healthUrl}`
-        );
+      // Format as Gregorian (Christian) date in Arabic
+      return date.toLocaleDateString('ar-EG', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        calendar: 'gregory', // Use Gregorian calendar
       });
+    } catch (error) {
+      return 'غير محدد';
+    }
   }
 
-  // Test HttpClient specifically
-  testHttpClient(): void {
-    console.log('🧪 Testing HttpClient connection...');
+  /**
+   * Get current date for filename
+   */
+  private getCurrentDate(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hour = String(now.getHours()).padStart(2, '0');
+    const minute = String(now.getMinutes()).padStart(2, '0');
 
-    // Test through AdminMessagesService
-    this.adminMessagesService.testConnection().subscribe({
-      next: (response) => {
-        console.log('✅ HttpClient test successful:', response);
-        alert(
-          '✅ HttpClient يعمل بشكل صحيح!\n\nالاستجابة: ' +
-            JSON.stringify(response, null, 2)
-        );
-      },
-      error: (error) => {
-        console.error('❌ HttpClient test failed:', error);
-        alert(
-          `❌ HttpClient لا يعمل!\n\nالخطأ: ${error.message}\n\n` +
-            `الحالة: ${error.status || 'غير محدد'}`
-        );
-      },
-    });
-  }
-
-  // Test form submission
-  testFormSubmission(): void {
-    console.log('🧪 Testing form submission...');
-
-    // Test contact form
-    const testContactData = {
-      fullName: 'اختبار API',
-      phoneNumber: '0123456789',
-      carType: 'سيدان',
-      carModel: '2024',
-      notes: 'هذا اختبار للتحقق من عمل API',
-    };
-
-    console.log('📤 Testing contact form with data:', testContactData);
-
-    this.adminMessagesService.submitContactForm(testContactData).subscribe({
-      next: (response) => {
-        console.log('✅ Contact form test successful:', response);
-        alert(
-          '✅ نموذج الاتصال يعمل!\n\nالاستجابة: ' +
-            JSON.stringify(response, null, 2)
-        );
-
-        // Refresh data after successful submission
-        setTimeout(() => {
-          this.refreshData();
-        }, 1000);
-      },
-      error: (error) => {
-        console.error('❌ Contact form test failed:', error);
-        alert(
-          `❌ نموذج الاتصال لا يعمل!\n\nالخطأ: ${error.message}\n\nالحالة: ${error.status}`
-        );
-      },
-    });
-  }
-
-  // Test join form submission
-  testJoinFormSubmission(): void {
-    console.log('🧪 Testing join form submission...');
-
-    // Test join form
-    const testJoinData = {
-      fullName: 'اختبار API',
-      phoneNumber: '0123456789',
-      email: 'test@api.com',
-      position: 'مطور',
-      experience: '5 سنوات',
-      message: 'هذا اختبار للتحقق من عمل API',
-    };
-
-    console.log('📤 Testing join form with data:', testJoinData);
-
-    this.adminMessagesService.submitJoinForm(testJoinData).subscribe({
-      next: (response) => {
-        console.log('✅ Join form test successful:', response);
-        alert(
-          '✅ نموذج الانضمام يعمل!\n\nالاستجابة: ' +
-            JSON.stringify(response, null, 2)
-        );
-
-        // Refresh data after successful submission
-        setTimeout(() => {
-          this.refreshData();
-        }, 1000);
-      },
-      error: (error) => {
-        console.error('❌ Join form test failed:', error);
-        alert(
-          `❌ نموذج الانضمام لا يعمل!\n\nالخطأ: ${error.message}\n\nالحالة: ${error.status}`
-        );
-      },
-    });
+    return `${year}-${month}-${day}_${hour}-${minute}`;
   }
 
   // Refresh data manually
   refreshData(): void {
     console.log('🔄 Manually refreshing data...');
     this.loadDataFromAPI();
+    this.loadDataFromLocalStorage();
   }
 
   // Helper methods to check data source
@@ -358,5 +377,310 @@ export class AdminMessagesComponent implements OnInit {
       default:
         return '⏳ جاري التحميل...';
     }
+  }
+
+  /**
+   * Get unique identifier for a message
+   * @param message The message object
+   * @returns A unique string identifier
+   */
+  private getMessageId(message: any): string {
+    if (message && message.id) {
+      return message.id;
+    } else if (message && message._id) {
+      return message._id;
+    } else if (message && message.messageId) {
+      return message.messageId;
+    } else if (message && message.timestamp) {
+      return message.timestamp.toString();
+    } else if (message && message.createdAt) {
+      return message.createdAt.toString();
+    } else if (message && message.phoneNumber && message.fullName) {
+      // Fallback: use combination of phone and name as ID
+      return `${message.phoneNumber}-${message.fullName}`;
+    } else {
+      // Last resort: use JSON string as ID
+      return JSON.stringify(message);
+    }
+  }
+
+  // Selection management methods
+  toggleMessageSelection(type: 'contact' | 'join', index: number): void {
+    const selectedSet =
+      type === 'contact'
+        ? this.selectedContactMessages
+        : this.selectedJoinMessages;
+
+    if (selectedSet.has(index)) {
+      selectedSet.delete(index);
+    } else {
+      selectedSet.add(index);
+    }
+  }
+
+  isMessageSelected(type: 'contact' | 'join', index: number): boolean {
+    const selectedSet =
+      type === 'contact'
+        ? this.selectedContactMessages
+        : this.selectedJoinMessages;
+    return selectedSet.has(index);
+  }
+
+  toggleSelectAll(type: 'contact' | 'join'): void {
+    const selectedSet =
+      type === 'contact'
+        ? this.selectedContactMessages
+        : this.selectedJoinMessages;
+    const messages =
+      type === 'contact' ? this.contactMessages : this.joinMessages;
+
+    if (this.isAllSelected(type)) {
+      selectedSet.clear();
+    } else {
+      for (let i = 0; i < messages.length; i++) {
+        selectedSet.add(i);
+      }
+    }
+  }
+
+  isAllSelected(type: 'contact' | 'join'): boolean {
+    const selectedSet =
+      type === 'contact'
+        ? this.selectedContactMessages
+        : this.selectedJoinMessages;
+    const messages =
+      type === 'contact' ? this.contactMessages : this.joinMessages;
+
+    return messages.length > 0 && selectedSet.size === messages.length;
+  }
+
+  isPartiallySelected(type: 'contact' | 'join'): boolean {
+    const selectedSet =
+      type === 'contact'
+        ? this.selectedContactMessages
+        : this.selectedJoinMessages;
+    const messages =
+      type === 'contact' ? this.contactMessages : this.joinMessages;
+
+    return selectedSet.size > 0 && selectedSet.size < messages.length;
+  }
+
+  getSelectedCount(type: 'contact' | 'join'): number {
+    const selectedSet =
+      type === 'contact'
+        ? this.selectedContactMessages
+        : this.selectedJoinMessages;
+    return selectedSet.size;
+  }
+
+  deleteSelectedMessages(type: 'contact' | 'join'): void {
+    const selectedSet =
+      type === 'contact'
+        ? this.selectedContactMessages
+        : this.selectedJoinMessages;
+    const messages =
+      type === 'contact' ? this.contactMessages : this.joinMessages;
+    const deletedSet =
+      type === 'contact'
+        ? this.deletedContactMessages
+        : this.deletedJoinMessages;
+
+    if (selectedSet.size === 0) {
+      alert('لم يتم تحديد أي رسائل للحذف');
+      return;
+    }
+
+    // Log message structure for debugging
+    console.log(`🔍 Debug: ${type} messages structure:`, messages);
+    console.log(`🔍 Debug: Selected indices:`, Array.from(selectedSet));
+
+    if (messages.length > 0) {
+      console.log(`🔍 Debug: First message structure:`, messages[0]);
+      console.log(`🔍 Debug: Message keys:`, Object.keys(messages[0]));
+    }
+
+    const confirmMessage = `هل أنت متأكد من حذف ${selectedSet.size} رسالة محددة؟\n\nهذا الإجراء لا يمكن التراجع عنه.`;
+
+    if (confirm(confirmMessage)) {
+      // Get selected message IDs or use indices as fallback
+      const selectedIds: string[] = [];
+      const selectedIndices = Array.from(selectedSet).sort((a, b) => b - a); // Sort in descending order
+
+      selectedIndices.forEach((index) => {
+        const message = messages[index];
+        console.log(`🔍 Debug: Processing message at index ${index}:`, message);
+
+        // Get unique identifier for the message
+        const messageId = this.getMessageId(message);
+        selectedIds.push(messageId);
+        console.log(`✅ Using message ID: ${messageId}`);
+
+        // Add to deleted set for local filtering
+        deletedSet.add(messageId);
+      });
+
+      // Try to delete from backend first
+      this.adminMessagesService.deleteMessages(type, selectedIds).subscribe({
+        next: (response) => {
+          console.log(
+            `✅ Successfully deleted ${selectedIds.length} ${type} messages:`,
+            response
+          );
+
+          // Remove deleted messages from local arrays
+          selectedIndices.forEach((index) => {
+            if (type === 'contact') {
+              this.contactMessages.splice(index, 1);
+            } else {
+              this.joinMessages.splice(index, 1);
+            }
+          });
+
+          // Clear selection
+          selectedSet.clear();
+
+          // Save to localStorage
+          this.saveDataToLocalStorage();
+
+          alert(`✅ تم حذف ${selectedIds.length} رسالة بنجاح من الباك إند`);
+        },
+        error: (error) => {
+          console.error(
+            `❌ Error deleting ${type} messages from backend:`,
+            error
+          );
+          console.log(`⚠️ Falling back to local deletion`);
+
+          // Remove deleted messages from local arrays
+          selectedIndices.forEach((index) => {
+            if (type === 'contact') {
+              this.contactMessages.splice(index, 1);
+            } else {
+              this.joinMessages.splice(index, 1);
+            }
+          });
+
+          // Clear selection
+          selectedSet.clear();
+
+          // Save to localStorage
+          this.saveDataToLocalStorage();
+
+          alert(
+            `⚠️ تم حذف ${selectedIds.length} رسالة من الواجهة فقط (فشل الاتصال بالباك إند)`
+          );
+        },
+      });
+    }
+  }
+
+  /**
+   * Reset deleted messages tracking (for testing purposes)
+   */
+  resetDeletedMessages(type: 'contact' | 'join'): void {
+    if (type === 'contact') {
+      this.deletedContactMessages.clear();
+    } else {
+      this.deletedJoinMessages.clear();
+    }
+    console.log(`🔄 Reset deleted ${type} messages tracking`);
+
+    // Save to localStorage
+    this.saveDataToLocalStorage();
+
+    // Reload data to show previously deleted messages
+    this.refreshData();
+  }
+
+  /**
+   * Get count of deleted messages
+   */
+  getDeletedCount(type: 'contact' | 'join'): number {
+    const deletedSet =
+      type === 'contact'
+        ? this.deletedContactMessages
+        : this.deletedJoinMessages;
+    return deletedSet.size;
+  }
+
+  /**
+   * Check if message has CV file
+   */
+  hasCV(message: any): boolean {
+    return !!(message.cvFile || message.cv || message.cvUrl);
+  }
+
+  /**
+   * Get CV file name for display
+   */
+  getCVFileName(message: any): string {
+    if (message.cvFile && message.cvFile.name) {
+      return message.cvFile.name;
+    } else if (message.cv && message.cv.name) {
+      return message.cv.name;
+    } else if (message.cvUrl) {
+      // Extract filename from URL
+      const url = new URL(message.cvUrl);
+      const pathname = url.pathname;
+      return pathname.split('/').pop() || 'CV.pdf';
+    }
+    return 'CV.pdf';
+  }
+
+  /**
+   * Download CV file for a join message
+   */
+  downloadCV(message: any): void {
+    console.log('📥 Downloading CV for message:', message);
+
+    if (message.cvFile && message.cvFile instanceof File) {
+      // Download local file
+      this.downloadLocalFile(message.cvFile);
+    } else if (message.cv && message.cv instanceof File) {
+      // Download from cv field
+      this.downloadLocalFile(message.cv);
+    } else if (message.cvUrl) {
+      // Download from URL
+      this.downloadFromURL(message.cvUrl, this.getCVFileName(message));
+    } else {
+      console.error('❌ No CV file or URL found');
+      alert('لا يمكن العثور على ملف CV للتحميل');
+    }
+  }
+
+  /**
+   * Download local file
+   */
+  private downloadLocalFile(file: File): void {
+    const url = URL.createObjectURL(file);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = file.name;
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    console.log('✅ Local CV file downloaded:', file.name);
+  }
+
+  /**
+   * Download file from URL
+   */
+  private downloadFromURL(url: string, filename: string): void {
+    console.log('🌐 Downloading CV from URL:', url);
+
+    // Create a temporary link to trigger download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.target = '_blank';
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    console.log('✅ CV download initiated from URL');
   }
 }

@@ -7,7 +7,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { DashboardAccessService } from '../../shared/services/dashboard-access.service';
 
 interface BlogPost {
   id: number;
@@ -52,11 +51,7 @@ export class BlogDashboardComponent implements OnInit {
     'عناية السيارات',
   ];
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private dashboardAccess: DashboardAccessService
-  ) {
+  constructor(private fb: FormBuilder, private router: Router) {
     this.blogForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(10)]],
       excerpt: ['', [Validators.required, Validators.minLength(20)]],
@@ -72,14 +67,16 @@ export class BlogDashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Check if user has access to dashboard
-    if (!this.dashboardAccess.validateAccess()) {
-      return; // Will redirect to login if no access
+    // Check if user is logged in to admin system
+    const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+    if (!isLoggedIn) {
+      this.router.navigate(['/admin']);
+      return;
     }
 
     // Get user information
-    this.currentUsername = this.dashboardAccess.getCurrentUsername();
-    this.loginTime = this.formatLoginTime(this.dashboardAccess.getLoginTime());
+    this.currentUsername = localStorage.getItem('adminUser') || 'Admin';
+    this.loginTime = this.formatLoginTime(new Date().toISOString());
 
     // Load existing posts
     this.loadExistingPosts();
@@ -409,8 +406,9 @@ export class BlogDashboardComponent implements OnInit {
   }
 
   logout(): void {
-    this.dashboardAccess.revokeAccess();
-    this.router.navigate(['/home']);
+    localStorage.removeItem('adminLoggedIn');
+    localStorage.removeItem('adminUser');
+    this.router.navigate(['/admin']);
   }
 
   /**

@@ -97,4 +97,17 @@ export class AdminMessagesService {
   testConnection(): Observable<any> {
     return this.apiService.testConnection();
   }
+
+  /**
+   * Delete multiple messages by IDs
+   * @param type Message type ('contact' or 'join')
+   * @param messageIds Array of message IDs to delete
+   * @returns Observable of deletion response
+   */
+  deleteMessages(
+    type: 'contact' | 'join',
+    messageIds: string[]
+  ): Observable<any> {
+    return this.apiService.deleteMessages(type, messageIds);
+  }
 }

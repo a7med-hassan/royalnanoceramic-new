@@ -135,6 +135,23 @@
       "title": "معرض الأعمال",
       "subtitle": "شاهد أعمالنا المتميزة في حماية السيارات"
     },
+    "categories": {
+      "all": "الكل",
+      "ceramic": "سيراميك",
+      "protection": "حماية",
+      "detailing": "تفصيل",
+      "interior": "داخلي",
+      "wheels": "عجلات"
+    },
+    "services": {
+      "nano_ceramic": "حماية نانو سيراميك",
+      "paint_protection": "فيلم حماية الطلاء",
+      "graphene": "حماية الجرافين",
+      "glass_ceramic": "حماية زجاج سيراميك",
+      "wheel_ceramic": "حماية عجلات سيراميك",
+      "click_to_inquire": "اضغط للاستفسار",
+      "contact_us": "تواصل معنا"
+    },
     "lightbox": {
       "protection_details": "تفاصيل الحماية",
       "features": "المميزات"
@@ -169,6 +186,7 @@
     "services_list": "خدماتنا",
     "contact_info": "معلومات التواصل",
     "follow_us": "تابعنا على",
+    "address": "أكتوبر، الجيزة",
     "rights": "جميع الحقوق محفوظة"
   },
   "common": {

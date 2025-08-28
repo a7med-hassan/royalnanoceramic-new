@@ -117,7 +117,7 @@ export class TranslationService {
       'footer.click_more': 'عرض المزيد',
       'footer.click_less': 'إخفاء',
       'footer.contact_whatsapp': 'تواصل معنا عبر واتساب',
-      'footer.address': 'القاهرة، مصر',
+      'footer.address': 'أكتوبر، الجيزة',
       'footer.copyright': '© 2025 رويال نانو سيراميك. جميع الحقوق محفوظة.',
 
       // Common
@@ -131,6 +131,22 @@ export class TranslationService {
       'common.contact_us': 'تواصل معنا',
       'common.view_more': 'شاهد المزيد',
       'common.back_to_top': 'العودة للأعلى',
+      'common.optional': 'اختياري',
+      'common.reset': 'إعادة تعيين',
+      'common.form_status': 'حالة النموذج',
+      'common.field_required': 'هذا الحقل مطلوب',
+      'common.min_length_error': 'يجب أن يكون الطول على الأقل {0} أحرف',
+      'common.max_length_error': 'يجب أن لا يتجاوز الطول {0} حرف',
+      'common.name_format_error':
+        'يجب أن يحتوي الاسم على أحرف عربية أو إنجليزية فقط',
+      'common.phone_format_error':
+        'صيغة رقم الهاتف غير صحيحة - استخدم رقم مصري صحيح',
+      'common.invalid_format': 'صيغة غير صحيحة',
+      'common.server_connection_error':
+        'لا يمكن الاتصال بالخادم - تحقق من الاتصال بالإنترنت',
+      'common.invalid_form_data': 'بيانات النموذج غير صحيحة',
+      'common.server_error': 'خطأ في الخادم - يرجى المحاولة لاحقاً',
+      'common.general_error': 'حدث خطأ أثناء إرسال النموذج',
 
       // Hero Slider
       'slider.advanced_protection': 'حماية متطورة بتكنولوجيا النانو',
@@ -146,6 +162,22 @@ export class TranslationService {
       // About Us Page
       'about.hero.title': 'من نحن',
       'about.hero.subtitle': 'رويال نانو سيراميك - خبراء في حماية السيارات',
+      'about.why_choose.title': 'لماذا تختار رويال نانو',
+      'about.why_choose.subtitle':
+        'اكتشف المميزات التي تجعلنا الخيار الأمثل لحماية سيارتك',
+      'about.why_choose.main_title': 'ليه رويال نانو',
+      'about.why_choose.speed.title': 'سرعة',
+      'about.why_choose.speed.description':
+        'حلول سريعة وفعالة لاحتياجات سيارتك. نقدم تكنولوجيا متطورة تضمن السرعة والموثوقية، مما يساعدك على البقاء في المقدمة في سوق تنافسي.',
+      'about.why_choose.leadership.title': 'قيادة',
+      'about.why_choose.leadership.description':
+        'قيادة مبتكرة تلهم التقدم والنمو. قيادتنا ذات الرؤية المستقبلية تدفع الابتكار، وتعزز ثقافة التحسين والتطوير المستمر.',
+      'about.why_choose.support.title': 'دعم',
+      'about.why_choose.support.description':
+        'دعم عملاء على مدار الساعة لمساعدتك متى احتجت. فريقنا المتفاني متاح دائماً، ويقدم التوجيه والدعم المتخصص لضمان رضاك على مدار الساعة.',
+      'about.why_choose.sustainability.title': 'استدامة',
+      'about.why_choose.sustainability.description':
+        'ملتزمون بالاستدامة والممارسات الصديقة للبيئة. نعطي الأولوية للممارسات الواعية بيئياً، مما يضمن أن عملياتنا مستدامة وتساهم في مستقبل أكثر خضرة.',
       'about.story.title': 'قصتنا',
       'about.story.description':
         'نحن شركة متخصصة في حماية السيارات باستخدام أحدث تقنيات النانو والسيراميك.',
@@ -386,13 +418,15 @@ export class TranslationService {
       'contact.form.notes': 'ملاحظات إضافية',
       'contact.form.notes_placeholder': 'أضف أي ملاحظات أو متطلبات خاصة',
       'contact.form.submit': 'إرسال الطلب',
+      'contact.form.success_message':
+        'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.',
       'contact.location.title': 'موقعنا',
       'contact.location.company': 'Royal Nano Ceramic',
       'contact.location.address1': 'المحور الخدمي، قسم أول 6 أكتوبر',
       'contact.location.address2': 'قسم ثان 6 أكتوبر، محافظة الجيزة 12563',
       'contact.location.phone': '+20 123 456 7890',
       'contact.location.email': 'info@royalnanoceramic.com',
-      'contact.location.hours': 'الأحد - الخميس: 9:00 ص - 6:00 م',
+      'contact.location.hours': 'طوال أيام الأسبوع: 11:00 ص - 11:00 م',
       'contact.map.title': 'موقع Royal Nano Ceramic',
       'contact.map.open_google': 'افتح في Google Maps',
       'contact.social.title': 'تواصل معنا عبر وسائل التواصل الاجتماعي',
@@ -405,6 +439,14 @@ export class TranslationService {
       'contact.social.facebook.description': 'انضم إلى صفحتنا الرسمية',
       'contact.social.email.title': 'البريد الإلكتروني',
       'contact.social.email.description': 'أرسل لنا رسالة عبر البريد',
+      'contact.car_types.sedan': 'سيدان',
+      'contact.car_types.suv': 'SUV',
+      'contact.car_types.hatchback': 'هاتشباك',
+      'contact.car_types.coupe': 'كوبيه',
+      'contact.car_types.van': 'فان',
+      'contact.car_types.truck': 'شاحنة',
+      'contact.car_types.motorcycle': 'دراجة نارية',
+      'contact.car_types.other': 'أخرى',
 
       // Blog Page - Blog Posts Data
       'blog.post.1.title': 'تكنولوجيا النانو سيراميك: ثورة في حماية السيارات',
@@ -768,7 +810,7 @@ export class TranslationService {
       'footer.click_more': 'Show More',
       'footer.click_less': 'Show Less',
       'footer.contact_whatsapp': 'Contact us via WhatsApp',
-      'footer.address': 'Cairo, Egypt',
+      'footer.address': 'October, Giza',
       'footer.copyright': '© 2025 Royal Nano Ceramic. All rights reserved.',
 
       // Common
@@ -782,6 +824,22 @@ export class TranslationService {
       'common.contact_us': 'Contact Us',
       'common.view_more': 'View More',
       'common.back_to_top': 'Back to Top',
+      'common.optional': 'Optional',
+      'common.reset': 'Reset',
+      'common.form_status': 'Form Status',
+      'common.field_required': 'This field is required',
+      'common.min_length_error': 'The length must be at least {0} characters',
+      'common.max_length_error': 'The length must not exceed {0} characters',
+      'common.name_format_error':
+        'The name must contain only Arabic or English letters',
+      'common.phone_format_error':
+        'Invalid phone format - please use an Egyptian phone number',
+      'common.invalid_format': 'Invalid format',
+      'common.server_connection_error':
+        'Unable to connect to server - please check your internet connection',
+      'common.invalid_form_data': 'Invalid form data',
+      'common.server_error': 'Server error - please try again later',
+      'common.general_error': 'An error occurred while submitting the form',
 
       // Hero Slider
       'slider.advanced_protection': 'Advanced Protection with Nano Technology',
@@ -797,6 +855,22 @@ export class TranslationService {
       // About Us Page
       'about.hero.title': 'About Us',
       'about.hero.subtitle': 'Royal Nano Ceramic - Car Protection Experts',
+      'about.why_choose.title': 'Why Choose Royal Nano',
+      'about.why_choose.subtitle':
+        'Discover the features that make us the ideal choice for protecting your car',
+      'about.why_choose.main_title': 'Why Royal Nano',
+      'about.why_choose.speed.title': 'Speed',
+      'about.why_choose.speed.description':
+        'Fast and efficient solutions for your car needs. We provide cutting-edge technology that ensures speed and reliability, helping your business stay ahead in a competitive market.',
+      'about.why_choose.leadership.title': 'Leadership',
+      'about.why_choose.leadership.description':
+        'Innovative leadership that inspires progress and growth. Our forward-thinking leadership drives innovation, fostering a culture of continuous improvement and development.',
+      'about.why_choose.support.title': 'Support',
+      'about.why_choose.support.description':
+        '24/7 customer support to assist you whenever needed. Our dedicated team is always available, providing expert guidance and support to ensure your satisfaction around the clock.',
+      'about.why_choose.sustainability.title': 'Sustainability',
+      'about.why_choose.sustainability.description':
+        'Committed to sustainability and eco-friendly practices. We prioritize eco-conscious practices, ensuring our operations are sustainable and contribute to a greener future.',
       'about.story.title': 'Our Story',
       'about.story.description':
         'We are a company specialized in car protection using the latest nano and ceramic technologies.',
@@ -1051,6 +1125,8 @@ export class TranslationService {
       'contact.form.notes': 'Additional Notes',
       'contact.form.notes_placeholder': 'Add any notes or special requirements',
       'contact.form.submit': 'Send Request',
+      'contact.form.success_message':
+        'Your message has been sent successfully! We will contact you soon.',
       'contact.location.title': 'Our Location',
       'contact.location.company': 'Royal Nano Ceramic',
       'contact.location.address1': 'Service Axis, First District 6 October',
@@ -1058,7 +1134,7 @@ export class TranslationService {
         'Second District 6 October, Giza Governorate 12563',
       'contact.location.phone': '+20 123 456 7890',
       'contact.location.email': 'info@royalnanoceramic.com',
-      'contact.location.hours': 'Sunday - Thursday: 9:00 AM - 6:00 PM',
+      'contact.location.hours': 'All Week: 11:00 AM - 11:00 PM',
       'contact.map.title': 'Royal Nano Ceramic Location',
       'contact.map.open_google': 'Open in Google Maps',
       'contact.social.title': 'Contact Us via Social Media',
@@ -1073,6 +1149,14 @@ export class TranslationService {
       'contact.social.facebook.description': 'Join our official page',
       'contact.social.email.title': 'Email',
       'contact.social.email.description': 'Send us a message via email',
+      'contact.car_types.sedan': 'Sedan',
+      'contact.car_types.suv': 'SUV',
+      'contact.car_types.hatchback': 'Hatchback',
+      'contact.car_types.coupe': 'Coupe',
+      'contact.car_types.van': 'Van',
+      'contact.car_types.truck': 'Truck',
+      'contact.car_types.motorcycle': 'Motorcycle',
+      'contact.car_types.other': 'Other',
 
       // Blog Page - Blog Posts Data
       'blog.post.1.title':

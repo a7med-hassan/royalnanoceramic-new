@@ -1,0 +1,268 @@
+// Network Status Banner
+.network-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  color: white;
+  padding: 12px 20px;
+  z-index: 9999;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  animation: slideDown 0.3s ease;
+
+  .network-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .network-icon {
+      font-size: 1.2rem;
+      animation: pulse 2s infinite;
+    }
+
+    .network-message {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .retry-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+
+      i {
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+// Error Notification
+.error-notification {
+  position: fixed;
+  top: 60px; // Below network banner
+  right: 20px;
+  max-width: 400px;
+  z-index: 9998;
+  animation: slideInRight 0.3s ease;
+
+  .error-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    border-left: 4px solid;
+
+    &.severity-low {
+      border-left-color: #2196f3;
+    }
+
+    &.severity-medium {
+      border-left-color: #ff9800;
+    }
+
+    &.severity-high {
+      border-left-color: #f44336;
+    }
+
+    &.severity-critical {
+      border-left-color: #9c27b0;
+    }
+
+    .error-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px 12px;
+      background: #f8f9fa;
+
+      .error-icon {
+        font-size: 1.2rem;
+
+        &.severity-low {
+          color: #2196f3;
+        }
+
+        &.severity-medium {
+          color: #ff9800;
+        }
+
+        &.severity-high {
+          color: #f44336;
+        }
+
+        &.severity-critical {
+          color: #9c27b0;
+        }
+      }
+
+      .error-title {
+        font-weight: 600;
+        font-size: 1rem;
+        color: #333;
+        flex: 1;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: #e9ecef;
+          color: #333;
+        }
+
+        i {
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .error-message {
+      padding: 0 20px 16px;
+      color: #555;
+      line-height: 1.5;
+      font-size: 0.9rem;
+    }
+
+    .error-actions {
+      padding: 0 20px 16px;
+      display: flex;
+      gap: 12px;
+
+      .retry-btn {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        &:hover {
+          background: #0056b3;
+          transform: translateY(-1px);
+        }
+
+        i {
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .error-notification {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+
+    .error-content {
+      .error-header {
+        padding: 14px 16px 10px;
+      }
+
+      .error-message {
+        padding: 0 16px 14px;
+      }
+
+      .error-actions {
+        padding: 0 16px 14px;
+      }
+    }
+  }
+
+  .network-banner {
+    .network-content {
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+
+      .network-message {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .error-notification {
+    top: 50px; // Adjust for mobile
+  }
+
+  .network-banner {
+    padding: 10px 15px;
+
+    .network-content {
+      .network-message {
+        font-size: 0.85rem;
+      }
+
+      .retry-btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}

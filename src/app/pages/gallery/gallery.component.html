@@ -48,63 +48,16 @@
         *ngFor="let image of filteredImages; let i = index"
         data-aos="fade-up"
         [attr.data-aos-delay]="i * 100"
-        (click)="openLightbox(i)"
       >
-        <img [src]="image.src" [alt]="image.alt" loading="lazy" />
-        <div class="gallery-overlay">
-          <i class="fas fa-search-plus"></i>
-        </div>
+        <img
+          [src]="image.src"
+          [alt]="image.alt"
+          loading="lazy"
+          decoding="async"
+          [attr.data-src]="image.src"
+          class="gallery-image"
+        />
       </div>
     </div>
   </section>
-
-  <!-- Lightbox Modal -->
-  <div
-    class="lightbox-modal"
-    [class.active]="isLightboxOpen"
-    (click)="closeLightbox()"
-  >
-    <div class="lightbox-content" (click)="$event.stopPropagation()">
-      <!-- Close Button -->
-      <button class="lightbox-close" (click)="closeLightbox()">
-        <i class="fas fa-times"></i>
-      </button>
-
-      <!-- Navigation Arrows -->
-      <button class="lightbox-nav lightbox-prev" (click)="previousImage()">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-      <button class="lightbox-nav lightbox-next" (click)="nextImage()">
-        <i class="fas fa-chevron-right"></i>
-      </button>
-
-      <!-- Image Container -->
-      <div class="lightbox-image-container">
-        <img
-          [src]="galleryImages[currentImageIndex].src"
-          [alt]="galleryImages[currentImageIndex].alt"
-          class="lightbox-image"
-        />
-        <div class="lightbox-info">
-          <h3>{{ galleryImages[currentImageIndex].title }}</h3>
-          <p>{{ galleryImages[currentImageIndex].description }}</p>
-          <div class="lightbox-counter">
-            {{ currentImageIndex + 1 }} / {{ galleryImages.length }}
-          </div>
-        </div>
-      </div>
-
-      <!-- Thumbnail Navigation -->
-      <div class="lightbox-thumbnails">
-        <div
-          class="thumbnail-item"
-          *ngFor="let image of galleryImages; let i = index"
-          [class.active]="i === currentImageIndex"
-          (click)="goToImage(i)"
-        >
-          <img [src]="image.src" [alt]="image.alt" />
-        </div>
-      </div>
-    </div>
-  </div>
 </div>

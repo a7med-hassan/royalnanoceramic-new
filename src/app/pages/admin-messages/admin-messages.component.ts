@@ -607,24 +607,70 @@ export class AdminMessagesComponent implements OnInit {
    * Check if message has CV file
    */
   hasCV(message: any): boolean {
-    return !!(message.cvFile || message.cv || message.cvUrl);
+    return !!(
+      message.cvFileName ||
+      message.cvPath ||
+      message.cvFile ||
+      message.cv ||
+      message.cvUrl
+    );
+  }
+
+  /**
+   * Decode corrupted Arabic text
+   */
+  private decodeArabicText(text: string): string {
+    if (!text) return text;
+
+    try {
+      // Try to decode from Latin-1 to UTF-8
+      const decoded = decodeURIComponent(escape(text));
+      return decoded;
+    } catch (error) {
+      // If decoding fails, return original text
+      console.warn('Failed to decode Arabic text:', text);
+      return text;
+    }
+  }
+
+  /**
+   * Get decoded text for display (supports Arabic)
+   */
+  getDecodedText(text: string, fallback: string = 'غير محدد'): string {
+    if (!text) return fallback;
+    return this.decodeArabicText(text);
   }
 
   /**
    * Get CV file name for display
    */
   getCVFileName(message: any): string {
-    if (message.cvFile && message.cvFile.name) {
-      return message.cvFile.name;
+    let fileName = '';
+
+    // Check for cvFileName from database
+    if (message.cvFileName) {
+      fileName = message.cvFileName;
+    }
+    // Check for cvPath from database
+    else if (message.cvPath) {
+      fileName = message.cvPath.split('/').pop() || 'CV.pdf';
+    }
+    // Legacy support for old format
+    else if (message.cvFile && message.cvFile.name) {
+      fileName = message.cvFile.name;
     } else if (message.cv && message.cv.name) {
-      return message.cv.name;
+      fileName = message.cv.name;
     } else if (message.cvUrl) {
       // Extract filename from URL
       const url = new URL(message.cvUrl);
       const pathname = url.pathname;
-      return pathname.split('/').pop() || 'CV.pdf';
+      fileName = pathname.split('/').pop() || 'CV.pdf';
+    } else {
+      fileName = 'CV.pdf';
     }
-    return 'CV.pdf';
+
+    // Decode Arabic text if corrupted
+    return this.decodeArabicText(fileName);
   }
 
   /**
@@ -633,7 +679,15 @@ export class AdminMessagesComponent implements OnInit {
   downloadCV(message: any): void {
     console.log('📥 Downloading CV for message:', message);
 
-    if (message.cvFile && message.cvFile instanceof File) {
+    // Check for cvPath from database first
+    if (message.cvPath) {
+      // Construct full URL for download
+      const baseUrl = 'https://royal-nano-backend.vercel.app';
+      const fullUrl = baseUrl + message.cvPath;
+      this.downloadFromURL(fullUrl, this.getCVFileName(message));
+    }
+    // Legacy support for old format
+    else if (message.cvFile && message.cvFile instanceof File) {
       // Download local file
       this.downloadLocalFile(message.cvFile);
     } else if (message.cv && message.cv instanceof File) {

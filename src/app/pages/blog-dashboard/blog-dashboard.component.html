@@ -6,7 +6,10 @@
     <div class="user-info">
       <div class="user-details">
         <i class="fas fa-user-circle"></i>
-        <span class="username">{{ currentUsername }}</span>
+        <div class="admin-info" *ngIf="adminUser">
+          <span class="welcome-text">Welcome, {{ adminUser.username }}</span>
+          <span class="user-role">{{ adminUser.role || "Admin" }}</span>
+        </div>
         <span class="login-time">تم تسجيل الدخول: {{ loginTime }}</span>
       </div>
     </div>

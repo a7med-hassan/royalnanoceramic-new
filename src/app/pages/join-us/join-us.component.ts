@@ -152,6 +152,12 @@ export class JoinUsComponent implements OnInit, OnDestroy {
               'تم إرسال طلب الانضمام بنجاح! سنتواصل معك قريباً.';
             this.resetForm();
             this.isSubmitting = false;
+
+            // Auto-hide success message after 5 seconds
+            setTimeout(() => {
+              this.submitSuccess = false;
+              this.submitMessage = '';
+            }, 5000);
           },
           error: (error) => {
             console.error('❌ API error:', error);

@@ -9,6 +9,11 @@ Disallow: /admin/
 Disallow: /private/
 Disallow: /api/
 Disallow: /_/
+Disallow: /node_modules/
+Disallow: /dist/
+Disallow: /*.json$
+Disallow: /*.js$
+Disallow: /*.css$
 
 # Allow important pages
 Allow: /home
@@ -18,6 +23,6 @@ Allow: /blog
 Allow: /gallery
 Allow: /contact
 Allow: /join-us
- 
+
 # Crawl delay
 Crawl-delay: 1

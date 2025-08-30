@@ -559,10 +559,34 @@
   }
 }
 
-// Responsive Design
+// Mobile-specific improvements
 @media (max-width: 768px) {
   .admin-messages-container {
     padding: 0.8rem;
+
+    // Improve touch interactions
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    // Better button interactions
+    button {
+      touch-action: manipulation;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+
+      &:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+      }
+    }
+
+    // Improve checkbox interactions
+    input[type="checkbox"] {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     .header {
       flex-direction: column;
@@ -577,16 +601,29 @@
     }
 
     .header-buttons {
+      display: flex;
       flex-direction: column;
       gap: 0.8rem;
       margin-bottom: 1.5rem;
 
       .refresh-btn,
       .reset-deleted-btn {
-        padding: 1rem 1.5rem;
-        font-size: 1.1rem;
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
         width: 100%;
         justify-content: center;
+        min-height: 48px;
+        border-radius: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+
+        &:active {
+          transform: scale(0.98);
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
       }
     }
 
@@ -597,41 +634,73 @@
         flex-direction: column;
         text-align: center;
         padding: 1.2rem;
+        gap: 1rem;
 
         h2 {
           font-size: 1.3rem;
-          margin-bottom: 1rem;
+          margin-bottom: 0.5rem;
+          line-height: 1.3;
         }
 
         .filters {
           justify-content: center;
           width: 100%;
-          gap: 0.5rem;
+          gap: 0.8rem;
+          flex-wrap: wrap;
 
           .data-source-info {
+            order: 1;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+
             .data-source {
               font-size: 0.85rem;
-              padding: 0.4rem 0.8rem;
-              min-width: 100px;
+              padding: 0.5rem 1rem;
+              min-width: 120px;
+              border-radius: 20px;
             }
           }
 
           .export-btn {
-            padding: 0.6rem 1rem;
-            font-size: 0.95rem;
+            order: 2;
+            padding: 0.7rem 1.2rem;
+            font-size: 0.9rem;
+            min-height: 44px;
+            border-radius: 6px;
+            width: 100%;
+            max-width: 300px;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+
+            &:active {
+              transform: scale(0.98);
+            }
           }
 
           .bulk-actions {
+            order: 3;
             flex-direction: column;
             width: 100%;
-            gap: 0.5rem;
+            gap: 0.6rem;
+            justify-content: center;
 
             .select-all-btn,
             .delete-selected-btn {
-              padding: 0.6rem 1rem;
-              font-size: 0.95rem;
+              padding: 0.7rem 1rem;
+              font-size: 0.9rem;
+              min-height: 44px;
+              border-radius: 6px;
               width: 100%;
+              max-width: 300px;
               justify-content: center;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              transition: all 0.3s ease;
+
+              &:active {
+                transform: scale(0.98);
+              }
             }
           }
         }
@@ -639,69 +708,167 @@
 
       .table-container {
         padding: 0.8rem;
-        overflow-x: auto;
 
+        // Hide table on mobile and show card layout instead
         .data-table {
-          min-width: 700px;
-          font-size: 0.85rem;
+          display: none;
+        }
 
-          thead {
-            th {
-              padding: 0.8rem 0.5rem;
-              font-size: 0.9rem;
+        // Mobile card layout
+        .mobile-cards {
+          display: block;
+        }
+      }
+    }
+  }
+}
 
-              &.checkbox-column {
-                width: 40px;
+// Mobile card layout styles
+.mobile-cards {
+  display: none;
 
-                input[type="checkbox"] {
-                  width: 16px;
-                  height: 16px;
-                }
-              }
+  .message-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+
+    &:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #f0f0f0;
+
+      .card-checkbox {
+        input[type="checkbox"] {
+          width: 20px;
+          height: 20px;
+          cursor: pointer;
+          accent-color: #3498db;
+        }
+      }
+
+      .card-date {
+        font-size: 0.8rem;
+        color: #7f8c8d;
+        font-weight: 500;
+      }
+    }
+
+    .card-content {
+      .field-group {
+        margin-bottom: 0.8rem;
+
+        .field-label {
+          font-weight: 600;
+          color: #2c3e50;
+          font-size: 0.9rem;
+          margin-bottom: 0.3rem;
+          display: block;
+        }
+
+        .field-value {
+          color: #34495e;
+          font-size: 0.95rem;
+          line-height: 1.4;
+          word-break: break-word;
+          padding: 0.5rem;
+          background: #f8f9fa;
+          border-radius: 6px;
+          border: 1px solid #e9ecef;
+        }
+      }
+
+      .cv-section {
+        .field-label {
+          font-weight: 600;
+          color: #2c3e50;
+          font-size: 0.9rem;
+          margin-bottom: 0.3rem;
+          display: block;
+        }
+
+        .cv-actions {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+
+          .download-cv-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: background-color 0.3s ease;
+            min-height: 44px;
+
+            &:hover {
+              background: #229954;
+            }
+
+            i {
+              font-size: 1rem;
             }
           }
 
-          tbody {
-            tr {
-              td {
-                padding: 0.8rem 0.5rem;
-                font-size: 0.85rem;
-                max-width: 150px;
+          .cv-filename {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            text-align: center;
+            word-break: break-all;
+            padding: 0.3rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+          }
+        }
 
-                &.checkbox-column {
-                  width: 40px;
+        .no-cv {
+          color: #95a5a6;
+          font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding: 0.5rem;
+          background: #f8f9fa;
+          border-radius: 6px;
+          border: 1px solid #e9ecef;
 
-                  input[type="checkbox"] {
-                    width: 16px;
-                    height: 16px;
-                  }
-                }
-
-                &.cv-column {
-                  width: 120px;
-
-                  .cv-actions {
-                    .download-cv-btn {
-                      padding: 0.3rem 0.6rem;
-                      font-size: 0.75rem;
-                    }
-
-                    .cv-filename {
-                      font-size: 0.7rem;
-                      max-width: 100px;
-                    }
-                  }
-
-                  .no-cv {
-                    font-size: 0.7rem;
-                  }
-                }
-              }
-            }
+          i {
+            color: #e74c3c;
           }
         }
       }
     }
+  }
+}
+
+// Show mobile cards on mobile screens
+@media (max-width: 768px) {
+  .mobile-cards {
+    display: block !important;
   }
 }
 
@@ -711,51 +878,63 @@
 
     .header {
       h1 {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
+        line-height: 1.2;
       }
     }
 
     .header-buttons {
+      gap: 0.6rem;
+
       .refresh-btn,
       .reset-deleted-btn {
-        padding: 0.9rem 1.2rem;
-        font-size: 1rem;
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+        min-height: 48px;
+        line-height: 1.3;
       }
     }
 
     .section {
       .section-header {
         padding: 1rem;
+        gap: 0.8rem;
 
         h2 {
-          font-size: 1.2rem;
+          font-size: 1.3rem;
+          line-height: 1.2;
+          margin-bottom: 0.5rem;
         }
 
         .filters {
-          flex-direction: column;
-          width: 100%;
-          gap: 0.4rem;
+          gap: 0.6rem;
 
           .data-source-info {
             .data-source {
               font-size: 0.8rem;
-              padding: 0.3rem 0.6rem;
-              min-width: 80px;
+              padding: 0.4rem 0.8rem;
+              min-width: 100px;
             }
           }
 
           .export-btn {
-            padding: 0.5rem 0.8rem;
-            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+            min-height: 44px;
             width: 100%;
-            justify-content: center;
+            max-width: none;
           }
 
           .bulk-actions {
+            gap: 0.5rem;
+
             .select-all-btn,
             .delete-selected-btn {
-              padding: 0.5rem 0.8rem;
-              font-size: 0.9rem;
+              padding: 0.6rem 1rem;
+              font-size: 0.85rem;
+              min-height: 44px;
+              width: 100%;
+              max-width: none;
             }
           }
         }
@@ -764,60 +943,63 @@
       .table-container {
         padding: 0.5rem;
 
-        .data-table {
-          min-width: 600px;
-          font-size: 0.8rem;
+        .mobile-cards {
+          .message-card {
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
 
-          thead {
-            th {
-              padding: 0.6rem 0.3rem;
-              font-size: 0.85rem;
+            .card-header {
+              margin-bottom: 0.8rem;
+              padding-bottom: 0.4rem;
 
-              &.checkbox-column {
-                width: 35px;
-
+              .card-checkbox {
                 input[type="checkbox"] {
-                  width: 14px;
-                  height: 14px;
+                  width: 18px;
+                  height: 18px;
                 }
               }
+
+              .card-date {
+                font-size: 0.75rem;
+              }
             }
-          }
 
-          tbody {
-            tr {
-              td {
-                padding: 0.6rem 0.3rem;
-                font-size: 0.8rem;
-                max-width: 120px;
+            .card-content {
+              .field-group {
+                margin-bottom: 0.6rem;
 
-                &.checkbox-column {
-                  width: 35px;
+                .field-label {
+                  font-size: 0.85rem;
+                  margin-bottom: 0.2rem;
+                }
 
-                  input[type="checkbox"] {
-                    width: 14px;
-                    height: 14px;
+                .field-value {
+                  font-size: 0.9rem;
+                  padding: 0.4rem;
+                }
+              }
+
+              .cv-section {
+                .field-label {
+                  font-size: 0.85rem;
+                  margin-bottom: 0.2rem;
+                }
+
+                .cv-actions {
+                  .download-cv-btn {
+                    padding: 0.5rem 0.8rem;
+                    font-size: 0.85rem;
+                    min-height: 40px;
+                  }
+
+                  .cv-filename {
+                    font-size: 0.75rem;
                   }
                 }
 
-                &.cv-column {
-                  width: 100px;
-
-                  .cv-actions {
-                    .download-cv-btn {
-                      padding: 0.25rem 0.5rem;
-                      font-size: 0.7rem;
-                    }
-
-                    .cv-filename {
-                      font-size: 0.65rem;
-                      max-width: 80px;
-                    }
-                  }
-
-                  .no-cv {
-                    font-size: 0.65rem;
-                  }
+                .no-cv {
+                  font-size: 0.85rem;
+                  padding: 0.4rem;
                 }
               }
             }

@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AdminApiService } from '../../shared/services/admin-api.service';
 
 interface BlogPost {
   id: number;
@@ -37,6 +38,7 @@ export class BlogDashboardComponent implements OnInit {
   messageType: 'success' | 'error' = 'success';
   currentUsername = '';
   loginTime = '';
+  adminUser: any = null;
   existingPosts: any[] = [];
   selectedPosts: string[] = [];
   showPostsPopup = false;
@@ -51,7 +53,11 @@ export class BlogDashboardComponent implements OnInit {
     'عناية السيارات',
   ];
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private adminApiService: AdminApiService
+  ) {
     this.blogForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(10)]],
       excerpt: ['', [Validators.required, Validators.minLength(20)]],
@@ -68,14 +74,15 @@ export class BlogDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     // Check if user is logged in to admin system
-    const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+    const isLoggedIn = this.adminApiService.isLoggedIn();
     if (!isLoggedIn) {
       this.router.navigate(['/admin']);
       return;
     }
 
     // Get user information
-    this.currentUsername = localStorage.getItem('adminUser') || 'Admin';
+    this.adminUser = this.adminApiService.getCurrentAdmin();
+    this.currentUsername = this.adminUser ? this.adminUser.username : 'Admin';
     this.loginTime = this.formatLoginTime(new Date().toISOString());
 
     // Load existing posts

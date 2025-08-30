@@ -3,7 +3,10 @@
   <aside class="admin-sidebar">
     <div class="sidebar-header">
       <h2>Admin Panel</h2>
-      <p>Welcome, {{ adminUser }}</p>
+      <div class="admin-info" *ngIf="adminUser">
+        <p class="welcome-text">Welcome, {{ adminUser.username }}</p>
+        <p class="admin-role">{{ adminUser.role || "Admin" }}</p>
+      </div>
     </div>
 
     <nav class="sidebar-nav">

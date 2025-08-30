@@ -3,6 +3,9 @@
   [class.rtl]="isRtl"
   [class.arabic]="currentLang === 'ar'"
 >
+  <!-- Error and Network Status Notifications -->
+  <app-error-notification></app-error-notification>
+
   <!-- Header Component - Hidden for admin routes -->
   <app-header *ngIf="!isAdminRoute"></app-header>
 

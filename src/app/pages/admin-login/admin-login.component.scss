@@ -75,15 +75,44 @@
     }
   }
 
+  .success-message {
+    color: #4caf50;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    text-align: center;
+    padding: 12px;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    animation: slideInDown 0.3s ease;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+
   .error-message {
     color: #ff6b6b;
     font-size: 0.9rem;
     margin-bottom: 15px;
     text-align: center;
-    padding: 10px;
+    padding: 12px;
     background: rgba(255, 107, 107, 0.1);
     border-radius: 8px;
     border: 1px solid rgba(255, 107, 107, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    animation: slideInDown 0.3s ease;
+
+    i {
+      font-size: 1rem;
+    }
   }
 
   .login-btn {
@@ -111,6 +140,18 @@
       cursor: not-allowed;
       transform: none;
     }
+  }
+}
+
+// Animations
+@keyframes slideInDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 

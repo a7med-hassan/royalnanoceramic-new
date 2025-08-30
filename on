@@ -1,0 +1,20 @@
+warning: in the working copy of 'angular.json', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/angular.json b/angular.json[m
+[1mindex 7e08ef1..dcba720 100644[m
+[1m--- a/angular.json[m
+[1m+++ b/angular.json[m
+[36m@@ -59,7 +59,13 @@[m
+               "outputHashing": "all",[m
+               "optimization": true,[m
+               "extractLicenses": true,[m
+[31m-              "sourceMap": false[m
+[32m+[m[32m              "sourceMap": false,[m
+[32m+[m[32m              "namedChunks": false,[m
+[32m+[m[32m              "aot": true,[m
+[32m+[m[32m              "buildOptimizer": true,[m
+[32m+[m[32m              "vendorChunk": false,[m
+[32m+[m[32m              "serviceWorker": true,[m
+[32m+[m[32m              "ngswConfigPath": "src/ngsw-config.json"[m
+             },[m
+             "development": {[m
+               "optimization": false,[m

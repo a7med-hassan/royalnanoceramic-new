@@ -1,0 +1,32 @@
+---
+deployment:
+  tasks:
+    # Set deployment path
+    - export DEPLOYPATH=/home/nj83xtxs46ok/public_html/royalnanoceramic.com
+    - export REPOPATH=/home/nj83xtxs46ok/repositories/royalnanoceramic-new
+    
+    # Clean previous build
+    - rm -rf $REPOPATH/dist
+    
+    # Install dependencies
+    - /opt/cpanel/ea-nodejs18/bin/npm ci --prefix $REPOPATH
+    
+    # Build for production
+    - /opt/cpanel/ea-nodejs18/bin/npm run build --prefix $REPOPATH -- --configuration production
+    
+    # Create backup of current deployment
+    - mkdir -p $DEPLOYPATH/backup
+    - cp -r $DEPLOYPATH/* $DEPLOYPATH/backup/ 2>/dev/null || true
+    
+    # Deploy new build
+    - /bin/rsync -av --delete $REPOPATH/dist/royal-nano-ceramic/ $DEPLOYPATH/
+    
+    # Set proper permissions
+    - chmod -R 755 $DEPLOYPATH
+    - chown -R nj83xtxs46ok:nj83xtxs46ok $DEPLOYPATH
+    
+    # Clean up old backup (keep only last 3)
+    - find $DEPLOYPATH/backup -maxdepth 1 -type d -name "backup-*" | sort -r | tail -n +4 | xargs rm -rf
+    
+    # Verify deployment
+    - test -f $DEPLOYPATH/index.html && echo "Deployment successful" || echo "Deployment failed"

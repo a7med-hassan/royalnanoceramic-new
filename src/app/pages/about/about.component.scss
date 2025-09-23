@@ -433,6 +433,10 @@
             margin-right: 60px;
             text-align: right;
 
+            p {
+              text-align: right;
+            }
+
             &::before {
               right: -15px;
               left: auto;
@@ -550,9 +554,11 @@
 
         p {
           color: #ccc;
-          line-height: 1.6;
+          line-height: 1.7;
           margin-bottom: 1rem;
-          text-align: justify;
+          text-align: left;
+          word-spacing: normal;
+          letter-spacing: 0.3px;
         }
 
         .achievement-icon {
@@ -1051,7 +1057,9 @@
 
           p {
             font-size: 1rem;
-            line-height: 1.6;
+            line-height: 1.7;
+            word-spacing: normal;
+            letter-spacing: 0.2px;
           }
 
           .year-badge {
@@ -1179,7 +1187,9 @@
 
           p {
             font-size: 0.9rem;
-            line-height: 1.5;
+            line-height: 1.6;
+            word-spacing: normal;
+            letter-spacing: 0.1px;
           }
 
           .year-badge {
@@ -1308,7 +1318,9 @@
 
           p {
             font-size: 0.8rem;
-            line-height: 1.4;
+            line-height: 1.5;
+            word-spacing: normal;
+            letter-spacing: 0.1px;
           }
 
           .year-badge {

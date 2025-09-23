@@ -9,18 +9,21 @@ export interface ContactFormData {
   phoneNumber: string;
   carType: string;
   carModel: string;
-  notes: string;
+  additionalNotes: string; // Changed from 'notes' to match API
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
 }
 
 export interface JoinFormData {
   fullName: string;
   phoneNumber: string;
   email: string;
-  position: string;
-  jobPosition?: string; // Additional field for backend validation
+  jobPosition: string; // Changed from 'position' to match API
   experience: string;
-  message: string;
-  cvFile?: File | null;
+  additionalMessage: string; // Changed from 'message' to match API
+  cvFileName?: string; // Added to match API
+  cvPath?: string; // Added to match API
 }
 
 export interface ApiResponse {
@@ -39,6 +42,13 @@ export class ApiService {
   private CONTACT_URL = `${this.BASE_URL}contact`;
   private JOIN_URL = `${this.BASE_URL}join`;
   private HEALTH_URL = `${this.BASE_URL}health`;
+  
+  // Admin endpoints for retrieving messages
+  private ADMIN_CONTACT_URL = `${this.BASE_URL}contact`; // GET request to retrieve all contact messages
+  private ADMIN_JOIN_URL = `${this.BASE_URL}join`; // GET request to retrieve all join messages
+  
+  // Upload endpoint for CV files
+  private UPLOAD_URL = `${this.BASE_URL}upload`; // POST request to upload CV files
 
   constructor(private http: HttpClient) {
     console.log('🚀 ApiService initialized with BASE_URL:', this.BASE_URL);
@@ -80,11 +90,20 @@ export class ApiService {
   submitContactForm(data: ContactFormData): Observable<ApiResponse> {
     console.log('📤 Submitting contact form to:', `${this.CONTACT_URL}`);
     console.log('📤 Contact form data:', data);
+    console.log('🔍 UTM Parameters in API call:', {
+      utm_source: data.utm_source,
+      utm_medium: data.utm_medium,
+      utm_campaign: data.utm_campaign
+    });
     console.log('🔧 HttpClient instance:', this.http);
     console.log('🔧 BASE_URL:', this.BASE_URL);
     console.log('🔧 Full URL:', `${this.CONTACT_URL}`);
 
-    return this.http.post<ApiResponse>(`${this.CONTACT_URL}`, data).pipe(
+    return this.http.post<ApiResponse>(`${this.CONTACT_URL}`, data, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).pipe(
       tap((response) =>
         console.log('✅ Contact form submitted successfully:', response)
       ),
@@ -114,36 +133,25 @@ export class ApiService {
     console.log('🔧 BASE_URL:', this.BASE_URL);
     console.log('🔧 Full URL:', `${this.JOIN_URL}`);
 
-    // Create FormData for file upload
-    const formData = new FormData();
+    // Send as JSON instead of FormData since CV upload is disabled
+    const jsonData = {
+      fullName: data.fullName,
+      phoneNumber: data.phoneNumber,
+      email: data.email,
+      jobPosition: data.jobPosition,
+      experience: data.experience,
+      additionalMessage: data.additionalMessage,
+      cvFileName: data.cvFileName || '',
+      cvPath: data.cvPath || ''
+    };
 
-    // Add text fields
-    formData.append('fullName', data.fullName);
-    formData.append('phoneNumber', data.phoneNumber);
-    formData.append('email', data.email);
-    formData.append('position', data.position);
-    formData.append('jobPosition', data.jobPosition || data.position);
-    formData.append('experience', data.experience);
-    formData.append('message', data.message);
+    console.log('📤 JSON data to send:', jsonData);
 
-    // Add CV file if exists
-    if (data.cvFile) {
-      formData.append('cv', data.cvFile);
-      console.log(
-        '📎 CV file attached:',
-        data.cvFile.name,
-        'Size:',
-        data.cvFile.size
-      );
-    }
-
-    console.log(
-      '📤 FormData created with',
-      formData.getAll('fullName').length,
-      'fields'
-    );
-
-    return this.http.post<ApiResponse>(`${this.JOIN_URL}`, formData).pipe(
+    return this.http.post<ApiResponse>(`${this.JOIN_URL}`, jsonData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).pipe(
       tap((response) =>
         console.log('✅ Join form submitted successfully:', response)
       ),
@@ -244,7 +252,7 @@ export class ApiService {
       phoneNumber: '01234567890',
       carType: 'سيدان',
       carModel: '2024',
-      notes: 'هذا اختبار للاتصال بالـ backend',
+      additionalNotes: 'هذا اختبار للاتصال بالـ backend',
     };
 
     console.log('📤 Test data:', testData);
@@ -272,8 +280,29 @@ export class ApiService {
    */
   getContactMessages(): Observable<any[]> {
     console.log('📥 Fetching contact messages...');
-    const endpoints = [`${this.CONTACT_URL}`];
-    return this.tryEndpoints(endpoints, 'contact messages');
+    console.log('🔗 Using endpoint:', this.ADMIN_CONTACT_URL);
+    
+    return this.http.get<any>(this.ADMIN_CONTACT_URL).pipe(
+      map((response) => {
+        console.log('📥 Raw contact messages response:', response);
+        
+        // Handle different response formats
+        if (response && response.data && Array.isArray(response.data)) {
+          console.log('✅ Contact messages found in response.data:', response.data.length);
+          return response.data;
+        } else if (Array.isArray(response)) {
+          console.log('✅ Contact messages found as direct array:', response.length);
+          return response;
+        } else {
+          console.log('⚠️ No contact messages found in response');
+          return [];
+        }
+      }),
+      catchError((error) => {
+        console.error('❌ Error fetching contact messages:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   /**
@@ -281,8 +310,52 @@ export class ApiService {
    */
   getJoinMessages(): Observable<any[]> {
     console.log('📥 Fetching join messages...');
-    const endpoints = [`${this.JOIN_URL}`];
-    return this.tryEndpoints(endpoints, 'join messages');
+    console.log('🔗 Using endpoint:', this.ADMIN_JOIN_URL);
+    
+    return this.http.get<any>(this.ADMIN_JOIN_URL).pipe(
+      map((response) => {
+        console.log('📥 Raw join messages response:', response);
+        
+        // Handle different response formats
+        if (response && response.data && Array.isArray(response.data)) {
+          console.log('✅ Join messages found in response.data:', response.data.length);
+          return response.data;
+        } else if (Array.isArray(response)) {
+          console.log('✅ Join messages found as direct array:', response.length);
+          return response;
+        } else {
+          console.log('⚠️ No join messages found in response');
+          return [];
+        }
+      }),
+      catchError((error) => {
+        console.error('❌ Error fetching join messages:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Upload CV file to server
+   * @param file The CV file to upload
+   * @returns Observable of upload response with file URL
+   */
+  uploadCVFile(file: File): Observable<{ fileUrl: string; fileName: string }> {
+    console.log('📤 Uploading CV file:', file.name, 'Size:', file.size);
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    return this.http.post<{ fileUrl: string; fileName: string }>(this.UPLOAD_URL, formData).pipe(
+      tap((response) => {
+        console.log('✅ CV file uploaded successfully:', response);
+        console.log('✅ Uploaded CV:', response.fileUrl);
+      }),
+      catchError((error) => {
+        console.error('❌ CV file upload failed:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   /**

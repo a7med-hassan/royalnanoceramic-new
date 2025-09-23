@@ -1,0 +1,6 @@
+# Handle Angular routing
+/*    /index.html   200
+
+# API redirects (if needed)
+/api/*    https://royal-nano-backend.vercel.app/api/:splat    200
+

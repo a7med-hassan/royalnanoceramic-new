@@ -1,9 +1,17 @@
-<header class="header" [class.home-page]="isHomePage" [class.scrolled]="isScrolled">
+<header
+  class="header"
+  [class.home-page]="isHomePage"
+  [class.scrolled]="isScrolled"
+>
   <div class="container">
     <div class="header-content">
       <!-- Logo -->
       <div class="logo">
-        <a [routerLink]="['/home']" [attr.aria-label]="'Royal Nano Ceramic Logo'">
+        <a
+          [routerLink]="['/home']"
+          (click)="navigateTo('home')"
+          [attr.aria-label]="'Royal Nano Ceramic Logo'"
+        >
           <img
             src="assets/images/logo.png"
             alt="Royal Nano Ceramic Logo"
@@ -36,12 +44,10 @@
             class="lang-btn"
             (click)="toggleLanguage()"
             [attr.aria-label]="
-              currentLang === 'ar'
-                ? 'Switch to English'
-                : 'التبديل إلى العربية'
+              currentLang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'
             "
           >
-            {{ currentLang === 'ar' ? 'EN' : 'عربي' }}
+            {{ currentLang === "ar" ? "En" : "Ar" }}
           </button>
         </div>
       </div>
@@ -52,9 +58,7 @@
         [class.active]="isMenuOpen"
         (click)="toggleMenu()"
         [attr.aria-label]="
-          isMenuOpen
-            ? 'Close mobile menu'
-            : 'Open mobile menu'
+          isMenuOpen ? 'Close mobile menu' : 'Open mobile menu'
         "
       >
         <span></span>

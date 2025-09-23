@@ -24,7 +24,7 @@ export class ContactComponent implements OnInit, OnDestroy {
     phoneNumber: '',
     carType: '',
     carModel: '',
-    notes: '',
+    additionalNotes: '', // Changed from 'notes' to match API
   };
 
   isSubmitting = false;
@@ -115,7 +115,7 @@ export class ContactComponent implements OnInit, OnDestroy {
       phoneNumber: '',
       carType: '',
       carModel: '',
-      notes: '',
+      additionalNotes: '',
     };
   }
 }

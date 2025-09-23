@@ -1,0 +1,257 @@
+<div class="discount-landing">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="main-title">
+          🔥 خصم 20% لفترة محدودة 🔥
+        </h1>
+        <h2 class="subtitle">
+          احصل على فيلم الحماية النانوسيراميك بخصم حصري
+        </h2>
+        <p class="description">
+          عرض خاص لفترة محدودة - وفر 100 جنيه على خدمة الحماية المميزة لسيارتك
+        </p>
+        
+        <!-- Countdown Timer -->
+        <div class="countdown-timer" *ngIf="timeLeft.hours > 0 || timeLeft.minutes > 0 || timeLeft.seconds > 0">
+          <div class="timer-label">⏰ العرض ينتهي خلال:</div>
+          <div class="timer-display">
+            <div class="time-unit">
+              <span class="time-number">{{ timeLeft.hours | number:'2.0-0' }}</span>
+              <span class="time-label">ساعة</span>
+            </div>
+            <div class="time-separator">:</div>
+            <div class="time-unit">
+              <span class="time-number">{{ timeLeft.minutes | number:'2.0-0' }}</span>
+              <span class="time-label">دقيقة</span>
+            </div>
+            <div class="time-separator">:</div>
+            <div class="time-unit">
+              <span class="time-number">{{ timeLeft.seconds | number:'2.0-0' }}</span>
+              <span class="time-label">ثانية</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="expired-timer" *ngIf="timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0">
+          ⛔ انتهى العرض
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Section -->
+  <div class="product-section">
+    <div class="container">
+      <div class="product-card">
+        <div class="product-image">
+          <img 
+            src="assets/images/ChatGPT Image Sep 20, 2025, 05_34_14 PM.png" 
+            alt="خدمة النانوسيراميك" 
+            class="product-img"
+            loading="eager"
+            decoding="async"
+          >
+          <div class="discount-badge">خصم 20%</div>
+        </div>
+        
+        <div class="product-info">
+          <h3 class="product-title">فيلم الحماية النانوسيراميك المميز</h3>
+          <div class="features">
+            <div class="feature-item">
+              <i class="fas fa-shield-alt"></i>
+              <span>حماية من الخدوش والتآكل</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-sun"></i>
+              <span>مقاوم للأشعة فوق البنفسجية</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-tint"></i>
+              <span>طارد للماء والأوساخ</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-star"></i>
+              <span>ضمان 3 سنوات</span>
+            </div>
+          </div>
+          
+          <div class="pricing">
+            <div class="original-price">
+              <span class="price-label">السعر الأصلي:</span>
+              <span class="price-value">499 جنيه</span>
+            </div>
+            <div class="discount-price">
+              <span class="price-label">السعر بعد الخصم:</span>
+              <span class="price-value">399 جنيه</span>
+            </div>
+            <div class="savings">
+              <span class="savings-text">وفر 100 جنيه</span>
+            </div>
+          </div>
+          
+          <button class="cta-button" (click)="scrollToForm()">
+            🛒 احجز موعدك الآن
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <div class="form-section" id="order-form">
+    <div class="container">
+      <div class="form-container">
+        <div class="form-header">
+          <h3 class="form-title">📋 احجز موعدك الآن</h3>
+          <p class="form-subtitle">املأ البيانات التالية وسنتواصل معك خلال 24 ساعة</p>
+        </div>
+        
+        <!-- Success Message -->
+        <div class="success-message" *ngIf="submitSuccess">
+          <i class="fas fa-check-circle"></i>
+          <h4>تم إرسال طلبك بنجاح!</h4>
+          <p>شكراً لك! سنتواصل معك خلال 24 ساعة لتأكيد الموعد.</p>
+        </div>
+        
+        <!-- Error Message -->
+        <div class="error-message" *ngIf="submitError">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>{{ submitError }}</p>
+        </div>
+        
+        <!-- Contact Form -->
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form" *ngIf="!submitSuccess">
+          <div class="form-group">
+            <label for="fullName">الاسم الكامل *</label>
+            <input 
+              type="text" 
+              id="fullName"
+              formControlName="fullName"
+              placeholder="أدخل اسمك الكامل"
+              [class.error]="isFieldInvalid('fullName')"
+            >
+            <div class="error-message" *ngIf="isFieldInvalid('fullName')">
+              {{ getErrorMessage('fullName') }}
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="phoneNumber">رقم الهاتف *</label>
+            <input 
+              type="tel" 
+              id="phoneNumber"
+              formControlName="phoneNumber"
+              placeholder="01xxxxxxxxx"
+              [class.error]="isFieldInvalid('phoneNumber')"
+            >
+            <div class="error-message" *ngIf="isFieldInvalid('phoneNumber')">
+              {{ getErrorMessage('phoneNumber') }}
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="carType">نوع السيارة *</label>
+            <select 
+              id="carType"
+              formControlName="carType"
+              [class.error]="isFieldInvalid('carType')"
+            >
+              <option value="">اختر نوع السيارة</option>
+              <option value="سيدان">سيدان</option>
+              <option value="هاتشباك">هاتشباك</option>
+              <option value="SUV">SUV</option>
+              <option value="كوبيه">كوبيه</option>
+              <option value="كروس أوفر">كروس أوفر</option>
+              <option value="بيك أب">بيك أب</option>
+              <option value="فان">فان</option>
+              <option value="أخرى">أخرى</option>
+            </select>
+            <div class="error-message" *ngIf="isFieldInvalid('carType')">
+              {{ getErrorMessage('carType') }}
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="carModel">موديل السيارة *</label>
+            <input 
+              type="text" 
+              id="carModel"
+              formControlName="carModel"
+              placeholder="مثال: 2020, 2021, 2022..."
+              [class.error]="isFieldInvalid('carModel')"
+            >
+            <div class="error-message" *ngIf="isFieldInvalid('carModel')">
+              {{ getErrorMessage('carModel') }}
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="additionalNotes">ملاحظات إضافية (اختياري)</label>
+            <textarea 
+              id="additionalNotes"
+              formControlName="additionalNotes"
+              rows="3"
+              placeholder="أي ملاحظات أو أسئلة إضافية..."
+            ></textarea>
+          </div>
+          
+          <button 
+            type="submit" 
+            class="submit-button"
+            [disabled]="isSubmitting"
+          >
+            <i class="fas fa-paper-plane" *ngIf="!isSubmitting"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+            {{ isSubmitting ? 'جاري الإرسال...' : 'تأكيد الطلب ✅' }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trust Section -->
+  <div class="trust-section">
+    <div class="container">
+      <div class="trust-content">
+        <h3>لماذا تختار رويال نانو سيراميك؟</h3>
+        <div class="trust-items">
+          <div class="trust-item">
+            <i class="fas fa-award"></i>
+            <h4>خبرة 10 سنوات</h4>
+            <p>أكثر من 5000 سيارة تم حمايتها</p>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-shield-alt"></i>
+            <h4>ضمان 3 سنوات</h4>
+            <p>ضمان شامل على جميع خدماتنا</p>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-tools"></i>
+            <h4>أحدث التقنيات</h4>
+            <p>نستخدم أحدث تقنيات النانوسيراميك</p>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-star"></i>
+            <h4>تقييم 5 نجوم</h4>
+            <p>تقييم ممتاز من عملائنا</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating WhatsApp Button for Discount Page -->
+  <a
+    href="https://wa.me/201032222542?text=مرحباً، أريد الاستفسار عن عرض الخصم 20%"
+    target="_blank"
+    class="discount-whatsapp-btn"
+    title="تواصل معنا على WhatsApp"
+    aria-label="تواصل معنا على WhatsApp"
+    rel="noopener noreferrer"
+  >
+    <i class="fab fa-whatsapp" aria-hidden="true"></i>
+    <span>WhatsApp</span>
+  </a>
+</div>

@@ -7,6 +7,7 @@ import {
   ReactiveFormsModule,
   AbstractControl,
 } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ApiService, ContactFormData } from '../../shared/services/api.service';
 import { TranslationService } from '../../shared/services/translation.service';
 
@@ -27,7 +28,8 @@ export class ContactFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-    public translationService: TranslationService
+    public translationService: TranslationService,
+    private route: ActivatedRoute
   ) {
     this.contactForm = this.fb.group({
       fullName: [
@@ -54,7 +56,11 @@ export class ContactFormComponent implements OnInit {
           Validators.maxLength(30),
         ],
       ],
-      notes: ['', [Validators.maxLength(500)]],
+      additionalNotes: ['', [Validators.maxLength(500)]],
+      // 🟢 UTM fields for tracking
+      utm_source: [''],
+      utm_medium: [''],
+      utm_campaign: [''],
     });
   }
 
@@ -62,11 +68,42 @@ export class ContactFormComponent implements OnInit {
     // Log form initialization
     console.log('🚀 ContactFormComponent initialized');
     console.log('📝 Form controls:', this.contactForm.controls);
+
+    // قراءة الـ UTM Parameters من URL
+    this.route.queryParamMap.subscribe(params => {
+      console.log('🔍 UTM Parameters found:', {
+        utm_source: params.get('utm_source'),
+        utm_medium: params.get('utm_medium'),
+        utm_campaign: params.get('utm_campaign')
+      });
+
+      const utmSource = params.get('utm_source') || '';
+      const utmMedium = params.get('utm_medium') || '';
+      const utmCampaign = params.get('utm_campaign') || '';
+
+      this.contactForm.patchValue({
+        utm_source: utmSource,
+        utm_medium: utmMedium,
+        utm_campaign: utmCampaign
+      });
+
+      console.log('✅ UTM Parameters added to form:', {
+        utm_source: utmSource,
+        utm_medium: utmMedium,
+        utm_campaign: utmCampaign
+      });
+      console.log('✅ Complete form data after UTM update:', this.contactForm.value);
+    });
   }
 
   onSubmit(): void {
     console.log('🔄 Contact form submission started');
     console.log('📝 Form data:', this.contactForm.value);
+    console.log('🔍 UTM Data being sent:', {
+      utm_source: this.contactForm.get('utm_source')?.value,
+      utm_medium: this.contactForm.get('utm_medium')?.value,
+      utm_campaign: this.contactForm.get('utm_campaign')?.value
+    });
     console.log('✅ Form valid:', this.contactForm.valid);
     console.log('❌ Form errors:', this.contactForm.errors);
 
@@ -78,6 +115,11 @@ export class ContactFormComponent implements OnInit {
 
       const formData: ContactFormData = this.contactForm.value;
       console.log('📤 Submitting data to API:', formData);
+      console.log('🔍 UTM Data in formData:', {
+        utm_source: formData.utm_source,
+        utm_medium: formData.utm_medium,
+        utm_campaign: formData.utm_campaign
+      });
 
       this.apiService.submitContactForm(formData).subscribe({
         next: (response) => {

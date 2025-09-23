@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="ar" datatype="plaintext" original="ng2.template">
+    <body>
+      <!-- Blog Dashboard -->
+      <trans-unit id="blog.dashboard.title" datatype="html">
+        <source>لوحة إدارة المدونة</source>
+        <target>لوحة إدارة المدونة</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.dashboard.subtitle" datatype="html">
+        <source>أضف منشورات جديدة للمدونة</source>
+        <target>أضف منشورات جديدة للمدونة</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.dashboard.welcome" datatype="html">
+        <source>Welcome, {username}</source>
+        <target>مرحباً، {username}</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.dashboard.login.time" datatype="html">
+        <source>تم تسجيل الدخول: {time}</source>
+        <target>تم تسجيل الدخول: {time}</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.dashboard.view.blog" datatype="html">
+        <source>عرض المدونة</source>
+        <target>عرض المدونة</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.dashboard.view.posts" datatype="html">
+        <source>عرض المنشورات</source>
+        <target>عرض المنشورات</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.dashboard.logout" datatype="html">
+        <source>تسجيل الخروج</source>
+        <target>تسجيل الخروج</target>
+      </trans-unit>
+      
+      <!-- Blog Form -->
+      <trans-unit id="blog.form.basic.info" datatype="html">
+        <source>معلومات المنشور الأساسية</source>
+        <target>معلومات المنشور الأساسية</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.title" datatype="html">
+        <source>عنوان المنشور *</source>
+        <target>عنوان المنشور *</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.title.placeholder" datatype="html">
+        <source>أدخل عنوان المنشور</source>
+        <target>أدخل عنوان المنشور</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.excerpt" datatype="html">
+        <source>ملخص المنشور *</source>
+        <target>ملخص المنشور *</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.excerpt.placeholder" datatype="html">
+        <source>أدخل ملخص مختصر للمنشور</source>
+        <target>أدخل ملخص مختصر للمنشور</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.content" datatype="html">
+        <source>محتوى المنشور *</source>
+        <target>محتوى المنشور *</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.content.placeholder" datatype="html">
+        <source>أدخل المحتوى الكامل للمنشور</source>
+        <target>أدخل المحتوى الكامل للمنشور</target>
+      </trans-unit>
+      
+      <!-- Additional Details -->
+      <trans-unit id="blog.form.additional.details" datatype="html">
+        <source>تفاصيل إضافية</source>
+        <target>تفاصيل إضافية</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.category" datatype="html">
+        <source>الفئة *</source>
+        <target>الفئة *</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.category.placeholder" datatype="html">
+        <source>اختر الفئة</source>
+        <target>اختر الفئة</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.read.time" datatype="html">
+        <source>وقت القراءة *</source>
+        <target>وقت القراءة *</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.read.time.placeholder" datatype="html">
+        <source>مثال: 5 دقائق</source>
+        <target>مثال: 5 دقائق</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.image" datatype="html">
+        <source>رابط الصورة *</source>
+        <target>رابط الصورة *</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.image.placeholder" datatype="html">
+        <source>أدخل رابط الصورة</source>
+        <target>أدخل رابط الصورة</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.image.help" datatype="html">
+        <source>يجب أن يكون الرابط صحيحاً ويشير إلى صورة</source>
+        <target>يجب أن يكون الرابط صحيحاً ويشير إلى صورة</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.tags" datatype="html">
+        <source>العلامات *</source>
+        <target>العلامات *</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.tags.placeholder" datatype="html">
+        <source>أدخل العلامات مفصولة بفواصل</source>
+        <target>أدخل العلامات مفصولة بفواصل</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.tags.help" datatype="html">
+        <source>مثال: تقنيات, حماية, سيارات, جودة</source>
+        <target>مثال: تقنيات, حماية, سيارات, جودة</target>
+      </trans-unit>
+      
+      <!-- SEO -->
+      <trans-unit id="blog.form.seo.title" datatype="html">
+        <source>تحسين محركات البحث (SEO)</source>
+        <target>تحسين محركات البحث (SEO)</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.seo.keywords" datatype="html">
+        <source>الكلمات المفتاحية *</source>
+        <target>الكلمات المفتاحية *</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.seo.keywords.placeholder" datatype="html">
+        <source>أدخل الكلمات المفتاحية مفصولة بفواصل</source>
+        <target>أدخل الكلمات المفتاحية مفصولة بفواصل</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.seo.keywords.help" datatype="html">
+        <source>مثال: تقنيات, حماية, سيارات, جودة</source>
+        <target>مثال: تقنيات, حماية, سيارات, جودة</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.seo.description" datatype="html">
+        <source>وصف SEO *</source>
+        <target>وصف SEO *</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.seo.description.placeholder" datatype="html">
+        <source>أدخل وصف مختصر للمنشور لتحسين محركات البحث</source>
+        <target>أدخل وصف مختصر للمنشور لتحسين محركات البحث</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.seo.description.help" datatype="html">
+        <source>يجب أن يكون الوصف بين 50-160 حرف</source>
+        <target>يجب أن يكون الوصف بين 50-160 حرف</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.featured" datatype="html">
+        <source>منشور مميز</source>
+        <target>منشور مميز</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.featured.help" datatype="html">
+        <source>المنشورات المميزة تظهر في أعلى المدونة</source>
+        <target>المنشورات المميزة تظهر في أعلى المدونة</target>
+      </trans-unit>
+      
+      <!-- Form Actions -->
+      <trans-unit id="blog.form.submit" datatype="html">
+        <source>إضافة المنشور</source>
+        <target>إضافة المنشور</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.submitting" datatype="html">
+        <source>جاري الإضافة...</source>
+        <target>جاري الإضافة...</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.reset" datatype="html">
+        <source>إعادة تعيين</source>
+        <target>إعادة تعيين</target>
+      </trans-unit>
+      
+      <!-- Messages -->
+      <trans-unit id="blog.form.success" datatype="html">
+        <source>تم إضافة المنشور بنجاح! يمكنك الآن عرضه في صفحة المدونة.</source>
+        <target>تم إضافة المنشور بنجاح! يمكنك الآن عرضه في صفحة المدونة.</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.form.error" datatype="html">
+        <source>يرجى ملء جميع الحقول المطلوبة</source>
+        <target>يرجى ملء جميع الحقول المطلوبة</target>
+      </trans-unit>
+      
+      <!-- Categories -->
+      <trans-unit id="blog.category.advanced.tech" datatype="html">
+        <source>تقنيات متطورة</source>
+        <target>تقنيات متطورة</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.category.car.maintenance" datatype="html">
+        <source>صيانة السيارات</source>
+        <target>صيانة السيارات</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.category.car.cleaning" datatype="html">
+        <source>تنظيف السيارات</source>
+        <target>تنظيف السيارات</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.category.luxury.cars" datatype="html">
+        <source>سيارات فاخرة</source>
+        <target>سيارات فاخرة</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.category.nano.tech" datatype="html">
+        <source>تقنيات النانو</source>
+        <target>تقنيات النانو</target>
+      </trans-unit>
+      
+      <trans-unit id="blog.category.car.care" datatype="html">
+        <source>عناية السيارات</source>
+        <target>عناية السيارات</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+
+

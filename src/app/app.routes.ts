@@ -1,43 +1,74 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
-import { AboutComponent } from './pages/about/about.component';
-import { ServicesComponent } from './pages/services/services.component';
-import { BlogComponent } from './pages/blog/blog.component';
-import { GalleryComponent } from './pages/gallery/gallery.component';
-import { ContactComponent } from './pages/contact/contact.component';
-import { JoinUsComponent } from './pages/join-us/join-us.component';
-import { AdminMessagesComponent } from './pages/admin-messages/admin-messages.component';
-import { BlogDashboardComponent } from './pages/blog-dashboard/blog-dashboard.component';
-import { AdminAccessComponent } from './pages/admin-access/admin-access.component';
-import { AdminLoginComponent } from './pages/admin-login/admin-login.component';
-import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
-import { AdminDashboardOverviewComponent } from './pages/admin-dashboard-overview/admin-dashboard-overview.component';
-import { AdminServicesComponent } from './pages/admin-services/admin-services.component';
-import { AdminGalleryComponent } from './pages/admin-gallery/admin-gallery.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent },
-  { path: 'about', component: AboutComponent },
-  { path: 'services', component: ServicesComponent },
-  { path: 'blog', component: BlogComponent },
-  { path: 'gallery', component: GalleryComponent },
-  { path: 'contact', component: ContactComponent },
-  { path: 'join-us', component: JoinUsComponent },
+  { 
+    path: 'home', 
+    loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent)
+  },
+  { 
+    path: 'about', 
+    loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent)
+  },
+  { 
+    path: 'services', 
+    loadComponent: () => import('./pages/services/services.component').then(m => m.ServicesComponent)
+  },
+  { 
+    path: 'blog', 
+    loadComponent: () => import('./pages/blog/blog.component').then(m => m.BlogComponent)
+  },
+  { 
+    path: 'gallery', 
+    loadComponent: () => import('./pages/gallery/gallery.component').then(m => m.GalleryComponent)
+  },
+  { 
+    path: 'contact', 
+    loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent)
+  },
+  { 
+    path: 'join-us', 
+    loadComponent: () => import('./pages/join-us/join-us.component').then(m => m.JoinUsComponent)
+  },
+  { 
+    path: 'discount', 
+    loadComponent: () => import('./pages/discount/discount.component').then(m => m.DiscountComponent)
+  },
 
-  // Admin routes
-  { path: 'admin', component: AdminLoginComponent },
+  // Admin routes - lazy loaded
+  { 
+    path: 'admin', 
+    loadComponent: () => import('./pages/admin-login/admin-login.component').then(m => m.AdminLoginComponent)
+  },
   { path: 'admin/login', redirectTo: '/admin', pathMatch: 'full' },
   {
     path: 'admin/dashboard',
-    component: AdminDashboardComponent,
+    loadComponent: () => import('./pages/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
     children: [
-      { path: '', component: AdminDashboardOverviewComponent },
-      { path: 'overview', component: AdminDashboardOverviewComponent },
-      { path: 'messages', component: AdminMessagesComponent },
-      { path: 'services', component: AdminServicesComponent },
-      { path: 'gallery', component: AdminGalleryComponent },
-      { path: 'blog', component: BlogDashboardComponent },
+      { 
+        path: '', 
+        loadComponent: () => import('./pages/admin-dashboard-overview/admin-dashboard-overview.component').then(m => m.AdminDashboardOverviewComponent)
+      },
+      { 
+        path: 'overview', 
+        loadComponent: () => import('./pages/admin-dashboard-overview/admin-dashboard-overview.component').then(m => m.AdminDashboardOverviewComponent)
+      },
+      { 
+        path: 'messages', 
+        loadComponent: () => import('./pages/admin-messages/admin-messages.component').then(m => m.AdminMessagesComponent)
+      },
+      { 
+        path: 'services', 
+        loadComponent: () => import('./pages/admin-services/admin-services.component').then(m => m.AdminServicesComponent)
+      },
+      { 
+        path: 'gallery', 
+        loadComponent: () => import('./pages/admin-gallery/admin-gallery.component').then(m => m.AdminGalleryComponent)
+      },
+      { 
+        path: 'blog', 
+        loadComponent: () => import('./pages/blog-dashboard/blog-dashboard.component').then(m => m.BlogDashboardComponent)
+      },
     ],
   },
   {
@@ -62,8 +93,14 @@ export const routes: Routes = [
   },
 
   // Legacy admin routes
-  { path: 'admin/access', component: AdminAccessComponent },
-  { path: 'dashboard/blog', component: BlogDashboardComponent },
+  { 
+    path: 'admin/access', 
+    loadComponent: () => import('./pages/admin-access/admin-access.component').then(m => m.AdminAccessComponent)
+  },
+  { 
+    path: 'dashboard/blog', 
+    loadComponent: () => import('./pages/blog-dashboard/blog-dashboard.component').then(m => m.BlogDashboardComponent)
+  },
 
   { path: '**', redirectTo: '/home' },
 ];

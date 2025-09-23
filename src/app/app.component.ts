@@ -5,6 +5,9 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ErrorNotificationComponent } from './components/error-notification/error-notification.component';
 import { filter } from 'rxjs/operators';
+import { PerformanceService } from './shared/services/performance.service';
+import { ImageOptimizationService } from './shared/services/image-optimization.service';
+import { ScrollToTopService } from './shared/services/scroll-to-top.service';
 
 @Component({
   selector: 'app-root',
@@ -25,8 +28,14 @@ export class AppComponent implements OnInit {
   isRtl = true;
   currentRoute = '';
   isAdminRoute = false;
+  isDiscountRoute = false;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private performanceService: PerformanceService,
+    private imageOptimizationService: ImageOptimizationService,
+    private scrollToTopService: ScrollToTopService
+  ) {
     // Subscribe to router events to scroll to top on navigation
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -34,8 +43,9 @@ export class AppComponent implements OnInit {
         if (event instanceof NavigationEnd) {
           this.currentRoute = event.url;
           this.isAdminRoute = this.currentRoute.startsWith('/admin');
+          this.isDiscountRoute = this.currentRoute === '/discount';
         }
-        this.scrollToTop();
+        this.scrollToTopService.scrollToTop();
       });
   }
 
@@ -49,32 +59,34 @@ export class AppComponent implements OnInit {
       // Initialize route tracking
       this.currentRoute = this.router.url;
       this.isAdminRoute = this.currentRoute.startsWith('/admin');
+
+      // Initialize performance monitoring
+      this.initializePerformanceOptimizations();
     } catch (error) {
       console.error('Error initializing app:', error);
     }
   }
 
   /**
-   * Scroll to top of the page
+   * Initialize performance optimizations
    */
-  private scrollToTop(): void {
-    try {
-      // Smooth scroll to top
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      });
-
-      // Fallback for older browsers
-      if (!window.scrollTo) {
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-      }
-    } catch (error) {
-      console.error('Error scrolling to top:', error);
-      // Fallback: instant scroll to top
-      window.scrollTo(0, 0);
-    }
+  private initializePerformanceOptimizations(): void {
+    // Measure page load performance
+    this.performanceService.measurePageLoad();
+    
+    // Monitor Core Web Vitals
+    this.performanceService.monitorCoreWebVitals();
+    
+    // Preload critical resources
+    this.performanceService.preloadCriticalResources();
+    
+    // Optimize font loading
+    this.performanceService.optimizeFontLoading();
+    
+    // Initialize lazy loading for images
+    setTimeout(() => {
+      this.imageOptimizationService.observeImages();
+    }, 100);
   }
+
 }

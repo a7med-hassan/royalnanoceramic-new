@@ -1,1 +1,44 @@
-<p>service-card works!</p>
+<div class="service-card" [class.rtl]="true">
+  <div class="service-image">
+    <img [src]="getServiceImage()" [alt]="service.title" loading="lazy">
+    <div class="service-overlay">
+      <button 
+        class="btn btn-primary" 
+        (click)="navigateToContact(service.category)"
+        [attr.aria-label]="'استفسر عن ' + service.title">
+        استفسر الآن
+      </button>
+    </div>
+  </div>
+  
+  <div class="service-content">
+    <h3 class="service-title">{{ service.title }}</h3>
+    <p class="service-description">{{ service.description }}</p>
+    
+    <div class="service-features" *ngIf="showFeatures && service.features.length > 0">
+      <h4>المميزات:</h4>
+      <ul>
+        <li *ngFor="let feature of service.features">{{ feature }}</li>
+      </ul>
+    </div>
+    
+    <div class="service-meta" *ngIf="showPrice || showDuration">
+      <div class="service-price" *ngIf="showPrice && service.price">
+        <span class="price-label">السعر:</span>
+        <span class="price-value">{{ service.price }}</span>
+      </div>
+      <div class="service-duration" *ngIf="showDuration && service.duration">
+        <span class="duration-label">المدة:</span>
+        <span class="duration-value">{{ service.duration }}</span>
+      </div>
+    </div>
+    
+    <div class="service-actions">
+      <button 
+        class="btn btn-outline-primary" 
+        (click)="navigateToContact(service.category)">
+        احجز الآن
+      </button>
+    </div>
+  </div>
+</div>

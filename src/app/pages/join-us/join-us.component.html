@@ -115,13 +115,13 @@
             </div>
 
             <div class="form-group">
-              <label for="position">{{
+              <label for="jobPosition">{{
                 translationService.getTranslation("join.form.position")
               }}</label>
               <select
-                id="position"
-                formControlName="position"
-                [class.invalid]="isFieldInvalid('position')"
+                id="jobPosition"
+                formControlName="jobPosition"
+                [class.invalid]="isFieldInvalid('jobPosition')"
               >
                 <option value="">
                   {{
@@ -140,8 +140,8 @@
                   سوشيال ميديا مديتيور
                 </option>
               </select>
-              <div class="error-message" *ngIf="isFieldInvalid('position')">
-                {{ getErrorMessage("position") }}
+              <div class="error-message" *ngIf="isFieldInvalid('jobPosition')">
+                {{ getErrorMessage("jobPosition") }}
               </div>
             </div>
           </div>
@@ -167,13 +167,13 @@
           </div>
 
           <div class="form-group full-width">
-            <label for="message">{{
+            <label for="additionalMessage">{{
               translationService.getTranslation("join.form.message")
             }}</label>
             <textarea
-              id="message"
-              formControlName="message"
-              [class.invalid]="isFieldInvalid('message')"
+              id="additionalMessage"
+              formControlName="additionalMessage"
+              [class.invalid]="isFieldInvalid('additionalMessage')"
               rows="4"
               [placeholder]="
                 translationService.getTranslation(
@@ -181,11 +181,13 @@
                 )
               "
             ></textarea>
-            <div class="error-message" *ngIf="isFieldInvalid('message')">
-              {{ getErrorMessage("message") }}
+            <div class="error-message" *ngIf="isFieldInvalid('additionalMessage')">
+              {{ getErrorMessage("additionalMessage") }}
             </div>
           </div>
 
+          <!-- CV Upload Section - Hidden/Commented Out -->
+          <!-- 
           <div class="form-group full-width">
             <label for="cvFile">{{
               translationService.getTranslation("join.form.cv")
@@ -193,13 +195,12 @@
             <input
               type="file"
               id="cvFile"
-              (change)="onFileSelect($event)"
+              (change)="onFileSelected($event)"
               accept=".pdf,.doc,.docx"
               [placeholder]="
                 translationService.getTranslation('join.form.cv_placeholder')
               "
             />
-            <!-- File info display -->
             <div class="file-info" *ngIf="joinForm.value.cvFile">
               <i class="fas fa-file-alt"></i>
               <span class="file-name">{{ joinForm.value.cvFile.name }}</span>
@@ -218,7 +219,6 @@
                 <i class="fas fa-times"></i>
               </button>
             </div>
-            <!-- File requirements -->
             <div class="file-requirements">
               <small>
                 <i class="fas fa-info-circle"></i>
@@ -226,6 +226,7 @@
               </small>
             </div>
           </div>
+          -->
 
           <div class="form-actions">
             <button

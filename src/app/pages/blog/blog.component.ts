@@ -53,7 +53,16 @@ export class BlogComponent implements OnInit, OnDestroy {
     this.currentLang = this.translationService.getCurrentLanguage();
     this.isRtl = this.translationService.isRtl$;
 
-    // Language initialized
+    // Subscribe to language changes
+    this.translationService.languageChanged$.subscribe((lang: string) => {
+      this.currentLang = lang;
+      this.isRtl = lang === 'ar';
+      
+      // Refresh blog posts when language changes
+      this.initializeBlogPosts();
+      this.filterPosts();
+      this.setFeaturedPost();
+    });
 
     this.initializeBlogPosts();
     this.filterPosts();

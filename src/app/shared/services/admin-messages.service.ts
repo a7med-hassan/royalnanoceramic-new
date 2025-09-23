@@ -29,17 +29,21 @@ export interface ContactFormData {
   phoneNumber: string;
   carType: string;
   carModel: string;
-  notes: string;
+  additionalNotes: string; // Changed from 'notes' to match API
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
 }
 
 export interface JoinFormData {
   fullName: string;
   phoneNumber: string;
   email: string;
-  position: string;
+  jobPosition: string; // Changed from 'position' to match API
   experience: string;
-  message: string;
-  cvFile?: File | null;
+  additionalMessage: string; // Changed from 'message' to match API
+  cvFileName?: string; // Added to match API
+  cvPath?: string; // Added to match API
 }
 
 @Injectable({

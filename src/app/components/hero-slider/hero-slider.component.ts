@@ -62,6 +62,15 @@ export class HeroSliderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.currentLang = this.translationService.getCurrentLanguage();
     this.isRtl = this.translationService.isRtl$;
 
+    // Subscribe to language changes
+    this.translationService.languageChanged$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.currentLang = this.translationService.getCurrentLanguage();
+        this.isRtl = this.translationService.isRtl$;
+        this.refreshSlides(); // Refresh slides when language changes
+      });
+
     // Language initialized
   }
 

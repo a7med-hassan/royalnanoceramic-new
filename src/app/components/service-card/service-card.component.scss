@@ -1,0 +1,219 @@
+.service-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .service-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .service-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+
+      .btn {
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    &:hover {
+      img {
+        transform: scale(1.1);
+      }
+
+      .service-overlay {
+        opacity: 1;
+      }
+    }
+  }
+
+  .service-content {
+    padding: 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .service-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .service-description {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      flex: 1;
+    }
+
+    .service-features {
+      margin-bottom: 20px;
+
+      h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 12px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          padding: 6px 0;
+          color: #666;
+          position: relative;
+          padding-right: 20px;
+
+          &::before {
+            content: "✓";
+            position: absolute;
+            right: 0;
+            color: #27ae60;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
+    .service-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+
+      .service-price,
+      .service-duration {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .price-label,
+        .duration-label {
+          font-size: 0.9rem;
+          color: #666;
+          margin-bottom: 4px;
+        }
+
+        .price-value,
+        .duration-value {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: #2c3e50;
+        }
+      }
+    }
+
+    .service-actions {
+      margin-top: auto;
+
+      .btn {
+        width: 100%;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+
+        &.btn-outline-primary {
+          border: 2px solid #3498db;
+          color: #3498db;
+          background: transparent;
+
+          &:hover {
+            background: #3498db;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  // RTL Support
+  &.rtl {
+    .service-features ul li {
+      padding-right: 0;
+      padding-left: 20px;
+
+      &::before {
+        right: auto;
+        left: 0;
+      }
+    }
+  }
+
+  // Responsive Design
+  @media (max-width: 768px) {
+    .service-content {
+      padding: 20px;
+
+      .service-title {
+        font-size: 1.3rem;
+      }
+
+      .service-meta {
+        flex-direction: column;
+        gap: 12px;
+
+        .service-price,
+        .service-duration {
+          flex-direction: row;
+          gap: 8px;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .service-image {
+      height: 180px;
+    }
+
+    .service-content {
+      padding: 16px;
+
+      .service-title {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}

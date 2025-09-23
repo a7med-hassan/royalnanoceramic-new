@@ -87,6 +87,7 @@
           <li *ngFor="let link of quickLinks">
             <a
               [routerLink]="['/' + link.route]"
+              (click)="navigateTo(link.route)"
               [attr.aria-label]="getQuickLinkName(link.label)"
             >
               {{ getQuickLinkName(link.label) }}

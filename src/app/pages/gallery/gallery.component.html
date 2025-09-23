@@ -1,36 +1,29 @@
-<div class="gallery-page" [class.rtl]="isRtl">
+<div class="gallery">
   <!-- Hero Section -->
   <section class="hero-section">
-    <div class="hero-content">
-      <h4 class="hero-category">GALLERY</h4>
-      <h1 class="hero-title">
-        {{ translationService.getTranslation("gallery.hero.title") }}
-      </h1>
-      <p class="hero-subtitle">
-        {{ translationService.getTranslation("gallery.hero.subtitle") }}
-      </p>
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">{{ translationService.getTranslation('gallery.hero.title') }}</h1>
+        <p class="hero-subtitle">{{ translationService.getTranslation('gallery.hero.subtitle') }}</p>
+        <p class="hero-description">{{ translationService.getTranslation('gallery.section.subtitle') }}</p>
+      </div>
     </div>
   </section>
 
   <!-- Featured Slider Section -->
   <section class="featured-slider-section">
-    <div class="slider-container">
-      <div class="swiper featured-swiper">
-        <div class="swiper-wrapper">
-          <div
-            class="swiper-slide"
-            *ngFor="let image of featuredImages; let i = index"
-          >
-            <div
-              class="slide-content"
-              (click)="
-                navigateToContact(image.serviceType || 'General Service')
-              "
-            >
-              <img [src]="image.src" [alt]="image.alt" class="slide-image" />
-              <div class="slide-text-overlay">
-                <div class="service-info">
-                  <h3 class="book-now-text">احجز الآن</h3>
+    <div class="container">
+      <h2 class="section-title">{{ translationService.getTranslation('gallery.section.title') }}</h2>
+      <div class="slider-container">
+        <div class="swiper featured-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide" *ngFor="let service of getFeaturedServices(); let i = index">
+              <div class="slide-content" (click)="navigateToContact(service.type)">
+                <img [src]="service.image" [alt]="service.title" class="slide-image" />
+                <div class="slide-overlay">
+                  <div class="slide-info">
+                    <h3 class="contact-text">{{ translationService.getTranslation('contact.hero.title') }}</h3>
+                  </div>
                 </div>
               </div>
             </div>
@@ -42,21 +35,27 @@
 
   <!-- Gallery Grid Section -->
   <section class="gallery-grid-section">
-    <div class="gallery-grid">
-      <div
-        class="gallery-item"
-        *ngFor="let image of filteredImages; let i = index"
-        data-aos="fade-up"
-        [attr.data-aos-delay]="i * 100"
-      >
-        <img
-          [src]="image.src"
-          [alt]="image.alt"
-          loading="lazy"
-          decoding="async"
-          [attr.data-src]="image.src"
-          class="gallery-image"
-        />
+    <div class="container">
+      <h2 class="section-title">{{ translationService.getTranslation('gallery.section.title') }}</h2>
+      <p class="section-description">{{ translationService.getTranslation('gallery.section.subtitle') }}</p>
+      
+      <div class="image-grid">
+        <a 
+          *ngFor="let img of images; let i = index" 
+          class="image-item glightbox"
+          [href]="img"
+          data-glightbox="gallery"
+          [attr.data-title]="'صورة ' + (i + 1)"
+          [attr.data-description]="'معرض صور خدماتنا المتميزة'"
+        >
+          <img [src]="img" [alt]="'صورة ' + (i + 1)" />
+          <div class="image-overlay">
+            <div class="overlay-content">
+              <i class="fas fa-expand"></i>
+              <span>{{ translationService.getTranslation('gallery.lightbox.view_image') }}</span>
+            </div>
+          </div>
+        </a>
       </div>
     </div>
   </section>

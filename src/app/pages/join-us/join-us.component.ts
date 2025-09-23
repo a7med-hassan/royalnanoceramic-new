@@ -41,10 +41,13 @@ export class JoinUsComponent implements OnInit, OnDestroy {
         [Validators.required, Validators.pattern(/^(\+20|0)?1[0125][0-9]{8}$/)],
       ],
       email: ['', [Validators.required, Validators.email]],
-      position: ['', Validators.required],
+      jobPosition: ['', Validators.required], // Changed from 'position' to match API
       experience: ['', [Validators.required, Validators.minLength(10)]],
-      message: ['', [Validators.required, Validators.minLength(20)]],
-      cvFile: [null],
+      additionalMessage: ['', [Validators.required, Validators.minLength(20)]], // Changed from 'message' to match API
+      // CV fields commented out since CV upload is disabled
+      // cvFile: [null],
+      // cvFileName: [''], // Added for uploaded file name
+      // cvPath: [''], // Added for uploaded file path
     });
   }
 
@@ -58,63 +61,157 @@ export class JoinUsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // Handle file selection with validation
+  // CV Upload Methods - Hidden/Commented Out
+  /*
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+    
+    const allowedTypes = [
+      'application/pdf',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/msword'
+    ];
+    
+    const maxSize = 4 * 1024 * 1024; // 4MB
+
+    if (!allowedTypes.includes(file.type)) {
+      alert("❌ نوع الملف غير صحيح. يُسمح فقط بملفات PDF أو DOC أو DOCX.");
+      this.submitMessage = 'نوع الملف غير مسموح. يُسمح فقط بملفات PDF أو DOC أو DOCX.';
+      this.submitSuccess = false;
+      return;
+    }
+
+    if (file.size > maxSize) {
+      alert("❌ حجم الملف كبير جداً. الحد الأقصى 4 ميجابايت.");
+      this.submitMessage = 'حجم الملف كبير جداً. الحد الأقصى 4 ميجابايت.';
+      this.submitSuccess = false;
+      return;
+    }
+
+    this.submitMessage = 'جاري رفع ملف السيرة الذاتية...';
+    this.submitSuccess = false;
+
+    this.apiService.uploadCVFile(file).subscribe({
+      next: (res: any) => {
+        console.log('✅ Uploaded CV:', res.fileUrl);
+        
+        this.joinForm.patchValue({ 
+          cvFile: file,
+          cvFileName: res.fileName || file.name,
+          cvPath: res.fileUrl
+        });
+        
+        this.submitMessage = 'تم رفع ملف السيرة الذاتية بنجاح!';
+        this.submitSuccess = true;
+        
+        setTimeout(() => {
+          this.submitMessage = '';
+          this.submitSuccess = false;
+        }, 3000);
+      },
+      error: (err) => {
+        console.error('❌ Upload failed:', err);
+        const errorMessage = err?.error?.message || err.message || 'حدث خطأ غير متوقع';
+        alert("فشل في رفع الملف: " + errorMessage);
+        this.submitMessage = 'فشل في رفع ملف السيرة الذاتية. يرجى المحاولة مرة أخرى.';
+        this.submitSuccess = false;
+      }
+    });
+  }
+  */
+
+  // Legacy file selection method - Hidden/Commented Out
+  /*
   onFileSelect(event: any): void {
     const file = event.target.files[0];
     if (file) {
-      // Validate file type
       const allowedTypes = [
         'application/pdf',
         'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       ];
-      const maxSize = 5 * 1024 * 1024; // 5MB
+      const maxSize = 4 * 1024 * 1024; // 4MB
 
       if (!allowedTypes.includes(file.type)) {
         console.error('❌ Invalid file type:', file.type);
-        this.submitMessage =
-          'نوع الملف غير مسموح به. يرجى رفع ملف PDF أو Word فقط.';
+        alert("❌ نوع الملف غير صحيح. يُسمح فقط بملفات PDF أو DOC أو DOCX.");
+        this.submitMessage = 'نوع الملف غير مسموح. يُسمح فقط بملفات PDF أو DOC أو DOCX.';
         this.submitSuccess = false;
-        // Reset file input
         event.target.value = '';
         return;
       }
 
       if (file.size > maxSize) {
         console.error('❌ File too large:', file.size, 'bytes');
-        this.submitMessage = 'حجم الملف كبير جداً. الحد الأقصى 5 ميجابايت.';
+        alert("❌ حجم الملف كبير جداً. الحد الأقصى 4 ميجابايت.");
+        this.submitMessage = 'حجم الملف كبير جداً. الحد الأقصى 4 ميجابايت.';
         this.submitSuccess = false;
-        // Reset file input
         event.target.value = '';
         return;
       }
 
-      // File is valid
-      this.joinForm.patchValue({ cvFile: file });
-      console.log(
-        '📎 CV file selected:',
-        file.name,
-        'Size:',
-        file.size,
-        'Type:',
-        file.type
-      );
-
-      // Clear any previous error messages
-      this.submitMessage = '';
-      this.submitSuccess = false;
+      this.uploadCVFile(file);
     }
   }
+  */
 
-  // Remove selected file
+  // CV Upload Methods - Hidden/Commented Out
+  /*
+  private uploadCVFile(file: File): void {
+    console.log('📤 Starting CV file upload...');
+    this.submitMessage = 'جاري رفع ملف السيرة الذاتية...';
+    this.submitSuccess = false;
+
+    this.apiService.uploadCVFile(file).subscribe({
+      next: (response) => {
+        console.log('✅ CV file uploaded successfully:', response);
+        console.log('✅ Uploaded CV:', response.fileUrl);
+        
+        this.joinForm.patchValue({ 
+          cvFile: file,
+          cvFileName: response.fileName || file.name,
+          cvPath: response.fileUrl
+        });
+        
+        this.submitMessage = 'تم رفع ملف السيرة الذاتية بنجاح!';
+        this.submitSuccess = true;
+        
+        setTimeout(() => {
+          this.submitMessage = '';
+          this.submitSuccess = false;
+        }, 3000);
+      },
+      error: (error) => {
+        console.error('❌ CV file upload failed:', error);
+        const errorMessage = error?.error?.message || error.message || 'حدث خطأ غير متوقع';
+        alert("فشل في رفع الملف: " + errorMessage);
+        this.submitMessage = 'فشل في رفع ملف السيرة الذاتية. يرجى المحاولة مرة أخرى.';
+        this.submitSuccess = false;
+        
+        const fileInput = document.getElementById('cvFile') as HTMLInputElement;
+        if (fileInput) {
+          fileInput.value = '';
+        }
+      }
+    });
+  }
+
   removeFile(): void {
-    this.joinForm.patchValue({ cvFile: null });
+    this.joinForm.patchValue({ 
+      cvFile: null,
+      cvFileName: '',
+      cvPath: ''
+    });
     const fileInput = document.getElementById('cvFile') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
     }
     console.log('🗑️ CV file removed');
   }
+  */
 
   // Submit form
   onSubmit(): void {
@@ -126,20 +223,19 @@ export class JoinUsComponent implements OnInit, OnDestroy {
       this.submitMessage = '';
       this.submitSuccess = false;
 
+      // Prepare form data without CV file (CV upload is disabled)
       const formData: JoinFormData = {
-        ...this.joinForm.value,
-        jobPosition: this.joinForm.value.position, // Map position to jobPosition for backend
+        fullName: this.joinForm.value.fullName,
+        phoneNumber: this.joinForm.value.phoneNumber,
+        email: this.joinForm.value.email,
+        jobPosition: this.joinForm.value.jobPosition,
+        experience: this.joinForm.value.experience,
+        additionalMessage: this.joinForm.value.additionalMessage,
+        cvFileName: '', // Empty since CV upload is disabled
+        cvPath: '' // Empty since CV upload is disabled
       };
 
-      console.log('📤 Form data with jobPosition:', formData);
-
-      // Check if CV file is required and exists
-      if (!formData.cvFile) {
-        this.submitMessage = 'يرجى رفع ملف السيرة الذاتية (CV)';
-        this.submitSuccess = false;
-        this.isSubmitting = false;
-        return;
-      }
+      console.log('📤 Form data with CV info:', formData);
 
       this.apiService
         .submitJoinForm(formData)

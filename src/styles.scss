@@ -1,9 +1,81 @@
 /* You can add global styles to this file, and also import other style files */
 
-/* Font Awesome - Direct Import */
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
+/* Font Awesome - Local Import (optimized) */
 
-/* Swiper CSS */
+/* Cairo Font - Local Import */
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: url('assets/fonts/cairo-arabic-200-normal.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('assets/fonts/cairo-arabic-300-normal.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('assets/fonts/cairo-arabic-400-normal.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('assets/fonts/cairo-arabic-500-normal.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('assets/fonts/cairo-arabic-600-normal.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('assets/fonts/cairo-arabic-700-normal.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('assets/fonts/cairo-arabic-800-normal.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('assets/fonts/cairo-arabic-900-normal.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
+}
+
+/* Swiper CSS - CDN Import (will be optimized later) */
 @import url("https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css");
 
 * {
@@ -15,7 +87,8 @@
 html,
 body {
   height: 100%;
-  font-family: "Cairo", "Roboto", "Arial", sans-serif;
+  width: 100%;
+  font-family: "Cairo", "Segoe UI", "Roboto", "Arial", sans-serif;
   background: #1a1a1a;
   color: #fff;
   line-height: 1.6;
@@ -24,7 +97,9 @@ body {
 
 body {
   margin: 0;
-  font-family: "Cairo", "Roboto", "Arial", sans-serif;
+  padding: 0;
+  width: 100%;
+  font-family: "Cairo", "Segoe UI", "Roboto", "Arial", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden; // Prevent horizontal scroll
@@ -319,23 +394,32 @@ body {
 @media (max-width: 576px) {
   .container {
     max-width: 100%;
-    padding: 0 15px;
+    padding: 0 10px;
+    width: 100%;
   }
 
   .container-sm {
     max-width: 100%;
+    padding: 0 10px;
+    width: 100%;
   }
 
   .container-md {
     max-width: 100%;
+    padding: 0 10px;
+    width: 100%;
   }
 
   .container-lg {
     max-width: 100%;
+    padding: 0 10px;
+    width: 100%;
   }
 
   .container-xl {
     max-width: 100%;
+    padding: 0 10px;
+    width: 100%;
   }
 
   // Small mobile grid adjustments
@@ -391,23 +475,28 @@ body {
 
 @media (max-width: 480px) {
   .container {
-    padding: 0 10px;
+    padding: 0 5px;
+    width: 100%;
   }
 
   .container-sm {
-    padding: 0 10px;
+    padding: 0 5px;
+    width: 100%;
   }
 
   .container-md {
-    padding: 0 10px;
+    padding: 0 5px;
+    width: 100%;
   }
 
   .container-lg {
-    padding: 0 10px;
+    padding: 0 5px;
+    width: 100%;
   }
 
   .container-xl {
-    padding: 0 10px;
+    padding: 0 5px;
+    width: 100%;
   }
 
   // Extra small mobile grid adjustments
@@ -850,5 +939,33 @@ body {
   }
   .align-xs-center {
     align-items: center;
+  }
+}
+
+/* Mobile Full Width Fixes */
+@media (max-width: 768px) {
+  html,
+  body {
+    width: 100% !important;
+    overflow-x: hidden;
+  }
+
+  .app-container {
+    width: 100% !important;
+  }
+
+  .main-content {
+    width: 100% !important;
+  }
+
+  /* Ensure all sections take full width */
+  section {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Fix any potential margin issues */
+  * {
+    max-width: 100%;
   }
 }

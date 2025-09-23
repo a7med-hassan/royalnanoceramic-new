@@ -6,20 +6,20 @@
   <!-- Error and Network Status Notifications -->
   <app-error-notification></app-error-notification>
 
-  <!-- Header Component - Hidden for admin routes -->
-  <app-header *ngIf="!isAdminRoute"></app-header>
+  <!-- Header Component - Hidden for admin routes and discount page -->
+  <app-header *ngIf="!isAdminRoute && !isDiscountRoute"></app-header>
 
   <!-- Main Content -->
   <main class="main-content">
     <router-outlet></router-outlet>
   </main>
 
-  <!-- Footer Component - Hidden for admin routes -->
-  <app-footer *ngIf="!isAdminRoute"></app-footer>
+  <!-- Footer Component - Hidden for admin routes and discount page -->
+  <app-footer *ngIf="!isAdminRoute && !isDiscountRoute"></app-footer>
 
-  <!-- Floating WhatsApp Button - Hidden for admin routes -->
+  <!-- Floating WhatsApp Button - Hidden for admin routes and discount page -->
   <a
-    *ngIf="!isAdminRoute"
+    *ngIf="!isAdminRoute && !isDiscountRoute"
     href="https://wa.me/201234567890"
     target="_blank"
     class="floating-whatsapp"

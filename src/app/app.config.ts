@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, isDevMode } from '@angular/core';
 import {
   provideRouter,
   withViewTransitions,
@@ -15,20 +15,19 @@ import {
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { routes } from './app.routes';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(
-      routes,
-      withViewTransitions(),
-      withInMemoryScrolling({ scrollPositionRestoration: 'top' }),
-      withPreloading(PreloadAllModules)
+    provideRouter(routes, withViewTransitions(), withInMemoryScrolling({ scrollPositionRestoration: 'top' }), withPreloading(PreloadAllModules) // Keep preloading for better UX
     ),
     provideAnimations(),
-    provideHttpClient(
-      withInterceptors([]),
-      withFetch() // Use fetch API for better performance
+    provideHttpClient(withInterceptors([]), withFetch() // Use fetch API for better performance
     ),
     importProvidersFrom(ReactiveFormsModule),
-  ],
+    provideServiceWorker('ngsw-worker.js', {
+        enabled: !isDevMode(),
+        registrationStrategy: 'registerImmediately'
+    })
+],
 };

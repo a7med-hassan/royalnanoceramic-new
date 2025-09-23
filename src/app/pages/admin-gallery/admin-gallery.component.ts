@@ -6,6 +6,11 @@ interface GalleryImage {
   id: string;
   src: string;
   alt: string;
+  title: string;
+  description: string;
+  protectionInfo: string;
+  protectionType: string;
+  features: string[];
   category: string;
   serviceType: string;
   serviceTypeAr: string;
@@ -75,12 +80,18 @@ export class AdminGalleryComponent implements OnInit {
 
   private loadGalleryImages(): void {
     const savedImages = localStorage.getItem('galleryImages');
+
     if (savedImages) {
-      this.galleryImages = JSON.parse(savedImages);
+      try {
+        this.galleryImages = JSON.parse(savedImages);
+      } catch (error) {
+        console.error('Error parsing localStorage data:', error);
+        this.galleryImages = [];
+      }
     } else {
-      // Initialize with empty array - no default images
       this.galleryImages = [];
     }
+
     this.filterImages();
   }
 
@@ -178,16 +189,40 @@ export class AdminGalleryComponent implements OnInit {
   private processUploadedFiles(): void {
     if (!this.selectedFiles) return;
 
+    let processedCount = 0;
+    const totalFiles = this.selectedFiles.length;
+
     Array.from(this.selectedFiles).forEach((file, index) => {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert(
+          `File ${file.name} is not an image. Please select only image files.`
+        );
+        return;
+      }
+
       // Create a preview URL for the uploaded file
       const reader = new FileReader();
+
       reader.onload = (e) => {
+        const imageAlt =
+          this.newImage.alt +
+          (this.selectedFiles!.length > 1 ? ` ${index + 1}` : '');
+
         const newImage: GalleryImage = {
           id: Date.now().toString() + index,
           src: e.target?.result as string,
-          alt:
-            this.newImage.alt +
-            (this.selectedFiles!.length > 1 ? ` ${index + 1}` : ''),
+          alt: imageAlt,
+          title: imageAlt,
+          description: `Professional ${this.newImage.serviceType} service - ${imageAlt}`,
+          protectionInfo: `Advanced protection using ${this.newImage.serviceType} technology. High-quality service with long-lasting results.`,
+          protectionType: this.newImage.serviceType!,
+          features: [
+            'Professional Service',
+            'High Quality',
+            'Long-lasting Protection',
+            'Expert Application',
+          ],
           category: this.newImage.category!,
           serviceType: this.newImage.serviceType!,
           serviceTypeAr: this.newImage.serviceTypeAr!,
@@ -198,13 +233,25 @@ export class AdminGalleryComponent implements OnInit {
         this.galleryImages.push(newImage);
         this.saveGalleryImages();
         this.filterImages();
+
+        // Trigger a custom event to notify the main gallery to refresh
+        window.dispatchEvent(new CustomEvent('galleryUpdated'));
+
+        processedCount++;
+        if (processedCount === totalFiles) {
+          this.isUploading = false;
+          this.uploadProgress = 0;
+          this.cancelForm();
+          alert(`Successfully uploaded ${totalFiles} image(s)!`);
+        }
       };
+
+      reader.onerror = (error) => {
+        alert(`Error reading file ${file.name}. Please try again.`);
+      };
+
       reader.readAsDataURL(file);
     });
-
-    this.isUploading = false;
-    this.uploadProgress = 0;
-    this.cancelForm();
   }
 
   cancelForm(): void {

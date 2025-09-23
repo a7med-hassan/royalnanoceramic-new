@@ -3,15 +3,21 @@
   top: 0;
   left: 0;
   right: 0;
+  width: 100%;
   background: rgba(26, 26, 26, 0.3);
   backdrop-filter: blur(8px);
   z-index: 1000;
   transition: all 0.3s ease;
   padding: 0.5rem 0;
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
 
   &.scrolled {
     background: rgba(26, 26, 26, 0.98);
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(15px);
+    padding: 0.3rem 0;
   }
 
   // Unified styling for all pages (previously home-page only)
@@ -22,7 +28,8 @@
     &.scrolled {
       background: rgba(26, 26, 26, 1);
       backdrop-filter: blur(15px);
-      padding: 0.5rem 0;
+      padding: 0.3rem 0;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
     }
   }
 }
@@ -417,6 +424,9 @@
     top: 0;
     background: rgba(26, 26, 26, 0.95);
     backdrop-filter: blur(15px);
+    opacity: 1;
+    visibility: visible;
+    z-index: 1000;
   }
 
   .header-content {
@@ -659,6 +669,9 @@
     top: 0;
     background: rgba(26, 26, 26, 0.98);
     backdrop-filter: blur(20px);
+    opacity: 1;
+    visibility: visible;
+    z-index: 1000;
   }
 
   .header-content {
@@ -765,7 +778,14 @@
 /* Landscape Mobile */
 @media (max-height: 500px) and (orientation: landscape) {
   .header {
-    padding: 1.2rem 0;
+    padding: 0.3rem 0;
+    opacity: 1;
+    visibility: visible;
+    z-index: 1000;
+    
+    &.scrolled {
+      padding: 0.2rem 0;
+    }
   }
 
   .logo a .logo-image {

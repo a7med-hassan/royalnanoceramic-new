@@ -13,6 +13,7 @@ import { RouterOutlet } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
 import { AdminApiService } from '../../shared/services/admin-api.service';
+import { ScrollToTopService } from '../../shared/services/scroll-to-top.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -78,7 +79,8 @@ export class AdminDashboardComponent
 
   constructor(
     private router: Router,
-    private adminApiService: AdminApiService
+    private adminApiService: AdminApiService,
+    private scrollToTopService: ScrollToTopService
   ) {}
 
   ngOnInit(): void {
@@ -155,6 +157,7 @@ export class AdminDashboardComponent
       .then((success) => {
         if (success) {
           console.log('Navigation successful to:', route);
+          this.scrollToTopService.scrollToTop();
         } else {
           console.error('Navigation failed to:', route);
         }

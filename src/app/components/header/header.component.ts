@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TranslationService } from '../../shared/services/translation.service';
+import { ScrollToTopService } from '../../shared/services/scroll-to-top.service';
 
 @Component({
   selector: 'app-header',
@@ -34,7 +35,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    public translationService: TranslationService
+    public translationService: TranslationService,
+    private scrollToTopService: ScrollToTopService
   ) {}
 
   ngOnInit(): void {
@@ -47,7 +49,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.currentLang = this.translationService.getCurrentLanguage();
     this.isRtl = this.translationService.isRtl$;
 
-    // Language initialized
+    // Subscribe to language changes
+    this.translationService.languageChanged$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.currentLang = this.translationService.getCurrentLanguage();
+        this.isRtl = this.translationService.isRtl$;
+      });
   }
 
   private checkCurrentRoute(): void {
@@ -63,7 +71,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
-    this.isScrolled = window.scrollY > 50;
+    this.isScrolled = window.scrollY > 10;
   }
 
   toggleMenu(): void {
@@ -75,7 +83,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   navigateTo(route: string): void {
-    this.router.navigate([`/${route}`]);
+    this.router.navigate([`/${route}`]).then(() => {
+      this.scrollToTopService.scrollToTop();
+    });
     this.closeMenu();
   }
 

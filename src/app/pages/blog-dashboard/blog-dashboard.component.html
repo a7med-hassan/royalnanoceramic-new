@@ -1,23 +1,23 @@
 <div class="dashboard-container">
   <div class="dashboard-header">
-    <h1>لوحة إدارة المدونة</h1>
-    <p>أضف منشورات جديدة للمدونة</p>
+    <h1 i18n="@@blog.dashboard.title">لوحة إدارة المدونة</h1>
+    <p i18n="@@blog.dashboard.subtitle">أضف منشورات جديدة للمدونة</p>
 
     <div class="user-info">
       <div class="user-details">
         <i class="fas fa-user-circle"></i>
         <div class="admin-info" *ngIf="adminUser">
-          <span class="welcome-text">Welcome, {{ adminUser.username }}</span>
+          <span class="welcome-text" i18n="@@blog.dashboard.welcome">Welcome, {{ adminUser.username }}</span>
           <span class="user-role">{{ adminUser.role || "Admin" }}</span>
         </div>
-        <span class="login-time">تم تسجيل الدخول: {{ loginTime }}</span>
+        <span class="login-time" i18n="@@blog.dashboard.login.time">تم تسجيل الدخول: {{ loginTime }}</span>
       </div>
     </div>
 
     <div class="header-actions">
       <button class="btn-secondary" (click)="goToBlog()" title="عرض المدونة">
         <i class="fas fa-newspaper"></i>
-        عرض المدونة
+        <span i18n="@@blog.dashboard.view.blog">عرض المدونة</span>
       </button>
       <button
         class="btn-view-posts"
@@ -26,12 +26,12 @@
         *ngIf="existingPosts.length > 0"
       >
         <i class="fas fa-eye"></i>
-        عرض المنشورات
+        <span i18n="@@blog.dashboard.view.posts">عرض المنشورات</span>
         <span class="posts-count">({{ existingPosts.length }})</span>
       </button>
       <button class="btn-logout" (click)="logout()" title="تسجيل الخروج">
         <i class="fas fa-sign-out-alt"></i>
-        تسجيل الخروج
+        <span i18n="@@blog.dashboard.logout">تسجيل الخروج</span>
       </button>
     </div>
   </div>
@@ -40,15 +40,16 @@
     <div class="form-container">
       <form [formGroup]="blogForm" (ngSubmit)="onSubmit()" class="blog-form">
         <div class="form-section">
-          <h3>معلومات المنشور الأساسية</h3>
+          <h3 i18n="@@blog.form.basic.info">معلومات المنشور الأساسية</h3>
 
           <div class="form-group">
-            <label for="title">عنوان المنشور *</label>
+            <label for="title" i18n="@@blog.form.title">عنوان المنشور *</label>
             <input
               type="text"
               id="title"
               formControlName="title"
               placeholder="أدخل عنوان المنشور"
+              i18n-placeholder="@@blog.form.title.placeholder"
               [class.invalid]="isFieldInvalid('title')"
             />
             <div class="error-message" *ngIf="isFieldInvalid('title')">
@@ -57,11 +58,12 @@
           </div>
 
           <div class="form-group">
-            <label for="excerpt">ملخص المنشور *</label>
+            <label for="excerpt" i18n="@@blog.form.excerpt">ملخص المنشور *</label>
             <textarea
               id="excerpt"
               formControlName="excerpt"
               placeholder="أدخل ملخص مختصر للمنشور"
+              i18n-placeholder="@@blog.form.excerpt.placeholder"
               rows="3"
               [class.invalid]="isFieldInvalid('excerpt')"
             ></textarea>
@@ -71,11 +73,12 @@
           </div>
 
           <div class="form-group">
-            <label for="content">محتوى المنشور *</label>
+            <label for="content" i18n="@@blog.form.content">محتوى المنشور *</label>
             <textarea
               id="content"
               formControlName="content"
               placeholder="أدخل المحتوى الكامل للمنشور"
+              i18n-placeholder="@@blog.form.content.placeholder"
               rows="8"
               [class.invalid]="isFieldInvalid('content')"
             ></textarea>
@@ -86,17 +89,17 @@
         </div>
 
         <div class="form-section">
-          <h3>تفاصيل إضافية</h3>
+          <h3 i18n="@@blog.form.additional.details">تفاصيل إضافية</h3>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="category">الفئة *</label>
+              <label for="category" i18n="@@blog.form.category">الفئة *</label>
               <select
                 id="category"
                 formControlName="category"
                 [class.invalid]="isFieldInvalid('category')"
               >
-                <option value="">اختر الفئة</option>
+                <option value="" i18n="@@blog.form.category.placeholder">اختر الفئة</option>
                 <option *ngFor="let cat of categories" [value]="cat">
                   {{ cat }}
                 </option>
@@ -107,12 +110,13 @@
             </div>
 
             <div class="form-group">
-              <label for="readTime">وقت القراءة *</label>
+              <label for="readTime" i18n="@@blog.form.read.time">وقت القراءة *</label>
               <input
                 type="text"
                 id="readTime"
                 formControlName="readTime"
                 placeholder="مثال: 5 دقائق"
+                i18n-placeholder="@@blog.form.read.time.placeholder"
                 [class.invalid]="isFieldInvalid('readTime')"
               />
               <div class="error-message" *ngIf="isFieldInvalid('readTime')">
@@ -204,7 +208,8 @@
           <button type="submit" class="btn-primary" [disabled]="isSubmitting">
             <i class="fas fa-plus" *ngIf="!isSubmitting"></i>
             <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
-            {{ isSubmitting ? "جاري الإضافة..." : "إضافة المنشور" }}
+            <span *ngIf="!isSubmitting" i18n="@@blog.form.submit">إضافة المنشور</span>
+            <span *ngIf="isSubmitting" i18n="@@blog.form.submitting">جاري الإضافة...</span>
           </button>
 
           <button
@@ -214,7 +219,7 @@
             [disabled]="isSubmitting"
           >
             <i class="fas fa-undo"></i>
-            إعادة تعيين
+            <span i18n="@@blog.form.reset">إعادة تعيين</span>
           </button>
         </div>
       </form>

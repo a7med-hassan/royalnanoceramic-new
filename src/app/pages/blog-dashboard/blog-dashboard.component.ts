@@ -318,31 +318,28 @@ export class BlogDashboardComponent implements OnInit {
       this.isSubmitting = true;
       this.message = '';
 
-      // Simulate API call delay
+      const formData = this.blogForm.value;
+
+      // Create new blog post
+      const newPost: BlogPost = {
+        id: Date.now(), // Simple ID generation
+        title: formData.title,
+        excerpt: formData.excerpt,
+        content: formData.content,
+        image: formData.image,
+        category: formData.category,
+        date: new Date().toISOString().split('T')[0],
+        readTime: formData.readTime,
+        tags: formData.tags.split(',').map((tag: string) => tag.trim()),
+        featured: formData.featured,
+        seoKeywords: formData.seoKeywords
+          .split(',')
+          .map((keyword: string) => keyword.trim()),
+        seoDescription: formData.seoDescription,
+      };
+
+      // Save blog post
       setTimeout(() => {
-        const formData = this.blogForm.value;
-
-        // Create new blog post
-        const newPost: BlogPost = {
-          id: Date.now(), // Simple ID generation
-          title: formData.title,
-          excerpt: formData.excerpt,
-          content: formData.content,
-          image: formData.image,
-          category: formData.category,
-          date: new Date().toISOString().split('T')[0],
-          readTime: formData.readTime,
-          tags: formData.tags.split(',').map((tag: string) => tag.trim()),
-          featured: formData.featured,
-          seoKeywords: formData.seoKeywords
-            .split(',')
-            .map((keyword: string) => keyword.trim()),
-          seoDescription: formData.seoDescription,
-        };
-
-        // In a real application, you would save this to your backend
-        console.log('New blog post:', newPost);
-
         // Store in localStorage for demo purposes
         const existingPosts = JSON.parse(
           localStorage.getItem('blog-posts') || '[]'

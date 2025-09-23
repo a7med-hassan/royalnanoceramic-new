@@ -16,6 +16,7 @@ import { BeforeAfterSliderComponent } from '../../components/before-after-slider
 import { ContactFormComponent } from '../../components/contact-form/contact-form.component';
 
 import { TranslationService } from '../../shared/services/translation.service';
+import { ScrollToTopService } from '../../shared/services/scroll-to-top.service';
 
 interface Service {
   id: number;
@@ -134,7 +135,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private router: Router,
-    public translationService: TranslationService
+    public translationService: TranslationService,
+    private scrollToTopService: ScrollToTopService
   ) {}
 
   ngOnInit(): void {
@@ -160,11 +162,13 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   setupSingleSlider(): void {
-    this.setupSlider(
-      this.sliderContainer.nativeElement,
-      this.afterImg.nativeElement,
-      this.dragHandle.nativeElement
-    );
+    if (this.sliderContainer?.nativeElement && this.afterImg?.nativeElement && this.dragHandle?.nativeElement) {
+      this.setupSlider(
+        this.sliderContainer.nativeElement,
+        this.afterImg.nativeElement,
+        this.dragHandle.nativeElement
+      );
+    }
   }
 
   // Navigation methods
@@ -299,7 +303,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   navigateTo(route: string): void {
-    this.router.navigate([`/${route}`]);
+    this.router.navigate([`/${route}`]).then(() => {
+      this.scrollToTopService.scrollToTop();
+    });
   }
 
   getServiceTitle(key: string): string {

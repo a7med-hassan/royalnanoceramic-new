@@ -179,35 +179,35 @@
     </div>
 
     <div class="form-group full-width">
-      <label for="notes">
+      <label for="additionalNotes">
         {{ translationService.getTranslation("contact.form.notes") }}
         <span class="optional-indicator"
           >({{ translationService.getTranslation("common.optional") }})</span
         >
       </label>
       <textarea
-        id="notes"
-        formControlName="notes"
-        [class.invalid]="isFieldInvalid('notes')"
-        [class.valid]="!isFieldInvalid('notes') && getFieldValue('notes')"
+        id="additionalNotes"
+        formControlName="additionalNotes"
+        [class.invalid]="isFieldInvalid('additionalNotes')"
+        [class.valid]="!isFieldInvalid('additionalNotes') && getFieldValue('additionalNotes')"
         rows="4"
         [placeholder]="
           translationService.getTranslation('contact.form.notes_placeholder')
         "
       ></textarea>
-      <div class="error-message" *ngIf="isFieldInvalid('notes')">
-        {{ getErrorMessage("notes") }}
+      <div class="error-message" *ngIf="isFieldInvalid('additionalNotes')">
+        {{ getErrorMessage("additionalNotes") }}
       </div>
       <div
         class="field-info"
-        *ngIf="!isFieldInvalid('notes') && getFieldValue('notes')"
+        *ngIf="!isFieldInvalid('additionalNotes') && getFieldValue('additionalNotes')"
       >
         <i class="fas fa-check-circle"></i>
         <span>{{ translationService.getTranslation("common.success") }}</span>
       </div>
-      <div class="character-count" *ngIf="getFieldValue('notes')">
-        <span [class.near-limit]="getFieldValue('notes').length > 400">
-          {{ getFieldValue("notes").length }}/500
+      <div class="character-count" *ngIf="getFieldValue('additionalNotes')">
+        <span [class.near-limit]="getFieldValue('additionalNotes').length > 400">
+          {{ getFieldValue("additionalNotes").length }}/500
         </span>
       </div>
     </div>

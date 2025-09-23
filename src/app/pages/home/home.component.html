@@ -21,6 +21,7 @@
         >
           <a
             [routerLink]="['/services']"
+            (click)="navigateTo('services')"
             class="service-link"
             [attr.aria-label]="getServiceTitle(service.key)"
           >
@@ -87,7 +88,7 @@
         <p class="cta-description">
           {{ translationService.getTranslation("home.cta.description") }}
         </p>
-        <a class="cta-button" [routerLink]="['/contact']">
+        <a class="cta-button" [routerLink]="['/contact']" (click)="navigateTo('contact')">
           {{ translationService.getTranslation("home.cta.button") }}
           <i class="fas fa-arrow-left"></i>
         </a>

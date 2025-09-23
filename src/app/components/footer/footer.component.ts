@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TranslationService } from '../../shared/services/translation.service';
+import { ScrollToTopService } from '../../shared/services/scroll-to-top.service';
 
 @Component({
   selector: 'app-footer',
@@ -64,6 +65,11 @@ export class FooterComponent implements OnInit, OnDestroy {
       icon: 'fab fa-instagram',
     },
     {
+      name: 'tiktok',
+      url: 'https://www.tiktok.com/@royalnanoceramic',
+      icon: 'fab fa-tiktok',
+    },
+    {
       name: 'linkedin',
       url: 'https://www.linkedin.com/company/royal-nano-ceramic/',
       icon: 'fab fa-linkedin',
@@ -77,7 +83,8 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    public translationService: TranslationService
+    public translationService: TranslationService,
+    private scrollToTopService: ScrollToTopService
   ) {}
 
   ngOnInit(): void {
@@ -94,7 +101,9 @@ export class FooterComponent implements OnInit, OnDestroy {
   }
 
   navigateTo(route: string): void {
-    this.router.navigate([`/${route}`]);
+    this.router.navigate([`/${route}`]).then(() => {
+      this.scrollToTopService.scrollToTop();
+    });
   }
 
   toggleBranches(): void {

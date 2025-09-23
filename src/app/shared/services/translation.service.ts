@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -6,6 +7,14 @@ import { Injectable } from '@angular/core';
 export class TranslationService {
   private currentLang = 'ar';
   private isRtl = true;
+  private languageChangedSubject = new BehaviorSubject<string>('ar');
+  public languageChanged$: Observable<string> =
+    this.languageChangedSubject.asObservable();
+
+  constructor() {
+    // Set initial language
+    this.setLanguage('ar');
+  }
 
   // Comprehensive translation dictionary for entire website
   private translations = {
@@ -230,41 +239,41 @@ export class TranslationService {
       'services.diamond_hybrid.title': 'Diamond Hybrid Plus',
       'services.diamond_hybrid.description':
         'تقنية هجينة متطورة تجمع بين قوة الماس وصلابة السيراميك. توفر حماية استثنائية ضد الخدوش والتآكل مع لمعان لا مثيل له.',
-      'services.diamond_hybrid.features.protection': 'حماية 5 سنوات',
+      'services.diamond_hybrid.features.protection': 'حماية 10 سنوات',
       'services.diamond_hybrid.features.scratch': 'مقاومة الخدوش',
       'services.diamond_hybrid.features.shine': 'لمعان استثنائي',
       'services.diamond_hybrid.details.protection_level': 'مستوى الحماية: 9H',
-      'services.diamond_hybrid.details.duration': 'مدة الحماية: 5 سنوات',
+      'services.diamond_hybrid.details.duration': 'مدة الحماية: 10 سنوات',
       'services.diamond_hybrid.details.warranty': 'الضمان: شامل',
       'services.paint_protection.title': 'Paint Protection',
       'services.paint_protection.description':
         'حماية شاملة للطلاء باستخدام أفلام حماية متطورة. تحمي من الخدوش والحجارة والأضرار البيئية.',
-      'services.paint_protection.features.protection': 'حماية 5 سنوات',
+      'services.paint_protection.features.protection': 'حماية 12 سنوات',
       'services.paint_protection.features.films': 'أفلام متطورة',
       'services.paint_protection.features.transparency': 'شفافية عالية',
       'services.paint_protection.details.protection_level': 'مستوى الحماية: 8H',
-      'services.paint_protection.details.duration': 'مدة الحماية: 5 سنوات',
+      'services.paint_protection.details.duration': 'مدة الحماية: 12 سنوات',
       'services.paint_protection.details.warranty': 'الضمان: شامل',
       'services.paint_protection_process.title': 'Paint Protection Process',
       'services.paint_protection_process.description':
         'عملية تطبيق حماية الطلاء باحترافية عالية. نستخدم أحدث التقنيات وأفضل المواد لضمان حماية مثالية.',
-      'services.paint_protection_process.features.protection': 'حماية 5 سنوات',
+      'services.paint_protection_process.features.protection': 'حماية 10 سنوات',
       'services.paint_protection_process.features.technology': 'تقنيات متطورة',
       'services.paint_protection_process.features.professional':
         'احترافية عالية',
       'services.paint_protection_process.details.protection_level':
         'مستوى الحماية: 8H',
       'services.paint_protection_process.details.duration':
-        'مدة الحماية: 5 سنوات',
+        'مدة الحماية: 10 سنوات',
       'services.paint_protection_process.details.warranty': 'الضمان: شامل',
       'services.shield_ultracool.title': 'Shield UltraCool',
       'services.shield_ultracool.description':
         'تقنية تبريد متطورة تحمي سيارتك من الحرارة العالية مع تقليل درجة حرارة المقصورة الداخلية بشكل ملحوظ.',
-      'services.shield_ultracool.features.protection': 'حماية 4 سنوات',
+      'services.shield_ultracool.features.protection': 'حماية 10 سنوات',
       'services.shield_ultracool.features.cooling': 'تبريد متطور',
       'services.shield_ultracool.features.energy': 'توفير الطاقة',
       'services.shield_ultracool.details.protection_level': 'مستوى الحماية: 7H',
-      'services.shield_ultracool.details.duration': 'مدة الحماية: 4 سنوات',
+      'services.shield_ultracool.details.duration': 'مدة الحماية: 10 سنوات',
       'services.shield_ultracool.details.warranty': 'الضمان: شامل',
       'services.technology.title': 'تقنيات النانو المتطورة',
       'services.technology.subtitle':
@@ -338,6 +347,7 @@ export class TranslationService {
       'gallery.lightbox.close': 'إغلاق',
       'gallery.lightbox.previous': 'السابق',
       'gallery.lightbox.next': 'التالي',
+      'gallery.lightbox.view_image': 'عرض الصورة',
 
       // Join Us Page
       'join.hero.title': 'انضم إلى فريقنا',
@@ -596,7 +606,7 @@ export class TranslationService {
         'يوفر طلاء السيراميك حماية لمدة 5 سنوات ضد الخدوش، الأشعة فوق البنفسجية، والأمطار الحمضية. يعطي بريقاً دائمماً ويقلل من الحاجة للغسيل المتكرر.',
       'gallery.image.1.protectionType': 'حماية متقدمة',
       'gallery.image.1.features':
-        'حماية 5 سنوات,مقاومة الخدوش,حماية من الأشعة فوق البنفسجية,مقاومة الأمطار الحمضية',
+        'حماية 10 سنوات,مقاومة الخدوش,حماية من الأشعة فوق البنفسجية,مقاومة الأمطار الحمضية',
 
       'gallery.image.2.alt': 'حماية من الخدوش',
       'gallery.image.2.title': 'حماية من الخدوش',
@@ -756,7 +766,7 @@ export class TranslationService {
         'Team of experts trained on the latest global technologies',
 
       // Home Page - CTA Section
-      'home.cta.title': 'Ready to Protect Your Car?',
+      'home.cta.title': 'Ready to Protect Your Car',
       'home.cta.description': 'Contact us now and get a free consultation',
       'home.cta.button': 'Contact Us',
 
@@ -929,7 +939,7 @@ export class TranslationService {
       'services.diamond_hybrid.details.protection_level':
         'Protection Level: 9H',
       'services.diamond_hybrid.details.duration':
-        'Protection Duration: 5 Years',
+        'Protection Duration: 10 Years',
       'services.diamond_hybrid.details.warranty': 'Warranty: Comprehensive',
       'services.paint_protection.title': 'Paint Protection',
       'services.paint_protection.description':
@@ -940,13 +950,13 @@ export class TranslationService {
       'services.paint_protection.details.protection_level':
         'Protection Level: 8H',
       'services.paint_protection.details.duration':
-        'Protection Duration: 5 Years',
+        'Protection Duration: 10 Years',
       'services.paint_protection.details.warranty': 'Warranty: Comprehensive',
       'services.paint_protection_process.title': 'Paint Protection Process',
       'services.paint_protection_process.description':
         'High-professional paint protection application process. We use the latest technologies and best materials to ensure optimal protection.',
       'services.paint_protection_process.features.protection':
-        '5 Years Protection',
+        '10 Years Protection',
       'services.paint_protection_process.features.technology':
         'Advanced Technology',
       'services.paint_protection_process.features.professional':
@@ -954,7 +964,7 @@ export class TranslationService {
       'services.paint_protection_process.details.protection_level':
         'Protection Level: 8H',
       'services.paint_protection_process.details.duration':
-        'Protection Duration: 5 Years',
+        'Protection Duration: 10 Years',
       'services.paint_protection_process.details.warranty':
         'Warranty: Comprehensive',
       'services.shield_ultracool.title': 'Shield UltraCool',
@@ -966,7 +976,7 @@ export class TranslationService {
       'services.shield_ultracool.details.protection_level':
         'Protection Level: 7H',
       'services.shield_ultracool.details.duration':
-        'Protection Duration: 4 Years',
+        'Protection Duration: 10 Years',
       'services.shield_ultracool.details.warranty': 'Warranty: Comprehensive',
       'services.technology.title': 'Advanced Nano Technologies',
       'services.technology.subtitle':
@@ -998,7 +1008,7 @@ export class TranslationService {
       'services.process.step4.title': 'Final Inspection',
       'services.process.step4.description':
         'Comprehensive inspection to ensure application quality and final results',
-      'services.cta.title': 'Ready to Protect Your Car?',
+      'services.cta.title': 'Ready to Protect Your Car',
       'services.cta.description':
         'Get the best advanced protection services from Royal Nano Ceramic experts',
       'services.cta.primary_button': 'Book Your Appointment Now',
@@ -1043,6 +1053,7 @@ export class TranslationService {
       'gallery.lightbox.close': 'Close',
       'gallery.lightbox.previous': 'Previous',
       'gallery.lightbox.next': 'Next',
+      'gallery.lightbox.view_image': 'View Image',
 
       // Join Us Page
       'join.hero.title': 'Join Our Team',
@@ -1316,7 +1327,7 @@ export class TranslationService {
         'Ceramic coating provides 5-year protection against scratches, ultraviolet rays, and acid rain. Gives permanent shine and reduces the need for frequent washing.',
       'gallery.image.1.protectionType': 'Advanced Protection',
       'gallery.image.1.features':
-        '5 Years Protection,Scratch Resistance,UV Protection,Acid Rain Resistance',
+        '10 Years Protection,Scratch Resistance,UV Protection,Acid Rain Resistance',
 
       'gallery.image.2.alt': 'Scratch Protection',
       'gallery.image.2.title': 'Scratch Protection',
@@ -1427,10 +1438,6 @@ export class TranslationService {
     },
   };
 
-  constructor() {
-    // Set initial language
-    this.setLanguage('ar');
-  }
 
   setLanguage(lang: string): void {
     if (lang !== 'ar' && lang !== 'en') {
@@ -1448,6 +1455,9 @@ export class TranslationService {
     // Update body classes
     document.body.className =
       lang === 'ar' ? 'rtl arabic-font' : 'ltr english-font';
+
+    // Notify subscribers about language change
+    this.languageChangedSubject.next(lang);
 
     // Language updated
   }
@@ -1486,4 +1496,5 @@ export class TranslationService {
   get isRtl$(): boolean {
     return this.isRtl;
   }
+
 }

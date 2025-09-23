@@ -230,9 +230,9 @@ export class AdminMessagesComponent implements OnInit {
     let csvContent = '';
 
     if (type === 'contact') {
-      // Contact messages CSV with Arabic headers
+      // Contact messages CSV with Arabic headers including UTM parameters
       csvContent =
-        'الاسم,رقم الهاتف,نوع السيارة,موديل السيارة,ملاحظات إضافية,التاريخ\n';
+        'الاسم,رقم الهاتف,نوع السيارة,موديل السيارة,ملاحظات إضافية,مصدر الحملة,وسيلة الحملة,اسم الحملة,التاريخ\n';
       messages.forEach((message) => {
         // Clean and format data for CSV
         const fullName = this.cleanCSVField(message.fullName || 'غير محدد');
@@ -241,10 +241,13 @@ export class AdminMessagesComponent implements OnInit {
         );
         const carType = this.cleanCSVField(message.carType || 'غير محدد');
         const carModel = this.cleanCSVField(message.carModel || 'غير محدد');
-        const notes = this.cleanCSVField(message.notes || 'لا توجد ملاحظات');
+        const notes = this.cleanCSVField(message.additionalNotes || 'لا توجد ملاحظات');
+        const utmSource = this.cleanCSVField(message.utm_source || 'غير محدد');
+        const utmMedium = this.cleanCSVField(message.utm_medium || 'غير محدد');
+        const utmCampaign = this.cleanCSVField(message.utm_campaign || 'غير محدد');
         const createdAt = this.formatDate(message.createdAt);
 
-        csvContent += `"${fullName}","${phoneNumber}","${carType}","${carModel}","${notes}","${createdAt}"\n`;
+        csvContent += `"${fullName}","${phoneNumber}","${carType}","${carModel}","${notes}","${utmSource}","${utmMedium}","${utmCampaign}","${createdAt}"\n`;
       });
     } else {
       // Join messages CSV with Arabic headers
@@ -257,10 +260,10 @@ export class AdminMessagesComponent implements OnInit {
           message.phoneNumber || 'غير محدد'
         );
         const email = this.cleanCSVField(message.email || 'غير محدد');
-        const position = this.cleanCSVField(message.position || 'غير محدد');
+        const position = this.cleanCSVField(message.jobPosition || 'غير محدد');
         const experience = this.cleanCSVField(message.experience || 'غير محدد');
         const messageText = this.cleanCSVField(
-          message.message || 'لا توجد رسالة'
+          message.additionalMessage || 'لا توجد رسالة'
         );
         const createdAt = this.formatDate(message.createdAt);
 

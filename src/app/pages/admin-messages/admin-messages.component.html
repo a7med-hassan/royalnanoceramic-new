@@ -117,6 +117,9 @@
             <th>نوع السيارة</th>
             <th>موديل السيارة</th>
             <th>ملاحظات إضافية</th>
+            <th>مصدر الحملة</th>
+            <th>وسيلة الحملة</th>
+            <th>اسم الحملة</th>
             <th>التاريخ</th>
           </tr>
         </thead>
@@ -136,7 +139,22 @@
             <td>{{ getDecodedText(message.phoneNumber) }}</td>
             <td>{{ getDecodedText(message.carType) }}</td>
             <td>{{ getDecodedText(message.carModel) }}</td>
-            <td>{{ getDecodedText(message.notes, "لا توجد ملاحظات") }}</td>
+            <td>{{ getDecodedText(message.additionalNotes, "لا توجد ملاحظات") }}</td>
+            <td class="utm-column">
+              <span class="utm-value" [class.empty]="!message.utm_source">
+                {{ getDecodedText(message.utm_source, "غير محدد") }}
+              </span>
+            </td>
+            <td class="utm-column">
+              <span class="utm-value" [class.empty]="!message.utm_medium">
+                {{ getDecodedText(message.utm_medium, "غير محدد") }}
+              </span>
+            </td>
+            <td class="utm-column">
+              <span class="utm-value" [class.empty]="!message.utm_campaign">
+                {{ getDecodedText(message.utm_campaign, "غير محدد") }}
+              </span>
+            </td>
             <td>
               {{
                 message.createdAt
@@ -201,7 +219,34 @@
             <div class="field-group">
               <span class="field-label">ملاحظات إضافية:</span>
               <div class="field-value">
-                {{ getDecodedText(message.notes, "لا توجد ملاحظات") }}
+                {{ getDecodedText(message.additionalNotes, "لا توجد ملاحظات") }}
+              </div>
+            </div>
+            <!-- UTM Parameters Section -->
+            <div class="utm-section">
+              <div class="utm-header">
+                <i class="fas fa-chart-line"></i>
+                <span>بيانات الحملة التسويقية</span>
+              </div>
+              <div class="utm-fields">
+                <div class="utm-field">
+                  <span class="utm-label">المصدر:</span>
+                  <span class="utm-value" [class.empty]="!message.utm_source">
+                    {{ getDecodedText(message.utm_source, "غير محدد") }}
+                  </span>
+                </div>
+                <div class="utm-field">
+                  <span class="utm-label">الوسيلة:</span>
+                  <span class="utm-value" [class.empty]="!message.utm_medium">
+                    {{ getDecodedText(message.utm_medium, "غير محدد") }}
+                  </span>
+                </div>
+                <div class="utm-field">
+                  <span class="utm-label">الحملة:</span>
+                  <span class="utm-value" [class.empty]="!message.utm_campaign">
+                    {{ getDecodedText(message.utm_campaign, "غير محدد") }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -319,7 +364,7 @@
               {{ getDecodedText(message.jobPosition || message.position) }}
             </td>
             <td>{{ getDecodedText(message.experience) }}</td>
-            <td>{{ getDecodedText(message.message, "لا توجد رسالة") }}</td>
+            <td>{{ getDecodedText(message.additionalMessage, "لا توجد رسالة") }}</td>
             <td>
               {{
                 message.createdAt
@@ -405,7 +450,7 @@
             <div class="field-group">
               <span class="field-label">الرسالة:</span>
               <div class="field-value">
-                {{ getDecodedText(message.message, "لا توجد رسالة") }}
+                {{ getDecodedText(message.additionalMessage, "لا توجد رسالة") }}
               </div>
             </div>
             <div class="cv-section">

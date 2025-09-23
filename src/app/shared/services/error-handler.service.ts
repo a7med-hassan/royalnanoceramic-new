@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface ErrorInfo {
   code: string;
@@ -233,5 +234,3 @@ export class ErrorHandlerService {
   }
 }
 
-// Import environment
-import { environment } from '../../../environments/environment';

@@ -13,63 +13,147 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": "ar",
+        "locales": {
+          "en": {
+            "translation": "src/locale/messages.en.xlf",
+            "baseHref": "/en/"
+          }
+        }
+      },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/royal-nano-ceramic",
             "index": "src/index.html",
-            "browser": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "main": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/manifest.json",
               "src/assets",
+              "src/manifest.json",
+              "src/robots.txt",
+              "src/sitemap.xml",
               {
                 "glob": "**/*",
                 "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
-                "output": "./webfonts/"
-              }
+                "output": "webfonts"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fontsource/cairo/files",
+                "output": "fonts"
+              },
+              "src/manifest.webmanifest",
+              "src/custom-sw.js",
+              "src/offline.html"
             ],
-            "styles": ["src/styles.scss"],
-            "scripts": []
+            "styles": [
+              "src/styles.scss",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+            ],
+            "scripts": [],
+            "serviceWorker": true,
+            "ngswConfigPath": "ngsw-config.json"
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1.5mb",
-                  "maximumError": "2.5mb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "35kb",
-                  "maximumError": "60kb"
+                  "maximumWarning": "30kb",
+                  "maximumError": "50kb"
                 },
                 {
                   "type": "bundle",
                   "name": "main",
-                  "maximumWarning": "1.5mb",
-                  "maximumError": "2.5mb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 }
               ],
               "outputHashing": "all",
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": true
+              },
               "extractLicenses": true,
               "sourceMap": false,
               "namedChunks": false,
-              "aot": true
+              "aot": true,
+              "buildOptimizer": true,
+              "vendorChunk": false,
+              "commonChunk": false
             },
             "development": {
+              "buildOptimizer": false,
               "optimization": false,
+              "vendorChunk": true,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "ar": {
+              "aot": true,
+              "outputPath": "dist/royal-nano-ceramic/ar/",
+              "localize": ["ar"]
+            },
+            "en": {
+              "aot": true,
+              "outputPath": "dist/royal-nano-ceramic/en/",
+              "localize": ["en"]
+            },
+            "performance": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "800kb",
+                  "maximumError": "1.5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "25kb",
+                  "maximumError": "40kb"
+                },
+                {
+                  "type": "bundle",
+                  "name": "main",
+                  "maximumWarning": "800kb",
+                  "maximumError": "1.5mb"
+                }
+              ],
+              "outputHashing": "all",
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": true
+              },
+              "extractLicenses": true,
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "buildOptimizer": true,
+              "vendorChunk": false,
+              "commonChunk": false
             }
-          },
-          "defaultConfiguration": "production"
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -79,6 +163,15 @@
             },
             "development": {
               "buildTarget": "royal-nano-ceramic:build:development"
+            },
+            "ar": {
+              "buildTarget": "royal-nano-ceramic:build:ar"
+            },
+            "en": {
+              "buildTarget": "royal-nano-ceramic:build:en"
+            },
+            "performance": {
+              "buildTarget": "royal-nano-ceramic:build:performance"
             }
           },
           "defaultConfiguration": "development"
@@ -92,20 +185,22 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing"],
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/manifest.json",
               "src/assets",
-              {
-                "glob": "**/*",
-                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
-                "output": "./webfonts/"
-              }
+              "src/manifest.json",
+              "src/manifest.webmanifest"
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+            ],
             "scripts": []
           }
         }

@@ -1,41 +1,39 @@
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://fonts.googleapis.com; img-src 'self' data: https: https://maps.googleapis.com https://maps.gstatic.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://royal-nano-backend.vercel.app https://jsonplaceholder.typicode.com https://cdn.jsdelivr.net https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://maps.googleapis.com; frame-src 'self' https://www.google.com https://maps.google.com https://www.google.com/maps;
+
 /*.js
-  Content-Type: application/javascript
+  Cache-Control: public, max-age=31536000
 
 /*.css
-  Content-Type: text/css
-
-/*.json
-  Content-Type: application/json
+  Cache-Control: public, max-age=31536000
 
 /*.png
-  Content-Type: image/png
+  Cache-Control: public, max-age=31536000
 
 /*.jpg
-  Content-Type: image/jpeg
+  Cache-Control: public, max-age=31536000
 
 /*.jpeg
-  Content-Type: image/jpeg
+  Cache-Control: public, max-age=31536000
 
 /*.gif
-  Content-Type: image/gif
-
-/*.ico
-  Content-Type: image/x-icon
-
-/*.svg
-  Content-Type: image/svg+xml
+  Cache-Control: public, max-age=31536000
 
 /*.webp
-  Content-Type: image/webp
+  Cache-Control: public, max-age=31536000
 
 /*.woff
-  Content-Type: font/woff
+  Cache-Control: public, max-age=31536000
 
 /*.woff2
-  Content-Type: font/woff2
+  Cache-Control: public, max-age=31536000
 
-/*.ttf
-  Content-Type: font/ttf
+/*.svg
+  Cache-Control: public, max-age=31536000
 
-/*.eot
-  Content-Type: application/vnd.ms-fontobject
+/index.html
+  Cache-Control: public, max-age=3600

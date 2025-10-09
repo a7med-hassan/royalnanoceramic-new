@@ -13,9 +13,11 @@
           [attr.aria-label]="'Royal Nano Ceramic Logo'"
         >
           <img
-            src="assets/images/logo.png"
+            src="assets/images/logo-optimized.webp"
             alt="Royal Nano Ceramic Logo"
             class="logo-image"
+            loading="eager"
+            fetchpriority="high"
           />
         </a>
       </div>
@@ -23,8 +25,10 @@
       <!-- Navigation Menu -->
       <nav class="nav-menu" [class.active]="isMenuOpen">
         <ul class="nav-list">
-          <li *ngFor="let item of menuItems">
+          <li *ngFor="let item of menuItems" class="nav-item" [class.has-dropdown]="item.hasDropdown">
+            <!-- Regular menu item -->
             <a
+              *ngIf="!item.hasDropdown"
               [routerLink]="['/' + item.route]"
               routerLinkActive="active"
               class="nav-link"
@@ -33,6 +37,41 @@
             >
               {{ translationService.getTranslation(item.label) }}
             </a>
+            
+            <!-- Services dropdown -->
+            <div *ngIf="item.hasDropdown" class="dropdown-container">
+              <a
+                [routerLink]="['/' + item.route]"
+                routerLinkActive="active"
+                class="nav-link dropdown-trigger"
+                (mouseenter)="openServicesDropdown()"
+                (mouseleave)="closeServicesDropdown()"
+                [attr.aria-label]="translationService.getTranslation(item.label)"
+                [attr.aria-expanded]="isServicesDropdownOpen"
+              >
+                {{ translationService.getTranslation(item.label) }}
+                <i class="fas fa-chevron-down dropdown-icon" [class.rotated]="isServicesDropdownOpen"></i>
+              </a>
+              
+              <ul 
+                class="dropdown-menu" 
+                [class.active]="isServicesDropdownOpen"
+                (mouseenter)="openServicesDropdown()"
+                (mouseleave)="closeServicesDropdown()"
+              >
+                <li *ngFor="let dropdownItem of item.dropdownItems">
+                  <a
+                    [routerLink]="['/' + dropdownItem.route]"
+                    routerLinkActive="active"
+                    class="dropdown-link"
+                    (click)="navigateToService(dropdownItem.route, dropdownItem.section)"
+                    [attr.aria-label]="translationService.getTranslation('header.services_dropdown.' + dropdownItem.label)"
+                  >
+                    {{ translationService.getTranslation('header.services_dropdown.' + dropdownItem.label) }}
+                  </a>
+                </li>
+              </ul>
+            </div>
           </li>
         </ul>
       </nav>
@@ -79,8 +118,10 @@
     </button>
     <nav class="nav-menu" [class.active]="isMenuOpen">
       <ul class="nav-list">
-        <li *ngFor="let item of menuItems">
+        <li *ngFor="let item of menuItems" class="nav-item" [class.has-dropdown]="item.hasDropdown">
+          <!-- Regular menu item -->
           <a
+            *ngIf="!item.hasDropdown"
             [routerLink]="['/' + item.route]"
             routerLinkActive="active"
             class="nav-link"
@@ -89,6 +130,35 @@
           >
             {{ translationService.getTranslation(item.label) }}
           </a>
+          
+          <!-- Services dropdown for mobile -->
+          <div *ngIf="item.hasDropdown" class="mobile-dropdown-container">
+            <a
+              [routerLink]="['/' + item.route]"
+              routerLinkActive="active"
+              class="nav-link mobile-dropdown-trigger"
+              (click)="toggleServicesDropdown()"
+              [attr.aria-label]="translationService.getTranslation(item.label)"
+              [attr.aria-expanded]="isServicesDropdownOpen"
+            >
+              {{ translationService.getTranslation(item.label) }}
+              <i class="fas fa-chevron-down dropdown-icon" [class.rotated]="isServicesDropdownOpen"></i>
+            </a>
+            
+            <ul class="mobile-dropdown-menu" [class.active]="isServicesDropdownOpen">
+              <li *ngFor="let dropdownItem of item.dropdownItems">
+                <a
+                  [routerLink]="['/' + dropdownItem.route]"
+                  routerLinkActive="active"
+                  class="dropdown-link"
+                  (click)="navigateToService(dropdownItem.route)"
+                  [attr.aria-label]="translationService.getTranslation('header.services_dropdown.' + dropdownItem.label)"
+                >
+                        {{ translationService.getTranslation('header.services_dropdown.' + dropdownItem.label) }}
+                </a>
+              </li>
+            </ul>
+          </div>
         </li>
       </ul>
     </nav>

@@ -6,7 +6,16 @@
     "blog": "المدونة",
     "gallery": "المعرض",
     "contact": "تواصل معنا",
-    "language": "English"
+    "language": "English",
+    "services_dropdown": {
+      "nano-graphene": "نانو جرافين",
+      "nano-ceramic": "نانو سيراميك",
+      "protection-film": "فيلم الحماية",
+      "wrapping": "التغليف",
+      "dipping": "الغمس",
+      "auto-care": "العناية بالسيارات",
+      "thermal-insulation": "العزل الحراري"
+    }
   },
   "home": {
     "hero": {
@@ -165,13 +174,29 @@
     "title": "تواصل معنا",
     "subtitle": "نحن هنا لمساعدتك",
     "form": {
-      "name": "الاسم الكامل",
-      "email": "البريد الإلكتروني",
-      "phone": "رقم الهاتف",
-      "service": "نوع الخدمة",
-      "message": "الرسالة",
+      "full_name": "الاسم الكامل",
+      "phone_number": "رقم الهاتف",
+      "car_type": "ماركة السيارة",
+      "car_model": "موديل السيارة",
+      "service_type": "نوع الخدمة",
+      "notes": "ملاحظات إضافية",
       "submit": "إرسال",
-      "required": "هذا الحقل مطلوب"
+      "required": "هذا الحقل مطلوب",
+      "full_name_placeholder": "أدخل اسمك الكامل",
+      "phone_number_placeholder": "01xxxxxxxxx",
+      "car_brand_placeholder": "مثال: تويوتا، مرسيدس، BMW...",
+      "car_model_placeholder": "مثال: 2020, 2021, 2022...",
+      "service_type_placeholder": "اختر نوع الخدمة",
+      "notes_placeholder": "أي ملاحظات أو أسئلة إضافية..."
+    },
+    "service_types": {
+      "nano_ceramic": "نانو سيراميك",
+      "nano_graphene": "نانو جيرافين",
+      "ppf": "فيلم حمايه",
+      "heat_insulation": "عزل حراري",
+      "glass_protection": "حماية زجاج",
+      "paint_correction": "تصحيح دهان",
+      "other": "أخرى"
     },
     "info": {
       "address": "العنوان",
@@ -195,6 +220,7 @@
     "success": "تم بنجاح",
     "read_more": "اقرأ المزيد",
     "book_now": "احجز الآن",
-    "get_quote": "احصل على عرض سعر"
+    "get_quote": "احصل على عرض سعر",
+    "optional": "اختياري"
   }
 }

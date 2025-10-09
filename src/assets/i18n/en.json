@@ -6,7 +6,16 @@
     "blog": "Blog",
     "gallery": "Gallery",
     "contact": "Contact",
-    "language": "العربية"
+    "language": "العربية",
+    "services_dropdown": {
+      "nano-graphene": "Nano Graphene",
+      "nano-ceramic": "Nano Ceramic",
+      "protection-film": "Protection Film",
+      "wrapping": "Wrapping",
+      "dipping": "Dipping",
+      "auto-care": "Auto Care",
+      "thermal-insulation": "Thermal Insulation"
+    }
   },
   "home": {
     "hero": {
@@ -165,13 +174,29 @@
     "title": "Contact Us",
     "subtitle": "We are here to help you",
     "form": {
-      "name": "Full Name",
-      "email": "Email Address",
-      "phone": "Phone Number",
-      "service": "Service Type",
-      "message": "Message",
+      "full_name": "Full Name",
+      "phone_number": "Phone Number",
+      "car_type": "Car Brand",
+      "car_model": "Car Model",
+      "service_type": "Service Type",
+      "notes": "Additional Notes",
       "submit": "Submit",
-      "required": "This field is required"
+      "required": "This field is required",
+      "full_name_placeholder": "Enter your full name",
+      "phone_number_placeholder": "01xxxxxxxxx",
+      "car_brand_placeholder": "e.g. Toyota, Mercedes, BMW...",
+      "car_model_placeholder": "e.g. 2020, 2021, 2022...",
+      "service_type_placeholder": "Select service type",
+      "notes_placeholder": "Any additional notes or questions..."
+    },
+    "service_types": {
+      "nano_ceramic": "Nano Ceramic",
+      "nano_graphene": "Nano Graphene",
+      "ppf": "Paint Protection Film",
+      "heat_insulation": "Heat Insulation",
+      "glass_protection": "Glass Protection",
+      "paint_correction": "Paint Correction",
+      "other": "Other"
     },
     "info": {
       "address": "Address",
@@ -195,6 +220,7 @@
     "success": "Success",
     "read_more": "Read More",
     "book_now": "Book Now",
-    "get_quote": "Get Quote"
+    "get_quote": "Get Quote",
+    "optional": "Optional"
   }
 }

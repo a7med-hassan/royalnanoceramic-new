@@ -75,6 +75,13 @@ export class AdminDashboardComponent
       route: '/admin/dashboard/blog',
       active: false,
     },
+    {
+      id: 'reviews',
+      title: 'Reviews',
+      icon: 'fas fa-comments',
+      route: '/admin/dashboard/reviews',
+      active: false,
+    },
   ];
 
   constructor(

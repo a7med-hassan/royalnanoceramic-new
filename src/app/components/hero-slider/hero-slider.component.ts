@@ -24,7 +24,7 @@ export class HeroSliderComponent implements OnInit, OnDestroy, AfterViewInit {
     {
       id: 1,
       image:
-        'assets/images/slider/photo-1723242581089-48fc37043796-1920x1080.jpg',
+        'assets/images/optimized/slider/photo-1723242581089-48fc37043796-1920x1080-xl.webp',
       title: 'home.hero.title',
       subtitle: 'home.hero.subtitle',
       description: 'home.hero.description',
@@ -43,7 +43,7 @@ export class HeroSliderComponent implements OnInit, OnDestroy, AfterViewInit {
     },
     {
       id: 3,
-      image: 'assets/images/slider/theevan-rao-2F4XOL0E3oQ-unsplash.jpg',
+      image: 'assets/images/optimized/slider/theevan-rao-2F4XOL0E3oQ-unsplash-xl.webp',
       title: 'home.hero.title',
       subtitle: 'home.hero.subtitle',
       description: 'home.hero.description',

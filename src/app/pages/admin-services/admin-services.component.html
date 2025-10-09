@@ -8,6 +8,12 @@
     </button>
   </div>
 
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <i class="fas fa-spinner fa-spin"></i>
+    <p>Loading services...</p>
+  </div>
+
   <!-- Filters -->
   <div class="filters-section">
     <div class="search-box">
@@ -35,7 +41,7 @@
   <!-- Services Grid -->
   <div
     class="services-grid"
-    *ngIf="filteredServices.length > 0; else noServices"
+    *ngIf="!loading && filteredServices.length > 0; else noServices"
   >
     <div
       *ngFor="let service of filteredServices"
@@ -43,8 +49,11 @@
       [class.inactive]="!service.isActive"
     >
       <div class="service-header">
-        <div class="service-icon">
-          <i [class]="service.icon"></i>
+        <div class="service-photo" *ngIf="service.photoUrl">
+          <img [src]="service.photoUrl" [alt]="service.name" />
+        </div>
+        <div class="service-icon" *ngIf="!service.photoUrl">
+          <i class="fas fa-cog"></i>
         </div>
         <div class="service-actions">
           <button
@@ -75,7 +84,7 @@
       </div>
 
       <div class="service-content">
-        <h3>{{ service.title }}</h3>
+        <h3>{{ service.name }}</h3>
         <p>{{ service.description }}</p>
 
         <div
@@ -131,13 +140,13 @@
 
       <form (ngSubmit)="saveService()" class="service-form">
         <div class="form-group">
-          <label for="title">Service Title *</label>
+          <label for="name">Service Name *</label>
           <input
             type="text"
-            id="title"
-            [(ngModel)]="newService.title"
-            name="title"
-            placeholder="Enter service title"
+            id="name"
+            [(ngModel)]="newService.name"
+            name="name"
+            placeholder="Enter service name"
             required
             class="form-input"
           />
@@ -156,19 +165,41 @@
           ></textarea>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="icon">Icon Class</label>
+        <div class="form-group">
+          <label for="photoUrl">Service Photo URL</label>
+          <div class="photo-url-section">
             <input
-              type="text"
-              id="icon"
-              [(ngModel)]="newService.icon"
-              name="icon"
-              placeholder="fas fa-shield-alt"
+              type="url"
+              id="photoUrl"
+              [(ngModel)]="newService.photoUrl"
+              name="photoUrl"
+              placeholder="https://example.com/photo.jpg"
               class="form-input"
             />
+            <button
+              type="button"
+              class="add-url-btn"
+              (click)="addPhotoUrl()"
+            >
+              <i class="fas fa-link"></i>
+              Add Photo URL
+            </button>
+            
+            <!-- Photo Preview -->
+            <div *ngIf="newService.photoUrl" class="photo-preview">
+              <img [src]="newService.photoUrl" [alt]="newService.name" />
+              <button
+                type="button"
+                class="remove-photo-btn"
+                (click)="removePhotoUrl()"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
           </div>
+        </div>
 
+        <div class="form-row">
           <div class="form-group">
             <label for="category">Category</label>
             <select
@@ -177,10 +208,23 @@
               name="category"
               class="form-select"
             >
-              <option value="ceramic">Ceramic Coating</option>
-              <option value="protection">Protection</option>
-              <option value="detailing">Detailing</option>
-              <option value="interior">Interior</option>
+              <option value="nano-ceramic">Nano Ceramic Products</option>
+              <option value="nano-graphene">Nano Graphene Products</option>
+              <option value="paint-protection-film">Paint Protection Film</option>
+              <option value="thermal-insulation">Thermal Insulation</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select
+              id="status"
+              [(ngModel)]="newService.isActive"
+              name="status"
+              class="form-select"
+            >
+              <option [value]="true">Active</option>
+              <option [value]="false">Inactive</option>
             </select>
           </div>
         </div>

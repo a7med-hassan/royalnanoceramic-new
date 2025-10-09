@@ -26,6 +26,7 @@ export class FooterComponent implements OnInit, OnDestroy {
     { key: 'about', route: 'about', label: 'footer.about' },
     { key: 'services', route: 'services', label: 'footer.services' },
     { key: 'contact', route: 'contact', label: 'footer.contact' },
+    { key: 'privacy-policy', route: 'privacy-policy', label: 'footer.privacy_policy' },
   ];
 
   services = [

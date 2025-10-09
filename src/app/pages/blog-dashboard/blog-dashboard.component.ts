@@ -382,7 +382,6 @@ export class BlogDashboardComponent implements OnInit {
     const url = event.target.value;
     if (url) {
       // You can add image validation here
-      console.log('Image URL:', url);
     }
   }
 

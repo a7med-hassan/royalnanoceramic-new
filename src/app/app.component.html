@@ -1,7 +1,9 @@
 <div
   class="app-container"
   [class.rtl]="isRtl"
+  [class.ltr]="!isRtl"
   [class.arabic]="currentLang === 'ar'"
+  [class.english]="currentLang === 'en'"
 >
   <!-- Error and Network Status Notifications -->
   <app-error-notification></app-error-notification>

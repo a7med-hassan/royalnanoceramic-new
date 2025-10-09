@@ -1,31 +1,84 @@
-# Royal Nano Ceramic
+# 🚗 Royal Nano Ceramic - Firebase Services Manager
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.0.
+## 🚀 Quick Start
 
-## Development server
+### 1. Download Firebase Key
+- Go to [Firebase Console](https://console.firebase.google.com/)
+- Project Settings > Service Accounts
+- Generate new private key
+- Save as `serviceAccountKey.json`
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### 2. Run the Script
+```bash
+# Double-click to run
+RUN_NOW.bat
+```
 
-## Code scaffolding
+### 3. Choose Option
+- **1. ADD NEW SERVICES** - Adds 8 services (Recommended)
+- **2. UPDATE EXISTING** - Updates existing services
+- **3. DELETE ALL** - Deletes all services
+- **4. RESET** - Delete all + Add new
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## 📊 Services Added
 
-## Build
+| Service | Category | Price | Duration |
+|---------|----------|-------|----------|
+| Diamond Hybrid Plus | Ceramic | $499+ | 6-8 hours |
+| Nano Pro Ceramic | Ceramic | $399+ | 4-6 hours |
+| Diamond Glass Protection | Protection | $199+ | 2-3 hours |
+| Shield UltraCool | Protection | $299+ | 3-4 hours |
+| Graphene Coating Pro | Graphene | $599+ | 8-10 hours |
+| Interior Protection Plus | Interior | $149+ | 2-3 hours |
+| Paint Protection Film | Paint Protection | $799+ | 12-16 hours |
+| Premium Detailing Package | Detailing | $199+ | 4-6 hours |
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## ✅ Features
 
-## Running unit tests
+- 🔥 **Firebase Integration** - Full CRUD operations
+- 📸 **Photo Upload** - Firebase Storage integration
+- 🔍 **Search & Filter** - Advanced filtering
+- 📱 **Responsive Design** - Mobile-friendly
+- 🌐 **Arabic Support** - Full Arabic language support
+- ⚡ **Real-time Updates** - Live data synchronization
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## 🛠️ Technical Details
 
-## Running end-to-end tests
+- **Backend**: Firebase Firestore + Storage
+- **Frontend**: Angular 17 + Material UI
+- **Admin**: Complete admin dashboard
+- **Security**: Firebase security rules
+- **Performance**: Optimized for production
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## 🎯 Result
 
-## Further help
+After running the script successfully:
+- ✅ 8 services in Firebase `services` collection
+- ✅ Service photos in Firebase Storage
+- ✅ Services appear in admin dashboard
+- ✅ Full management capabilities
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## 🚨 Troubleshooting
+
+### Node.js not found
+- Install from: https://nodejs.org/
+
+### Firebase key not found
+- Download `serviceAccountKey.json` from Firebase Console
+
+### Permission denied
+- Check Firebase security rules
+- Ensure Firestore is enabled
+
+## 📞 Support
+
+If you encounter any issues:
+1. Check Node.js installation
+2. Verify Firebase key file
+3. Ensure Firebase project is properly configured
 
 ---
-**Last updated**: Test commit for Git workflow demonstration
-**Build Status**: Latest build and deployment completed successfully
+
+**Royal Nano Ceramic Admin System** 🚗✨
+
+**Ready for Production Use!** 🎉

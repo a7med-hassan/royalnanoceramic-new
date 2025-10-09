@@ -1,18 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ServicesService, Service } from '../../shared/services/services.service';
+// Removed Firebase Storage import - using photo URLs instead
 
-interface Service {
-  id: string;
-  title: string;
+interface ServiceFormData {
+  name: string;
+  category: string;
   description: string;
-  icon: string;
+  photoUrl: string;
   features: string[];
   price?: string;
   duration?: string;
-  category: string;
   isActive: boolean;
-  createdAt: string;
 }
 
 @Component({
@@ -22,138 +24,70 @@ interface Service {
   templateUrl: './admin-services.component.html',
   styleUrls: ['./admin-services.component.scss'],
 })
-export class AdminServicesComponent implements OnInit {
+export class AdminServicesComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+  
   services: Service[] = [];
   filteredServices: Service[] = [];
   searchTerm: string = '';
   selectedCategory: string = 'all';
   showAddForm: boolean = false;
   editingService: Service | null = null;
+  loading = false;
 
-  newService: Partial<Service> = {
-    title: '',
+  newService: ServiceFormData = {
+    name: '',
+    category: 'nano-ceramic',
     description: '',
-    icon: 'fas fa-cog',
+    photoUrl: '',
     features: [],
-    category: 'ceramic',
+    price: '',
+    duration: '',
     isActive: true,
   };
 
   categories = [
     { value: 'all', label: 'All Categories' },
-    { value: 'ceramic', label: 'Ceramic Coating' },
-    { value: 'protection', label: 'Protection' },
-    { value: 'detailing', label: 'Detailing' },
-    { value: 'interior', label: 'Interior' },
+    { value: 'nano-ceramic', label: 'Nano Ceramic Products' },
+    { value: 'nano-graphene', label: 'Nano Graphene Products' },
+    { value: 'paint-protection-film', label: 'Paint Protection Film' },
+    { value: 'thermal-insulation', label: 'Thermal Insulation' },
   ];
 
-  constructor() {}
+  constructor(
+    private servicesService: ServicesService
+  ) {}
 
   ngOnInit(): void {
     this.loadServices();
   }
 
-  private loadServices(): void {
-    // Load admin-created services from localStorage
-    const savedServices = localStorage.getItem('services');
-    let adminServices: Service[] = [];
-    if (savedServices) {
-      adminServices = JSON.parse(savedServices);
-    }
-
-    // Real services from the website
-    const realServices: Service[] = [
-      {
-        id: 'real-1',
-        title: 'Diamond Hybrid Plus',
-        description:
-          'حماية سيراميك فائقة الجودة مع تقنية الهجين الماسي للحصول على أفضل حماية ولمعان',
-        icon: '💎',
-        features: [
-          'تقنية الهجين الماسي',
-          'حماية 9H',
-          'لمعان فائق',
-          'ضمان 5 سنوات',
-        ],
-        price: 'Starting from $499',
-        duration: '6-8 hours',
-        category: 'ceramic',
-        isActive: true,
-        createdAt: '2024-01-01T10:00:00Z',
-      },
-      {
-        id: 'real-2',
-        title: 'Nano Pro Ceramic',
-        description:
-          'طلاء سيراميك نانو احترافي يوفر حماية شاملة للسيارة من جميع العوامل الخارجية',
-        icon: '🛡️',
-        features: [
-          'تقنية النانو',
-          'حماية UV',
-          'مقاومة كيميائية',
-          'سهولة التنظيف',
-        ],
-        price: 'Starting from $399',
-        duration: '4-6 hours',
-        category: 'ceramic',
-        isActive: true,
-        createdAt: '2024-01-01T10:00:00Z',
-      },
-      {
-        id: 'real-3',
-        title: 'Diamond Glass',
-        description:
-          'حماية زجاج متقدمة بتقنية الماس لحماية الزجاج وتحسين الرؤية',
-        icon: '🔷',
-        features: [
-          'حماية زجاج متقدمة',
-          'رؤية واضحة',
-          'مقاومة الخدوش',
-          'تنظيف سهل',
-        ],
-        price: 'Starting from $199',
-        duration: '2-3 hours',
-        category: 'protection',
-        isActive: true,
-        createdAt: '2024-01-01T10:00:00Z',
-      },
-      {
-        id: 'real-4',
-        title: 'Shield UltraCool',
-        description:
-          'حماية متطورة مع تقنية التبريد الفائق لحماية السيارة من الحرارة العالية',
-        icon: '❄️',
-        features: [
-          'تقنية التبريد',
-          'حماية حرارية',
-          'توفير طاقة',
-          'راحة القيادة',
-        ],
-        price: 'Starting from $299',
-        duration: '3-4 hours',
-        category: 'protection',
-        isActive: true,
-        createdAt: '2024-01-01T10:00:00Z',
-      },
-    ];
-
-    // Combine real services with admin services
-    this.services = [...realServices, ...adminServices];
-    this.filterServices();
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  private saveServices(): void {
-    // Only save admin-created services, not the real services
-    const adminServices = this.services.filter(
-      (service) => !service.id.startsWith('real-')
-    );
-    localStorage.setItem('services', JSON.stringify(adminServices));
+  private loadServices(): void {
+    this.loading = true;
+    this.servicesService.getServices()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (services) => {
+          this.services = services;
+          this.filterServices();
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error loading services:', error);
+          this.loading = false;
+        }
+      });
   }
 
   filterServices(): void {
     this.filteredServices = this.services.filter((service) => {
       const matchesSearch =
-        service.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        service.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         service.description
           .toLowerCase()
           .includes(this.searchTerm.toLowerCase());
@@ -175,49 +109,55 @@ export class AdminServicesComponent implements OnInit {
   showAddServiceForm(): void {
     this.editingService = null;
     this.newService = {
-      title: '',
+      name: '',
+      category: 'nano-ceramic',
       description: '',
-      icon: 'fas fa-cog',
+      photoUrl: '',
       features: [],
-      category: 'ceramic',
+      price: '',
+      duration: '',
       isActive: true,
     };
     this.showAddForm = true;
   }
 
   editService(service: Service): void {
-    // Prevent editing of real services
-    if (service.id.startsWith('real-')) {
-      alert(
-        'Cannot edit real website services. You can only edit admin-created services.'
-      );
-      return;
-    }
-
     this.editingService = service;
-    this.newService = { ...service };
+    this.newService = {
+      name: service.name,
+      category: service.category,
+      description: service.description,
+      photoUrl: service.photoUrl,
+      features: [...service.features],
+      price: service.price || '',
+      duration: service.duration || '',
+      isActive: service.isActive,
+    };
     this.showAddForm = true;
   }
 
   deleteService(service: Service): void {
-    // Prevent deletion of real services
-    if (service.id.startsWith('real-')) {
-      alert(
-        'Cannot delete real website services. You can only edit admin-created services.'
-      );
-      return;
-    }
-
-    if (confirm(`Are you sure you want to delete "${service.title}"?`)) {
-      this.services = this.services.filter((s) => s.id !== service.id);
-      this.saveServices();
-      this.filterServices();
+    if (confirm(`Are you sure you want to delete "${service.name}"?`)) {
+      this.servicesService.deleteService(service.id!)
+        .then(() => {
+          console.log('Service deleted successfully');
+        })
+        .catch((error) => {
+          console.error('Error deleting service:', error);
+          alert('Error deleting service. Please try again.');
+        });
     }
   }
 
   toggleServiceStatus(service: Service): void {
-    service.isActive = !service.isActive;
-    this.saveServices();
+    this.servicesService.toggleServiceStatus(service.id!, !service.isActive)
+      .then(() => {
+        console.log('Service status updated successfully');
+      })
+      .catch((error) => {
+        console.error('Error updating service status:', error);
+        alert('Error updating service status. Please try again.');
+      });
   }
 
   addFeature(): void {
@@ -233,57 +173,107 @@ export class AdminServicesComponent implements OnInit {
     }
   }
 
+  // Add photo URL directly
+  addPhotoUrl(): void {
+    if (this.newService.photoUrl.trim()) {
+      // Validate URL format
+      try {
+        new URL(this.newService.photoUrl);
+        console.log('Photo URL added:', this.newService.photoUrl);
+      } catch (error) {
+        alert('Please enter a valid URL');
+        this.newService.photoUrl = '';
+      }
+    }
+  }
+
+  // Remove photo URL
+  removePhotoUrl(): void {
+    this.newService.photoUrl = '';
+  }
+
   saveService(): void {
-    if (!this.newService.title || !this.newService.description) {
+    if (!this.newService.name || !this.newService.description) {
       alert('Please fill in all required fields');
       return;
     }
 
     if (this.editingService) {
       // Update existing service
-      const index = this.services.findIndex(
-        (s) => s.id === this.editingService!.id
-      );
-      if (index !== -1) {
-        this.services[index] = {
-          ...this.newService,
-          id: this.editingService.id,
-          createdAt: this.editingService.createdAt,
-        } as Service;
-      }
+      this.servicesService.updateService(this.editingService.id!, this.newService)
+        .then(() => {
+          console.log('Service updated successfully');
+          this.cancelForm();
+        })
+        .catch((error) => {
+          console.error('Error updating service:', error);
+          alert('Error updating service. Please try again.');
+        });
     } else {
       // Add new service
-      const newService: Service = {
+      this.servicesService.addService({
         ...this.newService,
-        id: Date.now().toString(),
-        createdAt: new Date().toISOString(),
-      } as Service;
-      this.services.push(newService);
+        createdBy: 'admin' // You can get this from auth service
+      })
+        .then(() => {
+          console.log('Service added successfully');
+          this.cancelForm();
+        })
+        .catch((error) => {
+          console.error('Error adding service:', error);
+          alert('Error adding service. Please try again.');
+        });
     }
-
-    this.saveServices();
-    this.filterServices();
-    this.cancelForm();
   }
 
   cancelForm(): void {
     this.showAddForm = false;
     this.editingService = null;
     this.newService = {
-      title: '',
+      name: '',
+      category: 'nano-ceramic',
       description: '',
-      icon: 'fas fa-cog',
+      photoUrl: '',
       features: [],
-      category: 'ceramic',
+      price: '',
+      duration: '',
       isActive: true,
     };
+    // Reset photo URL
+    this.newService.photoUrl = '';
   }
 
-  formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
+  formatDate(date: any): string {
+    try {
+      let dateObj: Date;
+      
+      if (date && typeof date === 'object' && date.toDate) {
+        // Firebase Timestamp
+        dateObj = date.toDate();
+      } else if (typeof date === 'string') {
+        // String date
+        dateObj = new Date(date);
+      } else if (date instanceof Date) {
+        // Date object
+        dateObj = date;
+      } else {
+        // Fallback
+        dateObj = new Date();
+      }
+      
+      // Check if date is valid
+      if (isNaN(dateObj.getTime())) {
+        return 'Invalid Date';
+      }
+      
+      return dateObj.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid Date';
+    }
   }
 }

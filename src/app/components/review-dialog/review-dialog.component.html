@@ -1,0 +1,93 @@
+<div class="review-dialog" [dir]="isRtl ? 'rtl' : 'ltr'">
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon>rate_review</mat-icon>
+    {{ isRtl ? 'أضف تقييمك' : 'Add Your Review' }}
+  </h2>
+
+  <mat-dialog-content class="dialog-content">
+    <form (ngSubmit)="onSubmit()" class="review-form">
+      <!-- Name Field -->
+      <div class="form-field-container">
+        <label class="field-label">{{ isRtl ? 'الاسم' : 'Name' }}</label>
+        <mat-form-field appearance="outline" class="full-width">
+          <input 
+            matInput 
+            [(ngModel)]="newReview.name" 
+            name="name"
+            required
+            [placeholder]="isRtl ? 'أدخل اسمك' : 'Enter your name'"
+          >
+          <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Rating Field -->
+      <div class="rating-section">
+        <label class="rating-label">{{ isRtl ? 'التقييم' : 'Rating' }}</label>
+        <div class="stars-container">
+          <mat-icon 
+            *ngFor="let star of getStars(5); let i = index"
+            class="star-icon"
+            [class.active]="i < newReview.rating"
+            (click)="setRating(i + 1)"
+          >
+            {{ i < newReview.rating ? 'star' : 'star_border' }}
+          </mat-icon>
+        </div>
+        <div class="rating-text">
+          {{ newReview.rating }}/5 {{ isRtl ? 'نجوم' : 'stars' }}
+        </div>
+      </div>
+
+      <!-- Review Text Field -->
+      <div class="form-field-container">
+        <label class="field-label">{{ isRtl ? 'تقييمك' : 'Your Review' }}</label>
+        <mat-form-field appearance="outline" class="full-width">
+          <textarea 
+            matInput 
+            [(ngModel)]="newReview.text" 
+            name="text"
+            required
+            rows="4"
+            [placeholder]="isRtl ? 'اكتب تقييمك هنا...' : 'Write your review here...'"
+          ></textarea>
+          <mat-icon matSuffix>edit</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Messages -->
+      <div class="messages" *ngIf="submitSuccess || submitError">
+        <div class="success-message" *ngIf="submitSuccess">
+          <mat-icon>check_circle</mat-icon>
+          {{ submitSuccess }}
+        </div>
+        <div class="error-message" *ngIf="submitError">
+          <mat-icon>error</mat-icon>
+          {{ submitError }}
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="dialog-actions">
+    <button 
+      mat-button 
+      (click)="onCancel()" 
+      [disabled]="submitLoading"
+      class="cancel-btn"
+    >
+      {{ isRtl ? 'إلغاء' : 'Cancel' }}
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onSubmit()" 
+      [disabled]="submitLoading || !newReview.name || !newReview.text"
+      class="submit-btn"
+    >
+      <mat-progress-spinner *ngIf="submitLoading" diameter="20"></mat-progress-spinner>
+      <mat-icon *ngIf="!submitLoading">send</mat-icon>
+      <span>{{ submitLoading ? (isRtl ? 'جارٍ الإرسال...' : 'Submitting...') : (isRtl ? 'إرسال التقييم' : 'Submit Review') }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>

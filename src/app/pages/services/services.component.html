@@ -37,315 +37,164 @@
     </div>
   </section>
 
-  <!-- Services Grid -->
-  <section class="services-section">
+
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-section">
     <div class="container">
-      <div class="section-header">
-        <h2>
-          {{ translationService.getTranslation("services.section.title") }}
-        </h2>
-        <p>
-          {{ translationService.getTranslation("services.section.subtitle") }}
-        </p>
-      </div>
-
-      <div class="services-grid">
-        <!-- Diamond Hybrid Plus -->
-        <div class="service-card premium">
-          <div class="service-image">
-            <img
-              src="assets/images/services/HYPERD+.png"
-              alt="Diamond Hybrid Plus"
-            />
-            <div class="service-overlay">
-              <div class="service-badge">
-                {{
-                  translationService.getTranslation("services.premium_badge")
-                }}
-              </div>
-            </div>
-          </div>
-          <div class="service-content">
-            <div class="service-icon">💎</div>
-            <h3>
-              {{
-                translationService.getTranslation(
-                  "services.diamond_hybrid.title"
-                )
-              }}
-            </h3>
-            <p class="service-description">
-              {{
-                translationService.getTranslation(
-                  "services.diamond_hybrid.description"
-                )
-              }}
-            </p>
-            <div class="service-features">
-              <span class="feature">{{
-                translationService.getTranslation(
-                  "services.diamond_hybrid.features.protection"
-                )
-              }}</span>
-              <span class="feature">{{
-                translationService.getTranslation(
-                  "services.diamond_hybrid.features.scratch"
-                )
-              }}</span>
-              <span class="feature">{{
-                translationService.getTranslation(
-                  "services.diamond_hybrid.features.shine"
-                )
-              }}</span>
-            </div>
-            <div class="service-details">
-              <div class="detail-item">
-                <i class="fas fa-shield-alt"></i>
-                <span>{{
-                  translationService.getTranslation(
-                    "services.diamond_hybrid.details.protection_level"
-                  )
-                }}</span>
-              </div>
-              <div class="detail-item">
-                <i class="fas fa-clock"></i>
-                <span>{{
-                  translationService.getTranslation(
-                    "services.diamond_hybrid.details.duration"
-                  )
-                }}</span>
-              </div>
-              <div class="detail-item">
-                <i class="fas fa-star"></i>
-                <span>{{
-                  translationService.getTranslation(
-                    "services.diamond_hybrid.details.warranty"
-                  )
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Paint Protection -->
-        <div class="service-card">
-          <div class="service-image">
-            <img
-              src="assets/images/services/male-worker-wrapping-car-with-ptotective-foil.jpg"
-              alt="Paint Protection"
-            />
-          </div>
-          <div class="service-content">
-            <div class="service-icon">🎨</div>
-            <h3>
-              {{
-                translationService.getTranslation(
-                  "services.paint_protection.title"
-                )
-              }}
-            </h3>
-            <p class="service-description">
-              {{
-                translationService.getTranslation(
-                  "services.paint_protection.description"
-                )
-              }}
-            </p>
-            <div class="service-features">
-              <span class="feature">{{
-                translationService.getTranslation(
-                  "services.paint_protection.features.protection"
-                )
-              }}</span>
-              <span class="feature">{{
-                translationService.getTranslation(
-                  "services.paint_protection.features.films"
-                )
-              }}</span>
-              <span class="feature">{{
-                translationService.getTranslation(
-                  "services.paint_protection.features.transparency"
-                )
-              }}</span>
-            </div>
-            <div class="service-details">
-              <div class="detail-item">
-                <i class="fas fa-shield-alt"></i>
-                <span>{{
-                  translationService.getTranslation(
-                    "services.paint_protection.details.protection_level"
-                  )
-                }}</span>
-              </div>
-              <div class="detail-item">
-                <i class="fas fa-clock"></i>
-                <span>{{
-                  translationService.getTranslation(
-                    "services.paint_protection.details.duration"
-                  )
-                }}</span>
-              </div>
-              <div class="detail-item">
-                <i class="fas fa-star"></i>
-                <span>{{
-                  translationService.getTranslation(
-                    "services.paint_protection.details.warranty"
-                  )
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Paint Protection Process -->
-        <div class="service-card">
-          <div class="service-image">
-            <img
-              src="assets/images/services/close-up-car-care-process.jpg"
-              alt="Paint Protection Process"
-            />
-          </div>
-          <div class="service-content">
-            <div class="service-icon">🔧</div>
-            <h3>
-              {{
-                translationService.getTranslation(
-                  "services.paint_protection_process.title"
-                )
-              }}
-            </h3>
-            <p class="service-description">
-              {{
-                translationService.getTranslation(
-                  "services.paint_protection_process.description"
-                )
-              }}
-            </p>
-            <div class="service-features">
-              <span class="feature">{{
-                translationService.getTranslation(
-                  "services.paint_protection_process.features.protection"
-                )
-              }}</span>
-              <span class="feature">{{
-                translationService.getTranslation(
-                  "services.paint_protection_process.features.technology"
-                )
-              }}</span>
-              <span class="feature">{{
-                translationService.getTranslation(
-                  "services.paint_protection_process.features.professional"
-                )
-              }}</span>
-            </div>
-            <div class="service-details">
-              <div class="detail-item">
-                <i class="fas fa-shield-alt"></i>
-                <span>{{
-                  translationService.getTranslation(
-                    "services.paint_protection_process.details.protection_level"
-                  )
-                }}</span>
-              </div>
-              <div class="detail-item">
-                <i class="fas fa-clock"></i>
-                <span>{{
-                  translationService.getTranslation(
-                    "services.paint_protection_process.details.duration"
-                  )
-                }}</span>
-              </div>
-              <div class="detail-item">
-                <i class="fas fa-star"></i>
-                <span>{{
-                  translationService.getTranslation(
-                    "services.paint_protection_process.details.warranty"
-                  )
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Shield UltraCool -->
-        <div class="service-card premium">
-          <div class="service-image">
-            <img
-              src="assets/images/services/shield-ultra-cool.png"
-              alt="Shield UltraCool"
-            />
-            <div class="service-overlay">
-              <div class="service-badge">
-                {{
-                  translationService.getTranslation("services.premium_badge")
-                }}
-              </div>
-            </div>
-          </div>
-          <div class="service-content">
-            <div class="service-icon">❄️</div>
-            <h3>
-              {{
-                translationService.getTranslation(
-                  "services.shield_ultracool.title"
-                )
-              }}
-            </h3>
-            <p class="service-description">
-              {{
-                translationService.getTranslation(
-                  "services.shield_ultracool.description"
-                )
-              }}
-            </p>
-            <div class="service-features">
-              <span class="feature">{{
-                translationService.getTranslation(
-                  "services.shield_ultracool.features.protection"
-                )
-              }}</span>
-              <span class="feature">{{
-                translationService.getTranslation(
-                  "services.shield_ultracool.features.cooling"
-                )
-              }}</span>
-              <span class="feature">{{
-                translationService.getTranslation(
-                  "services.shield_ultracool.features.energy"
-                )
-              }}</span>
-            </div>
-            <div class="service-details">
-              <div class="detail-item">
-                <i class="fas fa-shield-alt"></i>
-                <span>{{
-                  translationService.getTranslation(
-                    "services.shield_ultracool.details.protection_level"
-                  )
-                }}</span>
-              </div>
-              <div class="detail-item">
-                <i class="fas fa-clock"></i>
-                <span>{{
-                  translationService.getTranslation(
-                    "services.shield_ultracool.details.duration"
-                  )
-                }}</span>
-              </div>
-              <div class="detail-item">
-                <i class="fas fa-star"></i>
-                <span>{{
-                  translationService.getTranslation(
-                    "services.shield_ultracool.details.warranty"
-                  )
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="loading-content">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>جاري تحميل الخدمات...</p>
       </div>
     </div>
-  </section>
+  </div>
+
+  <!-- Services from Firebase -->
+  <div *ngIf="!loading && services.length > 0">
+    <!-- Nano Graphene Products Section -->
+    <section id="nano-graphene-section" class="product-section nano-graphene-section" *ngIf="getServicesByCategory('nano-graphene').length > 0">
+      <div class="container">
+        <div class="section-header">
+          <h2>منتجات النانو جرافين</h2>
+          <p>اكتشف منتجات النانو جرافين المتطورة للحماية المتقدمة لسيارتك بأعلى التقنيات العالمية</p>
+        </div>
+
+        <div class="products-grid">
+          <div class="product-card" *ngFor="let service of getServicesByCategory('nano-graphene')">
+            <div class="product-image">
+              <img [src]="service.photoUrl" [alt]="service.name" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">{{ service.name }}</h3>
+              <p class="product-description">{{ service.description }}</p>
+              <div class="product-details">
+                <div class="detail-item" *ngIf="service.price">
+                  <i class="fas fa-dollar-sign"></i>
+                  <span>{{ service.price }}</span>
+                </div>
+                <div class="detail-item" *ngIf="service.duration">
+                  <i class="fas fa-clock"></i>
+                  <span>{{ service.duration }}</span>
+                </div>
+                <div class="detail-item" *ngIf="service.features && service.features.length > 0">
+                  <i class="fas fa-star"></i>
+                  <span>{{ service.features[0] }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Nano Ceramic Products Section -->
+    <section id="nano-ceramic-section" class="product-section nano-ceramic-section" *ngIf="getServicesByCategory('nano-ceramic').length > 0">
+      <div class="container">
+        <div class="section-header">
+          <h2>منتجات النانو سيراميك</h2>
+          <p>اكتشف مجموعتنا المتنوعة من منتجات النانو سيراميك عالية الجودة من أفضل العلامات التجارية العالمية</p>
+        </div>
+
+        <div class="products-grid">
+          <div class="product-card" *ngFor="let service of getServicesByCategory('nano-ceramic')">
+            <div class="product-image">
+              <img [src]="service.photoUrl" [alt]="service.name" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">{{ service.name }}</h3>
+              <p class="product-description">{{ service.description }}</p>
+              <div class="product-details">
+                <div class="detail-item" *ngIf="service.price">
+                  <i class="fas fa-dollar-sign"></i>
+                  <span>{{ service.price }}</span>
+                </div>
+                <div class="detail-item" *ngIf="service.duration">
+                  <i class="fas fa-clock"></i>
+                  <span>{{ service.duration }}</span>
+                </div>
+                <div class="detail-item" *ngIf="service.features && service.features.length > 0">
+                  <i class="fas fa-star"></i>
+                  <span>{{ service.features[0] }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paint Protection Film Products Section -->
+    <section id="ppf-products-section" class="product-section ppf-products-section" *ngIf="getServicesByCategory('paint-protection-film').length > 0">
+      <div class="container">
+        <div class="section-header">
+          <h2>منتجات حماية الطلاء</h2>
+          <p>اكتشف مجموعتنا المتنوعة من منتجات حماية الطلاء عالية الجودة من أفضل العلامات التجارية العالمية</p>
+        </div>
+
+        <div class="products-grid">
+          <div class="product-card" *ngFor="let service of getServicesByCategory('paint-protection-film')">
+            <div class="product-image">
+              <img [src]="service.photoUrl" [alt]="service.name" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">{{ service.name }}</h3>
+              <p class="product-description">{{ service.description }}</p>
+              <div class="product-details">
+                <div class="detail-item" *ngIf="service.price">
+                  <i class="fas fa-dollar-sign"></i>
+                  <span>{{ service.price }}</span>
+                </div>
+                <div class="detail-item" *ngIf="service.duration">
+                  <i class="fas fa-clock"></i>
+                  <span>{{ service.duration }}</span>
+                </div>
+                <div class="detail-item" *ngIf="service.features && service.features.length > 0">
+                  <i class="fas fa-star"></i>
+                  <span>{{ service.features[0] }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Thermal Insulation Products Section -->
+    <section id="thermal-insulation-section" class="product-section thermal-insulation-section" *ngIf="getServicesByCategory('thermal-insulation').length > 0">
+      <div class="container">
+        <div class="section-header">
+          <h2>منتجات العزل الحراري</h2>
+          <p>اكتشف منتجات العزل الحراري المتطورة لحماية نوافذ سيارتك من الحرارة والأشعة الضارة</p>
+        </div>
+
+        <div class="products-grid">
+          <div class="product-card" *ngFor="let service of getServicesByCategory('thermal-insulation')">
+            <div class="product-image">
+              <img [src]="service.photoUrl" [alt]="service.name" />
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">{{ service.name }}</h3>
+              <p class="product-description">{{ service.description }}</p>
+              <div class="product-details">
+                <div class="detail-item" *ngIf="service.price">
+                  <i class="fas fa-dollar-sign"></i>
+                  <span>{{ service.price }}</span>
+                </div>
+                <div class="detail-item" *ngIf="service.duration">
+                  <i class="fas fa-clock"></i>
+                  <span>{{ service.duration }}</span>
+                </div>
+                <div class="detail-item" *ngIf="service.features && service.features.length > 0">
+                  <i class="fas fa-star"></i>
+                  <span>{{ service.features[0] }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 
   <!-- Technology Section -->
   <section class="technology-section">

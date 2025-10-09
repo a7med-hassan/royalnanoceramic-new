@@ -29,6 +29,15 @@ export class TranslationService {
       'header.contact': 'تواصل معنا',
       'header.admin-messages': 'إدارة الرسائل',
 
+      // Services Dropdown
+      'header.services_dropdown.nano-graphene': 'نانو جرافين',
+      'header.services_dropdown.nano-ceramic': 'نانو سيراميك',
+      'header.services_dropdown.protection-film': 'فيلم الحماية',
+      'header.services_dropdown.wrapping': 'التغليف',
+      'header.services_dropdown.dipping': 'الغمس',
+      'header.services_dropdown.auto-care': 'العناية بالسيارات',
+      'header.services_dropdown.thermal-insulation': 'العزل الحراري',
+
       // Home Page - Hero Section
       'home.hero.title': 'رويال نانو سيراميك',
       'home.hero.subtitle': 'أفضل حماية للسيارات في مصر',
@@ -128,6 +137,7 @@ export class TranslationService {
       'footer.contact_whatsapp': 'تواصل معنا عبر واتساب',
       'footer.address': 'أكتوبر، الجيزة',
       'footer.copyright': '© 2025 رويال نانو سيراميك. جميع الحقوق محفوظة.',
+      'footer.privacy_policy': 'سياسة الاستخدام',
 
       // Common
       'common.loading': 'جاري التحميل...',
@@ -425,9 +435,19 @@ export class TranslationService {
       'contact.form.car_type_placeholder': 'أدخل نوع السيارة',
       'contact.form.car_model': 'موديل السيارة',
       'contact.form.car_model_placeholder': 'أدخل موديل السيارة',
+      'contact.form.service_type': 'نوع الخدمة',
+      'contact.form.service_type_placeholder': 'اختر نوع الخدمة',
       'contact.form.notes': 'ملاحظات إضافية',
       'contact.form.notes_placeholder': 'أضف أي ملاحظات أو متطلبات خاصة',
       'contact.form.submit': 'إرسال الطلب',
+      // Updated service types
+      'contact.service_types.nano_ceramic': 'نانو سيراميك',
+      'contact.service_types.nano_graphene': 'نانو جيرافين',
+      'contact.service_types.ppf': 'فيلم حمايه',
+      'contact.service_types.heat_insulation': 'عزل حراري',
+      'contact.service_types.glass_protection': 'حماية زجاج',
+      'contact.service_types.paint_correction': 'تصحيح دهان',
+      'contact.service_types.other': 'أخرى',
       'contact.form.success_message':
         'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.',
       'contact.location.title': 'موقعنا',
@@ -719,6 +739,15 @@ export class TranslationService {
       'header.contact': 'Contact',
       'header.admin-messages': 'Admin Messages',
 
+      // Services Dropdown
+      'header.services_dropdown.nano-graphene': 'Nano Graphene',
+      'header.services_dropdown.nano-ceramic': 'Nano Ceramic',
+      'header.services_dropdown.protection-film': 'Protection Film',
+      'header.services_dropdown.wrapping': 'Wrapping',
+      'header.services_dropdown.dipping': 'Dipping',
+      'header.services_dropdown.auto-care': 'Auto Care',
+      'header.services_dropdown.thermal-insulation': 'Thermal Insulation',
+
       // Home Page - Hero Section
       'home.hero.title': 'Royal Nano Ceramic',
       'home.hero.subtitle': 'Best Car Protection in Egypt',
@@ -822,6 +851,7 @@ export class TranslationService {
       'footer.contact_whatsapp': 'Contact us via WhatsApp',
       'footer.address': 'October, Giza',
       'footer.copyright': '© 2025 Royal Nano Ceramic. All rights reserved.',
+      'footer.privacy_policy': 'Policy and Privacy',
 
       // Common
       'common.loading': 'Loading...',
@@ -1133,9 +1163,19 @@ export class TranslationService {
       'contact.form.car_type_placeholder': 'Enter car type',
       'contact.form.car_model': 'Car Model',
       'contact.form.car_model_placeholder': 'Enter car model',
+      'contact.form.service_type': 'Service Type',
+      'contact.form.service_type_placeholder': 'Select service type',
       'contact.form.notes': 'Additional Notes',
       'contact.form.notes_placeholder': 'Add any notes or special requirements',
       'contact.form.submit': 'Send Request',
+      // Updated service types
+      'contact.service_types.nano_ceramic': 'Nano Ceramic',
+      'contact.service_types.nano_graphene': 'Nano Graphene',
+      'contact.service_types.ppf': 'Paint Protection Film',
+      'contact.service_types.heat_insulation': 'Heat Insulation',
+      'contact.service_types.glass_protection': 'Glass Protection',
+      'contact.service_types.paint_correction': 'Paint Correction',
+      'contact.service_types.other': 'Other',
       'contact.form.success_message':
         'Your message has been sent successfully! We will contact you soon.',
       'contact.location.title': 'Our Location',

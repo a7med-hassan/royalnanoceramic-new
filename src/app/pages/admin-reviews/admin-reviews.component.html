@@ -1,0 +1,150 @@
+<div class="admin-reviews">
+  <div class="page-header">
+    <h1>Reviews Management</h1>
+    <p class="page-subtitle">Manage and moderate customer reviews</p>
+  </div>
+
+  <div class="toolbar">
+    <label>Filter by Status:</label>
+    <select [(ngModel)]="filterStatus" (change)="onFilterChange($event)">
+      <option value="">All Reviews</option>
+      <option value="pending">Pending Review</option>
+      <option value="approved">Approved</option>
+      <option value="rejected">Rejected</option>
+    </select>
+    
+    <label>Search:</label>
+    <input 
+      type="text" 
+      [(ngModel)]="searchTerm" 
+      (input)="onSearch()"
+      placeholder="Search by name or review text..."
+      class="search-input"
+    />
+
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-number">{{ reviews.length || 0 }}</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ getPendingCount() }}</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ getApprovedCount() }}</div>
+        <div class="stat-label">Approved</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading reviews...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <!-- Reviews Table -->
+  <div class="reviews-table" *ngIf="!loading && !error && reviews && reviews.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Rating</th>
+          <th>Review</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let review of reviews">
+          <td>
+            <div class="customer-info">
+              <strong>{{ review.name }}</strong>
+              <small class="review-date">{{ review.createdAt | date:'MMM dd, yyyy' }}</small>
+            </div>
+          </td>
+          <td>
+            <div class="rating-display">
+              <span *ngFor="let star of [1,2,3,4,5]; let i = index" 
+                    class="star" 
+                    [class.empty]="i >= (review.rating || 5)">
+                ★
+              </span>
+              <span class="rating-number">({{ review.rating || 5 }})</span>
+            </div>
+          </td>
+          <td>
+            <div class="text" [title]="review.text">
+              {{ review.text }}
+            </div>
+          </td>
+          <td>
+            <span class="status-badge" [class]="review.status">
+              {{ review.status | titlecase }}
+            </span>
+          </td>
+          <td>
+            <div class="actions">
+              <button 
+                class="approve-btn" 
+                (click)="updateStatus(review.id, 'approved')" 
+                [disabled]="review.status === 'approved'"
+                title="Approve Review">
+                Approve
+              </button>
+              <button 
+                class="reject-btn" 
+                (click)="updateStatus(review.id, 'rejected')" 
+                [disabled]="review.status === 'rejected'"
+                title="Reject Review">
+                Reject
+              </button>
+              <button 
+                class="delete-btn" 
+                (click)="deleteReview(review.id)"
+                title="Delete Review">
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !error && (!reviews || reviews.length === 0)" class="empty-state">
+    <div class="empty-icon">💬</div>
+    <h3>No Reviews Found</h3>
+    <p>There are no reviews matching your current filters.</p>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="!loading && !error && reviews && reviews.length > 0 && totalPages > 1">
+    <button 
+      (click)="onPageChange(currentPage - 1)" 
+      [disabled]="currentPage === 1"
+      class="pagination-btn">
+      ← Previous
+    </button>
+    
+    <div class="pagination-info">
+      Page {{ currentPage }} of {{ totalPages }}
+    </div>
+    
+    <button 
+      (click)="onPageChange(currentPage + 1)" 
+      [disabled]="currentPage === totalPages"
+      class="pagination-btn">
+      Next →
+    </button>
+  </div>
+</div>
+
+

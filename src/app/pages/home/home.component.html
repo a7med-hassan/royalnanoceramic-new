@@ -78,6 +78,63 @@
     </div>
   </section>
 
+  <!-- Reviews Section (after Features) -->
+  <section class="reviews-section">
+    <div class="container">
+      <div class="section-header" [class.rtl]="isRtl">
+        <h2 class="section-title">{{ isRtl ? 'آراء عملائنا' : 'Customer Reviews' }}</h2>
+        <p class="section-description">
+          {{ isRtl ? 'ماذا يقول عملاؤنا عن خدماتنا' : 'What our customers say about us' }}
+        </p>
+      </div>
+
+      <div *ngIf="!reviewsLoading && !reviewsError && displayedReviews.length > 0" #reviewsSwiperRef class="swiper reviews-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide" *ngFor="let r of displayedReviews">
+            <div class="review-card">
+              <div class="review-header">
+                <img [src]="getAvatar(r)" loading="lazy" decoding="async" alt="{{ r.name }}" class="avatar" />
+                <div class="reviewer">
+                  <h3 class="name">{{ r.name }}</h3>
+                  <div class="stars" [attr.aria-label]="(r.rating) + ' / 5'">
+                    <mat-icon *ngFor="let s of getStars(r.rating); let i = index" 
+                              class="star-icon"
+                              [class.filled]="s === 1">
+                      {{ s === 1 ? 'star' : 'star_border' }}
+                    </mat-icon>
+                  </div>
+                </div>
+              </div>
+              <p class="review-text">{{ r.text }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="reviews-pagination"></div>
+      </div>
+
+      <!-- Write Review Button -->
+      <div class="write-review-button-container" *ngIf="!reviewsLoading && !reviewsError">
+        <button class="write-review-btn" (click)="openReviewDialog()">
+          <i class="fas fa-pen"></i>
+          <span>{{ isRtl ? 'تقييم' : 'Review' }}</span>
+        </button>
+      </div>
+
+      <div *ngIf="reviewsLoading" class="reviews-loading">
+        {{ isRtl ? 'جاري تحميل آراء العملاء...' : 'Loading reviews...' }}
+      </div>
+      <div *ngIf="reviewsError" class="reviews-error">
+        {{ reviewsError }}
+      </div>
+      
+      <!-- No reviews message -->
+      <div *ngIf="!reviewsLoading && !reviewsError && displayedReviews.length === 0" class="no-reviews">
+        <p>{{ isRtl ? 'لا توجد مراجعات متاحة حالياً' : 'No reviews available at the moment' }}</p>
+      </div>
+
+    </div>
+  </section>
+
   <!-- CTA Section -->
   <section class="cta-section">
     <div class="container">
@@ -102,6 +159,7 @@
       <app-contact-form></app-contact-form>
     </div>
   </section>
+
 
   <!-- Social Media Section -->
   <section class="social-media-section">
@@ -190,4 +248,5 @@
       </div>
     </div>
   </section>
+
 </div>

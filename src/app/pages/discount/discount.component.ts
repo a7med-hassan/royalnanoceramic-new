@@ -2,9 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
 import { ApiService, ContactFormData } from '../../shared/services/api.service';
+import { CarBrandsService } from '../../shared/services/car-brands.service';
+import { CarModelsService } from '../../shared/services/car-models.service';
+import { TranslationService } from '../../shared/services/translation.service';
 
 @Component({
   selector: 'app-discount',
@@ -22,6 +26,16 @@ export class DiscountComponent implements OnInit, OnDestroy {
   submitSuccess = false;
   submitError = '';
   
+  // Autocomplete properties
+  brandResults: string[] = [];
+  brandSearch$ = new Subject<string>();
+  modelResults: string[] = [];
+  modelSearch$ = new Subject<string>();
+  
+  // Dropdown visibility
+  showBrandDropdown = false;
+  showModelDropdown = false;
+  
   // Countdown Timer
   timeLeft = {
     hours: 0,
@@ -37,15 +51,20 @@ export class DiscountComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
+    private http: HttpClient,
     private route: ActivatedRoute,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private carBrandsService: CarBrandsService,
+    private carModelsService: CarModelsService,
+    public translationService: TranslationService
   ) {
     this.contactForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(2)]],
-      phoneNumber: ['', [Validators.required, Validators.pattern(/^(\+20|0)?1[0125][0-9]{8}$/)]],
-      carType: ['', Validators.required],
-      carModel: ['', Validators.required],
-      additionalNotes: [''],
+      full_name: ['', [Validators.required, Validators.minLength(2)]],
+      mobile: ['', [Validators.required, Validators.pattern(/^(\+20|0)?1[0125][0-9]{8}$/)]],
+      client_16492512972331: ['', Validators.required], // ماركة العربية
+      client_16849336084508: ['', Validators.required], // الموديل
+      client_17293620987926: ['', Validators.required], // نوع الخدمة
+      client_16492513797105: [''], // الملاحظات
       // UTM fields
       utm_source: [''],
       utm_medium: [''],
@@ -75,6 +94,27 @@ export class DiscountComponent implements OnInit, OnDestroy {
 
     // Start countdown timer (24 hours)
     this.startCountdown();
+
+    // 🔹 بحث الماركات
+    this.brandSearch$
+      .pipe(
+        debounceTime(200),
+        switchMap((query) => this.carBrandsService.searchBrands(query))
+      )
+      .subscribe((results) => this.brandResults = results);
+
+    // 🔹 بحث الموديلات حسب الماركة
+    this.modelSearch$
+      .pipe(
+        debounceTime(200),
+        switchMap((query) =>
+          this.carModelsService.searchModels(
+            this.contactForm.value.client_16492512972331,
+            query
+          )
+        )
+      )
+      .subscribe((results) => this.modelResults = results);
   }
 
   ngOnDestroy(): void {
@@ -116,11 +156,22 @@ export class DiscountComponent implements OnInit, OnDestroy {
       const formData: ContactFormData = this.contactForm.value;
       console.log('🎯 Landing Page Form Data:', formData);
 
-      this.apiService.submitContactForm(formData)
+      // Send to backend API
+      this.http.post('https://royal-nano-backend.vercel.app/api/contact', {
+        full_name: this.contactForm.value.full_name,
+        mobile: this.contactForm.value.mobile,
+        client_16492512972331: this.contactForm.value.client_16492512972331,
+        client_16849336084508: this.contactForm.value.client_16849336084508,
+        client_16492513797105: this.contactForm.value.client_16492513797105,
+        client_17293620987926: this.contactForm.value.client_17293620987926,
+        utm_source: this.contactForm.value.utm_source,
+        utm_medium: this.contactForm.value.utm_medium,
+        utm_campaign: this.contactForm.value.utm_campaign
+      })
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response) => {
-            console.log('✅ Landing Page Form Submitted Successfully:', response);
+            console.log('✅ Backend response received:', response);
             this.isSubmitting = false;
             this.submitSuccess = true;
             this.contactForm.reset();
@@ -133,7 +184,7 @@ export class DiscountComponent implements OnInit, OnDestroy {
             });
           },
           error: (error) => {
-            console.error('❌ Landing Page Form Error:', error);
+            console.error('❌ Backend error:', error);
             this.isSubmitting = false;
             this.submitError = 'حدث خطأ في إرسال الطلب. يرجى المحاولة مرة أخرى.';
           }
@@ -176,5 +227,64 @@ export class DiscountComponent implements OnInit, OnDestroy {
     if (formElement) {
       formElement.scrollIntoView({ behavior: 'smooth' });
     }
+  }
+
+  // Autocomplete methods
+  onBrandInput(event: any) {
+    const value = event.target.value;
+    this.brandSearch$.next(value);
+    this.modelResults = []; // امسح الموديلات القديمة لما يغير الماركة
+  }
+
+  selectBrand(brand: string) {
+    this.contactForm.patchValue({ client_16492512972331: brand });
+    this.brandResults = [];
+    this.showBrandDropdown = false;
+    // Clear model when brand changes
+    this.contactForm.patchValue({ client_16849336084508: '' });
+    this.modelResults = [];
+  }
+
+  onModelInput(event: any) {
+    const value = event.target.value;
+    this.modelSearch$.next(value);
+  }
+
+  selectModel(model: string) {
+    this.contactForm.patchValue({ client_16849336084508: model });
+    this.modelResults = [];
+    this.showModelDropdown = false;
+  }
+
+  // Dropdown methods
+  toggleBrandDropdown() {
+    this.showBrandDropdown = !this.showBrandDropdown;
+    if (this.showBrandDropdown) {
+      // Load all brands when dropdown opens
+      this.brandSearch$.next('');
+    }
+  }
+
+  toggleModelDropdown() {
+    this.showModelDropdown = !this.showModelDropdown;
+    if (this.showModelDropdown) {
+      // Load models for selected brand when dropdown opens
+      const selectedBrand = this.contactForm.value.client_16492512972331;
+      if (selectedBrand) {
+        this.modelSearch$.next('');
+      }
+    }
+  }
+
+  hideBrandDropdown() {
+    setTimeout(() => {
+      this.showBrandDropdown = false;
+    }, 200);
+  }
+
+  hideModelDropdown() {
+    setTimeout(() => {
+      this.showModelDropdown = false;
+    }, 200);
   }
 }

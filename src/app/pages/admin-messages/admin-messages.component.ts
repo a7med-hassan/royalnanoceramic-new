@@ -92,20 +92,11 @@ export class AdminMessagesComponent implements OnInit {
   }
 
   private loadDataFromAPI(): void {
-    console.log('🔄 Loading data from API...');
-
     // Load contact messages
     this.isLoadingContact = true;
     this.contactError = '';
     this.adminMessagesService.getContactMessages().subscribe({
       next: (messages: any[]) => {
-        console.log('📥 Contact messages from API:', messages);
-        console.log('📊 Messages type:', typeof messages);
-        console.log(
-          '📊 Messages length:',
-          messages ? messages.length : 'undefined'
-        );
-        console.log('📊 Is array:', Array.isArray(messages));
 
         if (messages && Array.isArray(messages) && messages.length > 0) {
           // Debug: Log first message structure
@@ -162,28 +153,12 @@ export class AdminMessagesComponent implements OnInit {
     this.joinError = '';
     this.adminMessagesService.getJoinMessages().subscribe({
       next: (messages: any[]) => {
-        console.log('📥 Join messages from API:', messages);
-        console.log('📊 Messages type:', typeof messages);
-        console.log(
-          '📊 Messages length:',
-          messages ? messages.length : 'undefined'
-        );
-        console.log('📊 Is array:', Array.isArray(messages));
-
         if (messages && Array.isArray(messages) && messages.length > 0) {
-          // Debug: Log first message structure
-          console.log('🔍 First join message structure:', messages[0]);
-          console.log('🔍 First join message keys:', Object.keys(messages[0]));
-
           // Filter out deleted messages
           const filteredMessages = messages.filter((message) => {
             const messageId = this.getMessageId(message);
             return !this.deletedJoinMessages.has(messageId);
           });
-
-          console.log(
-            `🔍 Original join messages: ${messages.length}, Filtered: ${filteredMessages.length}`
-          );
 
           this.joinMessages = filteredMessages;
           this.apiStatus.join = 'success';
@@ -726,8 +701,6 @@ export class AdminMessagesComponent implements OnInit {
    * Download file from URL
    */
   private downloadFromURL(url: string, filename: string): void {
-    console.log('🌐 Downloading CV from URL:', url);
-
     // Create a temporary link to trigger download
     const link = document.createElement('a');
     link.href = url;
@@ -737,7 +710,5 @@ export class AdminMessagesComponent implements OnInit {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
-    console.log('✅ CV download initiated from URL');
   }
 }

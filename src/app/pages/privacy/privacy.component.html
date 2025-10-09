@@ -1,0 +1,409 @@
+<!-- Language Toggle & Print Button -->
+<div class="page-controls">
+  <div class="container">
+    <div class="controls-wrapper">
+      <button class="language-toggle" (click)="toggleLanguage()">
+        <i class="fas fa-language"></i>
+        <span>{{ currentLang === 'ar' ? 'English' : 'العربية' }}</span>
+      </button>
+      <button class="print-button" (click)="printPage()">
+        <i class="fas fa-print"></i>
+        <span>{{ currentLang === 'ar' ? 'طباعة' : 'Print' }}</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span *ngIf="currentLang === 'ar'">سياسة الخصوصية وشروط الاستخدام</span>
+        <span *ngIf="currentLang === 'en'">Privacy & Usage Policy</span>
+      </h1>
+      <p class="hero-subtitle">
+        <span *ngIf="currentLang === 'ar'">نرحب بك في موقع Royal Nano Ceramic. تحرص شركتنا على حماية خصوصيتك وتقديم تجربة آمنة ومتميزة لخدمات حماية طلاء السيارات. باستخدامك لهذا الموقع، فإنك توافق على شروط هذه السياسة.</span>
+        <span *ngIf="currentLang === 'en'">Welcome to Royal Nano Ceramic. We are committed to protecting your privacy and providing a secure, high-quality experience for our car paint protection services. By using this website, you agree to the terms of this policy.</span>
+      </p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" (click)="navigateTo('contact')">
+          <i class="fas fa-phone"></i>
+          <span *ngIf="currentLang === 'ar'">تواصل معنا</span>
+          <span *ngIf="currentLang === 'en'">Contact Us</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Policy Content -->
+<section class="policy-content" [class.rtl]="isRtl">
+  <div class="container">
+    <div class="policy-wrapper">
+      
+      <!-- Table of Contents -->
+      <div class="table-of-contents">
+        <h3>
+          <span *ngIf="currentLang === 'ar'">فهرس المحتويات</span>
+          <span *ngIf="currentLang === 'en'">Table of Contents</span>
+        </h3>
+        <ul>
+          <li *ngIf="currentLang === 'ar'"><a (click)="scrollToSection('data-collection')">1. البيانات التي نجمعها</a></li>
+          <li *ngIf="currentLang === 'ar'"><a (click)="scrollToSection('data-usage')">2. استخدام البيانات</a></li>
+          <li *ngIf="currentLang === 'ar'"><a (click)="scrollToSection('data-protection')">3. حماية البيانات</a></li>
+          <li *ngIf="currentLang === 'ar'"><a (click)="scrollToSection('service-warranty')">4. ضمان الخدمة</a></li>
+          <li *ngIf="currentLang === 'ar'"><a (click)="scrollToSection('refund-policy')">5. سياسة الاسترداد</a></li>
+          <li *ngIf="currentLang === 'ar'"><a (click)="scrollToSection('website-usage')">6. استخدام الموقع</a></li>
+          <li *ngIf="currentLang === 'ar'"><a (click)="scrollToSection('cookies')">7. الكوكيز</a></li>
+          <li *ngIf="currentLang === 'ar'"><a (click)="scrollToSection('third-party')">8. مشاركة البيانات مع أطراف ثالثة</a></li>
+          <li *ngIf="currentLang === 'ar'"><a (click)="scrollToSection('user-rights')">9. حقوق المستخدمين</a></li>
+          <li *ngIf="currentLang === 'ar'"><a (click)="scrollToSection('policy-changes')">10. تغييرات على السياسة</a></li>
+          <li *ngIf="currentLang === 'ar'"><a (click)="scrollToSection('contact')">11. تواصل معنا</a></li>
+
+          <li *ngIf="currentLang === 'en'"><a (click)="scrollToSection('data-collection')">1. Information We Collect</a></li>
+          <li *ngIf="currentLang === 'en'"><a (click)="scrollToSection('data-usage')">2. How We Use Information</a></li>
+          <li *ngIf="currentLang === 'en'"><a (click)="scrollToSection('data-protection')">3. Data Protection</a></li>
+          <li *ngIf="currentLang === 'en'"><a (click)="scrollToSection('service-warranty')">4. Service Warranty</a></li>
+          <li *ngIf="currentLang === 'en'"><a (click)="scrollToSection('refund-policy')">5. Refund Policy</a></li>
+          <li *ngIf="currentLang === 'en'"><a (click)="scrollToSection('website-usage')">6. Website Use</a></li>
+          <li *ngIf="currentLang === 'en'"><a (click)="scrollToSection('cookies')">7. Cookies</a></li>
+          <li *ngIf="currentLang === 'en'"><a (click)="scrollToSection('third-party')">8. Third-Party Sharing</a></li>
+          <li *ngIf="currentLang === 'en'"><a (click)="scrollToSection('user-rights')">9. User Rights</a></li>
+          <li *ngIf="currentLang === 'en'"><a (click)="scrollToSection('policy-changes')">10. Policy Changes</a></li>
+          <li *ngIf="currentLang === 'en'"><a (click)="scrollToSection('contact')">11. Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Section 1: Data Collection -->
+      <div id="data-collection" class="policy-section">
+        <div class="section-header">
+          <h2>
+            <span *ngIf="currentLang === 'ar'">1. البيانات التي نجمعها</span>
+            <span *ngIf="currentLang === 'en'">1. Information We Collect</span>
+          </h2>
+          <div class="section-icon">
+            <i class="fas fa-database"></i>
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="info-card">
+            <ul>
+              <li *ngIf="currentLang === 'ar'">
+                <i class="fas fa-user"></i>
+                <strong>البيانات الشخصية:</strong> الاسم، البريد الإلكتروني، رقم الهاتف، وعنوان الفوترة.
+              </li>
+              <li *ngIf="currentLang === 'en'">
+                <i class="fas fa-user"></i>
+                <strong>Personal Information:</strong> Name, email, phone number, billing address.
+              </li>
+              <li *ngIf="currentLang === 'ar'">
+                <i class="fas fa-car"></i>
+                <strong>بيانات السيارة:</strong> ماركة السيارة، الموديل، وسنة الصنع (لاستخدامها في تخصيص الخدمات).
+              </li>
+              <li *ngIf="currentLang === 'en'">
+                <i class="fas fa-car"></i>
+                <strong>Vehicle Information:</strong> Make, model, year (to customize services).
+              </li>
+              <li *ngIf="currentLang === 'ar'">
+                <i class="fas fa-chart-line"></i>
+                <strong>بيانات الاستخدام:</strong> عناوين IP، سلوك التصفح، وبيانات الأداء لتحسين تجربة الموقع والخدمات.
+              </li>
+              <li *ngIf="currentLang === 'en'">
+                <i class="fas fa-chart-line"></i>
+                <strong>Usage Data:</strong> IP addresses, browsing behavior, and performance data to improve the site.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Data Usage -->
+      <div id="data-usage" class="policy-section">
+        <div class="section-header">
+          <h2>
+            <span *ngIf="currentLang === 'ar'">2. استخدام البيانات</span>
+            <span *ngIf="currentLang === 'en'">2. How We Use Information</span>
+          </h2>
+          <div class="section-icon">
+            <i class="fas fa-cogs"></i>
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="info-card">
+            <p *ngIf="currentLang === 'ar'">نستخدم البيانات من أجل:</p>
+            <p *ngIf="currentLang === 'en'">We use data to:</p>
+            <ul>
+              <li *ngIf="currentLang === 'ar'">
+                <i class="fas fa-tools"></i>
+                تنفيذ الخدمات ومعالجة الطلبات.
+              </li>
+              <li *ngIf="currentLang === 'en'">
+                <i class="fas fa-tools"></i>
+                Deliver services and process orders.
+              </li>
+              <li *ngIf="currentLang === 'ar'">
+                <i class="fas fa-headset"></i>
+                دعم العملاء والرد على الاستفسارات.
+              </li>
+              <li *ngIf="currentLang === 'en'">
+                <i class="fas fa-headset"></i>
+                Provide customer support and respond to inquiries.
+              </li>
+              <li *ngIf="currentLang === 'ar'">
+                <i class="fas fa-envelope"></i>
+                إرسال إعلامات متعلقة بالخدمات والعروض (بموافقتك حيث ينطبق).
+              </li>
+              <li *ngIf="currentLang === 'en'">
+                <i class="fas fa-envelope"></i>
+                Send service updates and offers (where permitted).
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Data Protection -->
+      <div id="data-protection" class="policy-section">
+        <div class="section-header">
+          <h2>
+            <span *ngIf="currentLang === 'ar'">3. حماية البيانات</span>
+            <span *ngIf="currentLang === 'en'">3. Data Protection</span>
+          </h2>
+          <div class="section-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="info-card warning-card">
+            <div class="warning-icon">
+              <i class="fas fa-lock"></i>
+            </div>
+            <div class="warning-content">
+              <p *ngIf="currentLang === 'ar'">نتخذ الإجراءات التقنية والتنظيمية المناسبة لحماية بياناتك. ومع ذلك، لا يوجد نظام نقل عبر الإنترنت آمن مئة بالمئة، لذا لا يمكننا ضمان الأمان المطلق.</p>
+              <p *ngIf="currentLang === 'en'">We take reasonable technical and organizational measures to safeguard your data. However, no transmission over the Internet is completely secure.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Service Warranty -->
+      <div id="service-warranty" class="policy-section">
+        <div class="section-header">
+          <h2>
+            <span *ngIf="currentLang === 'ar'">4. ضمان الخدمة</span>
+            <span *ngIf="currentLang === 'en'">4. Service Warranty</span>
+          </h2>
+          <div class="section-icon">
+            <i class="fas fa-award"></i>
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="info-card highlight-card">
+            <div class="highlight-icon">
+              <i class="fas fa-certificate"></i>
+            </div>
+            <div class="highlight-content">
+              <p *ngIf="currentLang === 'ar'">نقدّم ضمانًا معتمدًا على خدمات حماية طلاء السيارات لدينا. يشمل الضمان المشكلات المتعلقة بجودة التطبيق وسلامة الطلاء وفق شروط الخدمة.</p>
+              <p *ngIf="currentLang === 'en'">We provide certified warranty coverage on our paint protection services, covering application and quality-related issues under our terms.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Refund Policy -->
+      <div id="refund-policy" class="policy-section">
+        <div class="section-header">
+          <h2>
+            <span *ngIf="currentLang === 'ar'">5. سياسة الاسترداد</span>
+            <span *ngIf="currentLang === 'en'">5. Refund Policy</span>
+          </h2>
+          <div class="section-icon">
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="info-card important-card">
+            <div class="important-icon">
+              <i class="fas fa-ban"></i>
+            </div>
+            <div class="important-content">
+              <p *ngIf="currentLang === 'ar'">بعد اكتمال تطبيق طلاء الحماية، تُعتبر الاتفاقية نهائية. لا يتم تقديم مبالغ مستردة بعد اكتمال الخدمة، وذلك حفاظًا على جودة وفعالية الحماية.</p>
+              <p *ngIf="currentLang === 'en'">Once a protective coating application is completed, the agreement is considered final. No refunds are offered post-service to ensure the highest protection quality.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 6: Website Usage -->
+      <div id="website-usage" class="policy-section">
+        <div class="section-header">
+          <h2>
+            <span *ngIf="currentLang === 'ar'">6. استخدام الموقع</span>
+            <span *ngIf="currentLang === 'en'">6. Website Use</span>
+          </h2>
+          <div class="section-icon">
+            <i class="fas fa-globe"></i>
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="info-card">
+            <p *ngIf="currentLang === 'ar'">باستخدام الموقع، توافق على الالتزام بالشروط. أي انتهاكات قد تؤدي إلى تعليق أو إيقاف الوصول.</p>
+            <p *ngIf="currentLang === 'en'">By using the website, you agree to the terms. Violations may result in suspension of access.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 7: Cookies -->
+      <div id="cookies" class="policy-section">
+        <div class="section-header">
+          <h2>
+            <span *ngIf="currentLang === 'ar'">7. الكوكيز</span>
+            <span *ngIf="currentLang === 'en'">7. Cookies</span>
+          </h2>
+          <div class="section-icon">
+            <i class="fas fa-cookie-bite"></i>
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="info-card">
+            <p *ngIf="currentLang === 'ar'">نستخدم الكوكيز لتحسين تجربة التصفح. يمكنك إدارة إعدادات الكوكيز من متصفحك.</p>
+            <p *ngIf="currentLang === 'en'">Cookies are used to enhance UX. Users may manage cookie settings via their browser.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 8: Third-Party Sharing -->
+      <div id="third-party" class="policy-section">
+        <div class="section-header">
+          <h2>
+            <span *ngIf="currentLang === 'ar'">8. مشاركة البيانات مع أطراف ثالثة</span>
+            <span *ngIf="currentLang === 'en'">8. Third-Party Sharing</span>
+          </h2>
+          <div class="section-icon">
+            <i class="fas fa-share-alt"></i>
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="info-card privacy-card">
+            <div class="privacy-icon">
+              <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="privacy-content">
+              <p *ngIf="currentLang === 'ar'">لا نشارك بياناتك مع أطراف ثالثة إلا عند الحاجة لتقديم الخدمة (مزودي دفع/شحن) أو عند طلب قانوني.</p>
+              <p *ngIf="currentLang === 'en'">Personal information is not shared with third parties except to fulfill services (payment/shipping vendors) or when required by law.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 9: User Rights -->
+      <div id="user-rights" class="policy-section">
+        <div class="section-header">
+          <h2>
+            <span *ngIf="currentLang === 'ar'">9. حقوق المستخدمين</span>
+            <span *ngIf="currentLang === 'en'">9. User Rights</span>
+          </h2>
+          <div class="section-icon">
+            <i class="fas fa-balance-scale"></i>
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="info-card">
+            <p *ngIf="currentLang === 'ar'">للمستخدمين الحق في: الوصول، تعديل، أو طلب حذف بياناتهم الشخصية في أي وقت عبر القنوات أدناه.</p>
+            <p *ngIf="currentLang === 'en'">Users can access, modify, or request deletion of their personal data at any time via the contact details below.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 10: Policy Changes -->
+      <div id="policy-changes" class="policy-section">
+        <div class="section-header">
+          <h2>
+            <span *ngIf="currentLang === 'ar'">10. تغييرات على السياسة</span>
+            <span *ngIf="currentLang === 'en'">10. Policy Changes</span>
+          </h2>
+          <div class="section-icon">
+            <i class="fas fa-sync-alt"></i>
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="info-card">
+            <p *ngIf="currentLang === 'ar'">قد نحدّث هذه السياسة من وقت لآخر. سيتم نشر أي تغييرات على هذه الصفحة مع تاريخ التحديث.</p>
+            <p *ngIf="currentLang === 'en'">Updates will be posted on this page with effective dates.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 11: Contact -->
+      <div id="contact" class="policy-section">
+        <div class="section-header">
+          <h2>
+            <span *ngIf="currentLang === 'ar'">11. تواصل معنا</span>
+            <span *ngIf="currentLang === 'en'">11. Contact</span>
+          </h2>
+          <div class="section-icon">
+            <i class="fas fa-phone"></i>
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="contact-info">
+            <div class="contact-card">
+              <div class="contact-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="contact-details">
+                <h3>
+                  <span *ngIf="currentLang === 'ar'">البريد الإلكتروني</span>
+                  <span *ngIf="currentLang === 'en'">Email</span>
+                </h3>
+                <p>contact&#64;royalnanoceramic.com</p>
+              </div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">
+                <i class="fas fa-phone-alt"></i>
+              </div>
+              <div class="contact-details">
+                <h3>
+                  <span *ngIf="currentLang === 'ar'">الهاتف</span>
+                  <span *ngIf="currentLang === 'en'">Phone</span>
+                </h3>
+                <p>+20 103 2222 542</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-content">
+      <h2>
+        <span *ngIf="currentLang === 'ar'">هل لديك أسئلة حول سياسة الخصوصية؟</span>
+        <span *ngIf="currentLang === 'en'">Do you have questions about our privacy policy?</span>
+      </h2>
+      <p>
+        <span *ngIf="currentLang === 'ar'">فريقنا متاح للإجابة على جميع استفساراتك</span>
+        <span *ngIf="currentLang === 'en'">Our team is available to answer all your inquiries</span>
+      </p>
+      <div class="cta-buttons">
+        <button class="btn btn-primary" (click)="navigateTo('contact')">
+          <i class="fas fa-envelope"></i>
+          <span *ngIf="currentLang === 'ar'">تواصل معنا</span>
+          <span *ngIf="currentLang === 'en'">Contact Us</span>
+        </button>
+        <button class="btn btn-secondary" (click)="navigateTo('services')">
+          <i class="fas fa-car"></i>
+          <span *ngIf="currentLang === 'ar'">خدماتنا</span>
+          <span *ngIf="currentLang === 'en'">Our Services</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

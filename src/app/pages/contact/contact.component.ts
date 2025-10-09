@@ -20,11 +20,15 @@ export class ContactComponent implements OnInit, OnDestroy {
 
   // Simple form data without forms modules
   formData = {
-    fullName: '',
-    phoneNumber: '',
-    carType: '',
-    carModel: '',
-    additionalNotes: '', // Changed from 'notes' to match API
+    full_name: '',
+    mobile: '',
+    client_16492512972331: '', // ماركة العربية
+    client_16849336084508: '', // الموديل
+    client_16492513797105: '', // الملاحظات
+    client_17293620987926: '', // نوع الخدمة
+    utm_source: '',
+    utm_medium: '',
+    utm_campaign: ''
   };
 
   isSubmitting = false;
@@ -74,11 +78,10 @@ export class ContactComponent implements OnInit, OnDestroy {
       console.log('📤 About to call ApiService.submitContactForm');
 
       this.apiService
-        .submitContactForm(this.formData)
+        .submitContactForm(this.formData, 'contact')
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response) => {
-            console.log('✅ API response received:', response);
             this.submitSuccess = true;
             this.submitMessage = 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.';
             this.resetForm();
@@ -102,20 +105,24 @@ export class ContactComponent implements OnInit, OnDestroy {
 
   private isFormValid(): boolean {
     return !!(
-      this.formData.fullName &&
-      this.formData.phoneNumber &&
-      this.formData.carType &&
-      this.formData.carModel
+      this.formData.full_name &&
+      this.formData.mobile &&
+      this.formData.client_16492512972331 &&
+      this.formData.client_16849336084508
     );
   }
 
   private resetForm(): void {
     this.formData = {
-      fullName: '',
-      phoneNumber: '',
-      carType: '',
-      carModel: '',
-      additionalNotes: '',
+      full_name: '',
+      mobile: '',
+      client_16492512972331: '',
+      client_16849336084508: '',
+      client_16492513797105: '',
+      client_17293620987926: '',
+      utm_source: '',
+      utm_medium: '',
+      utm_campaign: ''
     };
   }
 }

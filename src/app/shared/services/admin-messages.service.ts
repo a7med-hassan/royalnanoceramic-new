@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiService } from './api.service';
+import { ApiService, ContactFormData, JoinFormData } from './api.service';
 
 // Data interfaces based on API response
 export interface ContactMessage {
@@ -23,28 +23,7 @@ export interface JoinMessage {
   createdAt: string;
 }
 
-// Form data interfaces for testing
-export interface ContactFormData {
-  fullName: string;
-  phoneNumber: string;
-  carType: string;
-  carModel: string;
-  additionalNotes: string; // Changed from 'notes' to match API
-  utm_source?: string;
-  utm_medium?: string;
-  utm_campaign?: string;
-}
-
-export interface JoinFormData {
-  fullName: string;
-  phoneNumber: string;
-  email: string;
-  jobPosition: string; // Changed from 'position' to match API
-  experience: string;
-  additionalMessage: string; // Changed from 'message' to match API
-  cvFileName?: string; // Added to match API
-  cvPath?: string; // Added to match API
-}
+// Form data interfaces for testing - using the ones from ApiService
 
 @Injectable({
   providedIn: 'root',

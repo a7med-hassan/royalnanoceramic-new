@@ -5,6 +5,7 @@ import { enableProdMode } from '@angular/core';
 import { environment } from './environments/environment';
 import '@angular/localize/init';
 
+
 // Enable production mode
 if (environment.production) {
   enableProdMode();
@@ -34,3 +35,4 @@ if ('serviceWorker' in navigator && environment.production) {
 bootstrapApplication(AppComponent, appConfig).catch((err) =>
   console.error(err)
 );
+

@@ -8,8 +8,13 @@ import {
   AbstractControl,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { ApiService, ContactFormData } from '../../shared/services/api.service';
 import { TranslationService } from '../../shared/services/translation.service';
+import { CarBrandsService } from '../../shared/services/car-brands.service';
+import { CarModelsService } from '../../shared/services/car-models.service';
+import { debounceTime, switchMap } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-contact-form',
@@ -25,14 +30,27 @@ export class ContactFormComponent implements OnInit {
   submitError = '';
   errorMessage = '';
 
+  // Autocomplete properties
+  brandResults: string[] = [];
+  brandSearch$ = new Subject<string>();
+  modelResults: string[] = [];
+  modelSearch$ = new Subject<string>();
+  
+  // Dropdown visibility
+  showBrandDropdown = false;
+  showModelDropdown = false;
+
   constructor(
     private fb: FormBuilder,
+    private http: HttpClient,
     private apiService: ApiService,
     public translationService: TranslationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private carBrandsService: CarBrandsService,
+    private carModelsService: CarModelsService
   ) {
     this.contactForm = this.fb.group({
-      fullName: [
+      full_name: [
         '',
         [
           Validators.required,
@@ -43,20 +61,14 @@ export class ContactFormComponent implements OnInit {
           ),
         ],
       ],
-      phoneNumber: [
+      mobile: [
         '',
         [Validators.required, Validators.pattern(/^(\+20|0)?1[0125][0-9]{8}$/)],
       ],
-      carType: ['', [Validators.required]],
-      carModel: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(2),
-          Validators.maxLength(30),
-        ],
-      ],
-      additionalNotes: ['', [Validators.maxLength(500)]],
+      client_16492512972331: ['', [Validators.required]], // ماركة العربية
+      client_16849336084508: ['', [Validators.required]], // الموديل
+      client_17293620987926: ['', [Validators.required]], // نوع الخدمة
+      client_16492513797105: ['', [Validators.maxLength(500)]], // الملاحظات
       // 🟢 UTM fields for tracking
       utm_source: [''],
       utm_medium: [''],
@@ -94,45 +106,119 @@ export class ContactFormComponent implements OnInit {
       });
       console.log('✅ Complete form data after UTM update:', this.contactForm.value);
     });
+
+    // 🔹 بحث الماركات
+    this.brandSearch$
+      .pipe(
+        debounceTime(200),
+        switchMap((query) => this.carBrandsService.searchBrands(query))
+      )
+      .subscribe((results) => this.brandResults = results);
+
+    // 🔹 بحث الموديلات حسب الماركة
+    this.modelSearch$
+      .pipe(
+        debounceTime(200),
+        switchMap((query) =>
+          this.carModelsService.searchModels(
+            this.contactForm.value.client_16492512972331,
+            query
+          )
+        )
+      )
+      .subscribe((results) => this.modelResults = results);
+  }
+
+  // Autocomplete methods
+  onBrandInput(event: any) {
+    const value = event.target.value;
+    this.brandSearch$.next(value);
+    this.modelResults = []; // امسح الموديلات القديمة لما يغير الماركة
+  }
+
+  selectBrand(brand: string) {
+    this.contactForm.patchValue({ client_16492512972331: brand });
+    this.brandResults = [];
+    this.showBrandDropdown = false;
+    // Clear model when brand changes
+    this.contactForm.patchValue({ client_16849336084508: '' });
+    this.modelResults = [];
+  }
+
+  onModelInput(event: any) {
+    const value = event.target.value;
+    this.modelSearch$.next(value);
+  }
+
+  selectModel(model: string) {
+    this.contactForm.patchValue({ client_16849336084508: model });
+    this.modelResults = [];
+    this.showModelDropdown = false;
+  }
+
+  // Dropdown methods
+  toggleBrandDropdown() {
+    this.showBrandDropdown = !this.showBrandDropdown;
+    if (this.showBrandDropdown) {
+      // Load all brands when dropdown opens
+      this.brandSearch$.next('');
+    }
+  }
+
+  toggleModelDropdown() {
+    this.showModelDropdown = !this.showModelDropdown;
+    if (this.showModelDropdown) {
+      // Load models for selected brand when dropdown opens
+      const selectedBrand = this.contactForm.value.client_16492512972331;
+      if (selectedBrand) {
+        this.modelSearch$.next('');
+      }
+    }
+  }
+
+  hideBrandDropdown() {
+    setTimeout(() => {
+      this.showBrandDropdown = false;
+    }, 200);
+  }
+
+  hideModelDropdown() {
+    setTimeout(() => {
+      this.showModelDropdown = false;
+    }, 200);
   }
 
   onSubmit(): void {
-    console.log('🔄 Contact form submission started');
-    console.log('📝 Form data:', this.contactForm.value);
-    console.log('🔍 UTM Data being sent:', {
-      utm_source: this.contactForm.get('utm_source')?.value,
-      utm_medium: this.contactForm.get('utm_medium')?.value,
-      utm_campaign: this.contactForm.get('utm_campaign')?.value
-    });
-    console.log('✅ Form valid:', this.contactForm.valid);
-    console.log('❌ Form errors:', this.contactForm.errors);
-
     if (this.contactForm.valid) {
-      console.log('✅ Form is valid, proceeding with submission');
       this.isSubmitting = true;
       this.submitError = '';
       this.submitSuccess = false;
 
       const formData: ContactFormData = this.contactForm.value;
-      console.log('📤 Submitting data to API:', formData);
-      console.log('🔍 UTM Data in formData:', {
-        utm_source: formData.utm_source,
-        utm_medium: formData.utm_medium,
-        utm_campaign: formData.utm_campaign
-      });
 
-      this.apiService.submitContactForm(formData).subscribe({
+      // Send to backend API
+      this.http.post('https://royal-nano-backend.vercel.app/api/contact', {
+        full_name: this.contactForm.value.full_name,
+        mobile: this.contactForm.value.mobile,
+        client_16492512972331: this.contactForm.value.client_16492512972331,
+        client_16849336084508: this.contactForm.value.client_16849336084508,
+        client_16492513797105: this.contactForm.value.client_16492513797105,
+        client_17293620987926: this.contactForm.value.client_17293620987926,
+        utm_source: this.contactForm.value.utm_source,
+        utm_medium: this.contactForm.value.utm_medium,
+        utm_campaign: this.contactForm.value.utm_campaign
+      }).subscribe({
         next: (response) => {
-          console.log('✅ API response received:', response);
+          console.log('✅ Backend response received:', response);
           this.isSubmitting = false;
           this.submitSuccess = true;
           this.contactForm.reset();
           this.showSuccessMessage();
         },
         error: (error) => {
-          console.error('❌ API error:', error);
+          console.error('❌ Backend error:', error);
           this.isSubmitting = false;
-          this.submitError = this.getApiErrorMessage(error);
+          this.submitError = 'حدث خطأ في إرسال البيانات. يرجى المحاولة مرة أخرى.';
           this.showErrorMessage();
         },
       });

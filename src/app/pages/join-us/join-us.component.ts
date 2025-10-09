@@ -242,7 +242,6 @@ export class JoinUsComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response) => {
-            console.log('✅ API response received:', response);
             this.submitSuccess = true;
             this.submitMessage =
               'تم إرسال طلب الانضمام بنجاح! سنتواصل معك قريباً.';

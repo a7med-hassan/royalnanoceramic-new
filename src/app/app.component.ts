@@ -8,6 +8,7 @@ import { filter } from 'rxjs/operators';
 import { PerformanceService } from './shared/services/performance.service';
 import { ImageOptimizationService } from './shared/services/image-optimization.service';
 import { ScrollToTopService } from './shared/services/scroll-to-top.service';
+import { TranslationService } from './shared/services/translation.service';
 
 @Component({
   selector: 'app-root',
@@ -34,7 +35,8 @@ export class AppComponent implements OnInit {
     private router: Router,
     private performanceService: PerformanceService,
     private imageOptimizationService: ImageOptimizationService,
-    private scrollToTopService: ScrollToTopService
+    private scrollToTopService: ScrollToTopService,
+    private translationService: TranslationService
   ) {
     // Subscribe to router events to scroll to top on navigation
     this.router.events
@@ -51,10 +53,15 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     try {
-      // Set initial RTL and language settings
-      document.documentElement.lang = 'ar';
-      document.documentElement.dir = 'rtl';
-      document.body.className = 'rtl arabic-font';
+      // Initialize language and direction from TranslationService
+      this.currentLang = this.translationService.getCurrentLanguage();
+      this.isRtl = this.translationService.isRtl$;
+
+      // React to language changes
+      this.translationService.languageChanged$.subscribe(() => {
+        this.currentLang = this.translationService.getCurrentLanguage();
+        this.isRtl = this.translationService.isRtl$;
+      });
 
       // Initialize route tracking
       this.currentRoute = this.router.url;

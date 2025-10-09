@@ -22,7 +22,7 @@
         <input
           type="text"
           id="fullName"
-          formControlName="fullName"
+          formControlName="full_name"
           [class.invalid]="isFieldInvalid('fullName')"
           [class.valid]="
             !isFieldInvalid('fullName') && getFieldValue('fullName')
@@ -58,7 +58,7 @@
         <input
           type="tel"
           id="phoneNumber"
-          formControlName="phoneNumber"
+          formControlName="mobile"
           [class.invalid]="isFieldInvalid('phoneNumber')"
           [class.valid]="
             !isFieldInvalid('phoneNumber') && getFieldValue('phoneNumber')
@@ -79,64 +79,76 @@
           <span>{{ translationService.getTranslation("common.success") }}</span>
         </div>
       </div>
+
+      <div class="form-group">
+        <label for="serviceType">
+          {{ translationService.getTranslation("contact.form.service_type") }}
+          <span class="required-indicator" *ngIf="isFieldRequired('client_17293620987926')"
+            >*</span
+          >
+        </label>
+        <select
+          id="serviceType"
+          formControlName="client_17293620987926"
+          [class.invalid]="isFieldInvalid('client_17293620987926')"
+          [class.valid]="!isFieldInvalid('client_17293620987926') && getFieldValue('client_17293620987926')"
+        >
+          <option value="">{{ translationService.getTranslation("contact.form.service_type_placeholder") }}</option>
+          <option value="nano_ceramic">{{ translationService.getTranslation("contact.service_types.nano_ceramic") }}</option>
+          <option value="nano_graphene">{{ translationService.getTranslation("contact.service_types.nano_graphene") }}</option>
+          <option value="ppf">{{ translationService.getTranslation("contact.service_types.ppf") }}</option>
+          <option value="heat_insulation">{{ translationService.getTranslation("contact.service_types.heat_insulation") }}</option>
+          <option value="glass_protection">{{ translationService.getTranslation("contact.service_types.glass_protection") }}</option>
+          <option value="paint_correction">{{ translationService.getTranslation("contact.service_types.paint_correction") }}</option>
+          <option value="other">{{ translationService.getTranslation("contact.service_types.other") }}</option>
+        </select>
+        <div class="error-message" *ngIf="isFieldInvalid('client_17293620987926')">
+          {{ getErrorMessage("client_17293620987926") }}
+        </div>
+        <div
+          class="field-info"
+          *ngIf="!isFieldInvalid('client_17293620987926') && getFieldValue('client_17293620987926')"
+        >
+          <i class="fas fa-check-circle"></i>
+          <span>{{ translationService.getTranslation("common.success") }}</span>
+        </div>
+      </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label for="carType">
           {{ translationService.getTranslation("contact.form.car_type") }}
-          <span class="required-indicator" *ngIf="isFieldRequired('carType')"
+          <span class="required-indicator" *ngIf="isFieldRequired('client_16492512972331')"
             >*</span
           >
         </label>
-        <select
-          id="carType"
-          formControlName="carType"
-          [class.invalid]="isFieldInvalid('carType')"
-          [class.valid]="!isFieldInvalid('carType') && getFieldValue('carType')"
-        >
-          <option value="">
-            {{
-              translationService.getTranslation(
-                "contact.form.car_type_placeholder"
-              )
-            }}
-          </option>
-          <option value="sedan">
-            {{ translationService.getTranslation("contact.car_types.sedan") }}
-          </option>
-          <option value="suv">
-            {{ translationService.getTranslation("contact.car_types.suv") }}
-          </option>
-          <option value="hatchback">
-            {{
-              translationService.getTranslation("contact.car_types.hatchback")
-            }}
-          </option>
-          <option value="coupe">
-            {{ translationService.getTranslation("contact.car_types.coupe") }}
-          </option>
-          <option value="van">
-            {{ translationService.getTranslation("contact.car_types.van") }}
-          </option>
-          <option value="truck">
-            {{ translationService.getTranslation("contact.car_types.truck") }}
-          </option>
-          <option value="motorcycle">
-            {{
-              translationService.getTranslation("contact.car_types.motorcycle")
-            }}
-          </option>
-          <option value="other">
-            {{ translationService.getTranslation("contact.car_types.other") }}
-          </option>
-        </select>
-        <div class="error-message" *ngIf="isFieldInvalid('carType')">
-          {{ getErrorMessage("carType") }}
+        <div class="custom-select-container">
+          <input
+            type="text"
+            id="carBrand"
+            formControlName="client_16492512972331"
+            [class.invalid]="isFieldInvalid('client_16492512972331')"
+            [class.valid]="!isFieldInvalid('client_16492512972331') && getFieldValue('client_16492512972331')"
+            [placeholder]="translationService.getTranslation('contact.form.car_type_placeholder')"
+            (input)="onBrandInput($event)"
+            (focus)="showBrandDropdown = true"
+            (blur)="hideBrandDropdown()"
+            autocomplete="off"
+          />
+          <div class="select-arrow" (click)="toggleBrandDropdown()">▼</div>
+          <ul *ngIf="showBrandDropdown && brandResults.length > 0" class="autocomplete-results">
+            <li *ngFor="let brand of brandResults" (click)="selectBrand(brand)">
+              {{ brand }}
+            </li>
+          </ul>
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('client_16492512972331')">
+          {{ getErrorMessage("client_16492512972331") }}
         </div>
         <div
           class="field-info"
-          *ngIf="!isFieldInvalid('carType') && getFieldValue('carType')"
+          *ngIf="!isFieldInvalid('client_16492512972331') && getFieldValue('client_16492512972331')"
         >
           <i class="fas fa-check-circle"></i>
           <span>{{ translationService.getTranslation("common.success") }}</span>
@@ -146,31 +158,36 @@
       <div class="form-group">
         <label for="carModel">
           {{ translationService.getTranslation("contact.form.car_model") }}
-          <span class="required-indicator" *ngIf="isFieldRequired('carModel')"
+          <span class="required-indicator" *ngIf="isFieldRequired('client_16849336084508')"
             >*</span
           >
         </label>
-        <input
-          type="text"
-          id="carModel"
-          formControlName="carModel"
-          [class.invalid]="isFieldInvalid('carModel')"
-          [class.valid]="
-            !isFieldInvalid('carModel') && getFieldValue('carModel')
-          "
-          [placeholder]="
-            translationService.getTranslation(
-              'contact.form.car_model_placeholder'
-            )
-          "
-          autocomplete="off"
-        />
-        <div class="error-message" *ngIf="isFieldInvalid('carModel')">
-          {{ getErrorMessage("carModel") }}
+        <div class="custom-select-container">
+          <input
+            type="text"
+            id="carModel"
+            formControlName="client_16849336084508"
+            [class.invalid]="isFieldInvalid('client_16849336084508')"
+            [class.valid]="!isFieldInvalid('client_16849336084508') && getFieldValue('client_16849336084508')"
+            [placeholder]="translationService.getTranslation('contact.form.car_model_placeholder')"
+            (input)="onModelInput($event)"
+            (focus)="showModelDropdown = true"
+            (blur)="hideModelDropdown()"
+            autocomplete="off"
+          />
+          <div class="select-arrow" (click)="toggleModelDropdown()">▼</div>
+          <ul *ngIf="showModelDropdown && modelResults.length > 0" class="autocomplete-results">
+            <li *ngFor="let model of modelResults" (click)="selectModel(model)">
+              {{ model }}
+            </li>
+          </ul>
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('client_16849336084508')">
+          {{ getErrorMessage("client_16849336084508") }}
         </div>
         <div
           class="field-info"
-          *ngIf="!isFieldInvalid('carModel') && getFieldValue('carModel')"
+          *ngIf="!isFieldInvalid('client_16849336084508') && getFieldValue('client_16849336084508')"
         >
           <i class="fas fa-check-circle"></i>
           <span>{{ translationService.getTranslation("common.success") }}</span>
@@ -185,9 +202,9 @@
           >({{ translationService.getTranslation("common.optional") }})</span
         >
       </label>
-      <textarea
-        id="additionalNotes"
-        formControlName="additionalNotes"
+        <textarea
+          id="additionalNotes"
+          formControlName="client_16492513797105"
         [class.invalid]="isFieldInvalid('additionalNotes')"
         [class.valid]="!isFieldInvalid('additionalNotes') && getFieldValue('additionalNotes')"
         rows="4"

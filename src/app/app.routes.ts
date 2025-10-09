@@ -34,6 +34,10 @@ export const routes: Routes = [
     path: 'discount', 
     loadComponent: () => import('./pages/discount/discount.component').then(m => m.DiscountComponent)
   },
+  { 
+    path: 'privacy-policy', 
+    loadChildren: () => import('./pages/privacy/privacy.module').then(m => m.PrivacyModule)
+  },
 
   // Admin routes - lazy loaded
   { 
@@ -68,6 +72,10 @@ export const routes: Routes = [
       { 
         path: 'blog', 
         loadComponent: () => import('./pages/blog-dashboard/blog-dashboard.component').then(m => m.BlogDashboardComponent)
+      },
+      { 
+        path: 'reviews', 
+        loadComponent: () => import('./pages/admin-reviews/admin-reviews.component').then(m => m.AdminReviewsComponent)
       },
     ],
   },

@@ -4,13 +4,13 @@
     <div class="container">
       <div class="hero-content">
         <h1 class="main-title">
-          🔥 خصم 20% لفترة محدودة 🔥
+          🎉 عروض ROYAL NANO CERAMIC الحصرية 🎉
         </h1>
         <h2 class="subtitle">
-          احصل على فيلم الحماية النانوسيراميك بخصم حصري
+          💰 السعر: 22400 بدلاً من 28000
         </h2>
         <p class="description">
-          عرض خاص لفترة محدودة - وفر 100 جنيه على خدمة الحماية المميزة لسيارتك
+          🎁 العرض يشمل جسم السيارة بالكامل من الخارج + 5 هدايا داخلية وخارجية
         </p>
         
         <!-- Countdown Timer -->
@@ -47,53 +47,104 @@
       <div class="product-card">
         <div class="product-image">
           <img 
-            src="assets/images/ChatGPT Image Sep 20, 2025, 05_34_14 PM.png" 
-            alt="خدمة النانوسيراميك" 
+            src="assets/images/offer.png" 
+            alt="عرض خاص - خدمة النانوسيراميك" 
             class="product-img"
             loading="eager"
             decoding="async"
+            onerror="this.src='assets/images/ChatGPT Image Sep 20, 2025, 05_34_14 PM.png'"
           >
           <div class="discount-badge">خصم 20%</div>
         </div>
         
         <div class="product-info">
-          <h3 class="product-title">فيلم الحماية النانوسيراميك المميز</h3>
+          <h3 class="product-title">🎁 العرض يشمل جسم السيارة بالكامل + 5 هدايا</h3>
           <div class="features">
             <div class="feature-item">
-              <i class="fas fa-shield-alt"></i>
-              <span>حماية من الخدوش والتآكل</span>
+              <i class="fas fa-car"></i>
+              <span>جسم السيارة بالكامل من الخارج</span>
             </div>
             <div class="feature-item">
-              <i class="fas fa-sun"></i>
-              <span>مقاوم للأشعة فوق البنفسجية</span>
+              <i class="fas fa-window-maximize"></i>
+              <span>حماية الزجاج بالكامل (أمامي + جانبي + خلفي + فتحة السقف)</span>
             </div>
             <div class="feature-item">
-              <i class="fas fa-tint"></i>
-              <span>طارد للماء والأوساخ</span>
+              <i class="fas fa-circle"></i>
+              <span>حماية الجنوط من الرمل واتساخات التيل</span>
             </div>
             <div class="feature-item">
-              <i class="fas fa-star"></i>
-              <span>ضمان 3 سنوات</span>
+              <i class="fas fa-lightbulb"></i>
+              <span>حماية الفوانيس من الاصفرار والخدوش</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-keyboard"></i>
+              <span>حماية الأوكر والأزرار الداخلية من تغير اللون</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-couch"></i>
+              <span>حماية النواكل الداخلية من التطويس والتقشير</span>
             </div>
           </div>
           
           <div class="pricing">
             <div class="original-price">
               <span class="price-label">السعر الأصلي:</span>
-              <span class="price-value">499 جنيه</span>
+              <span class="price-value">28000 جنيه</span>
             </div>
             <div class="discount-price">
               <span class="price-label">السعر بعد الخصم:</span>
-              <span class="price-value">399 جنيه</span>
+              <span class="price-value">22400 جنيه</span>
             </div>
             <div class="savings">
-              <span class="savings-text">وفر 100 جنيه</span>
+              <span class="savings-text">وفر 5600 جنيه</span>
             </div>
           </div>
           
           <button class="cta-button" (click)="scrollToForm()">
             🛒 احجز موعدك الآن
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Section -->
+  <div class="video-section">
+    <div class="container">
+      <div class="video-content">
+        <h3 class="video-title">🎥 شاهد كيف نحمي سيارتك</h3>
+        <p class="video-subtitle">تعرف على عملية الحماية النانوسيراميك خطوة بخطوة</p>
+        
+        <div class="video-container">
+          <div class="video-wrapper">
+            <iframe 
+              width="470" 
+              height="836" 
+              src="https://www.youtube.com/embed/5sjQPeLdqeU"
+              title="اختبار صادم! هل فعلاً خامات نانو جيرافين HyperD+ ضد الخدوش؟ 🤯"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+              loading="lazy"
+              class="video-iframe">
+            </iframe>
+          </div>
+        </div>
+        
+        <div class="video-features">
+          <div class="video-feature">
+            <i class="fas fa-play-circle"></i>
+            <span>شاهد العملية كاملة</span>
+          </div>
+          <div class="video-feature">
+            <i class="fas fa-shield-alt"></i>
+            <span>نتائج مضمونة</span>
+          </div>
+          <div class="video-feature">
+            <i class="fas fa-star"></i>
+            <span>جودة عالية</span>
+          </div>
         </div>
       </div>
     </div>
@@ -128,12 +179,12 @@
             <input 
               type="text" 
               id="fullName"
-              formControlName="fullName"
+              formControlName="full_name"
               placeholder="أدخل اسمك الكامل"
-              [class.error]="isFieldInvalid('fullName')"
+              [class.error]="isFieldInvalid('full_name')"
             >
-            <div class="error-message" *ngIf="isFieldInvalid('fullName')">
-              {{ getErrorMessage('fullName') }}
+            <div class="error-message" *ngIf="isFieldInvalid('full_name')">
+              {{ getErrorMessage('full_name') }}
             </div>
           </div>
           
@@ -142,48 +193,83 @@
             <input 
               type="tel" 
               id="phoneNumber"
-              formControlName="phoneNumber"
+              formControlName="mobile"
               placeholder="01xxxxxxxxx"
-              [class.error]="isFieldInvalid('phoneNumber')"
+              [class.error]="isFieldInvalid('mobile')"
             >
-            <div class="error-message" *ngIf="isFieldInvalid('phoneNumber')">
-              {{ getErrorMessage('phoneNumber') }}
+            <div class="error-message" *ngIf="isFieldInvalid('mobile')">
+              {{ getErrorMessage('mobile') }}
             </div>
           </div>
           
           <div class="form-group">
-            <label for="carType">نوع السيارة *</label>
+            <label for="carType">{{ translationService.getTranslation("contact.form.car_type") }} *</label>
+            <div class="custom-select-container">
+              <input 
+                type="text"
+                id="carBrand"
+                formControlName="client_16492512972331"
+                [placeholder]="translationService.getTranslation('contact.form.car_type_placeholder')"
+                [class.error]="isFieldInvalid('client_16492512972331')"
+                (input)="onBrandInput($event)"
+                (focus)="showBrandDropdown = true"
+                (blur)="hideBrandDropdown()"
+                autocomplete="off"
+              >
+              <div class="select-arrow" (click)="toggleBrandDropdown()">▼</div>
+              <ul *ngIf="showBrandDropdown && brandResults.length > 0" class="autocomplete-results">
+                <li *ngFor="let brand of brandResults" (click)="selectBrand(brand)">
+                  {{ brand }}
+                </li>
+              </ul>
+            </div>
+            <div class="error-message" *ngIf="isFieldInvalid('client_16492512972331')">
+              {{ getErrorMessage('client_16492512972331') }}
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="carModel">{{ translationService.getTranslation("contact.form.car_model") }} *</label>
+            <div class="custom-select-container">
+              <input 
+                type="text" 
+                id="carModel"
+                formControlName="client_16849336084508"
+                [placeholder]="translationService.getTranslation('contact.form.car_model_placeholder')"
+                [class.error]="isFieldInvalid('client_16849336084508')"
+                (input)="onModelInput($event)"
+                (focus)="showModelDropdown = true"
+                (blur)="hideModelDropdown()"
+                autocomplete="off"
+              >
+              <div class="select-arrow" (click)="toggleModelDropdown()">▼</div>
+              <ul *ngIf="showModelDropdown && modelResults.length > 0" class="autocomplete-results">
+                <li *ngFor="let model of modelResults" (click)="selectModel(model)">
+                  {{ model }}
+                </li>
+              </ul>
+            </div>
+            <div class="error-message" *ngIf="isFieldInvalid('client_16849336084508')">
+              {{ getErrorMessage('client_16849336084508') }}
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="serviceType">{{ translationService.getTranslation("contact.form.service_type") }} *</label>
             <select 
-              id="carType"
-              formControlName="carType"
-              [class.error]="isFieldInvalid('carType')"
+              id="serviceType"
+              formControlName="client_17293620987926"
+              [class.error]="isFieldInvalid('client_17293620987926')"
             >
-              <option value="">اختر نوع السيارة</option>
-              <option value="سيدان">سيدان</option>
-              <option value="هاتشباك">هاتشباك</option>
-              <option value="SUV">SUV</option>
-              <option value="كوبيه">كوبيه</option>
-              <option value="كروس أوفر">كروس أوفر</option>
-              <option value="بيك أب">بيك أب</option>
-              <option value="فان">فان</option>
-              <option value="أخرى">أخرى</option>
+              <option value="">{{ translationService.getTranslation("contact.form.service_type_placeholder") }}</option>
+              <option value="car_paint">{{ translationService.getTranslation("contact.service_types.car_paint") }}</option>
+              <option value="ceramic_coating">{{ translationService.getTranslation("contact.service_types.ceramic_coating") }}</option>
+              <option value="paint_protection">{{ translationService.getTranslation("contact.service_types.paint_protection") }}</option>
+              <option value="detailing">{{ translationService.getTranslation("contact.service_types.detailing") }}</option>
+              <option value="other">{{ translationService.getTranslation("contact.service_types.other") }}</option>
             </select>
-            <div class="error-message" *ngIf="isFieldInvalid('carType')">
-              {{ getErrorMessage('carType') }}
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="carModel">موديل السيارة *</label>
-            <input 
-              type="text" 
-              id="carModel"
-              formControlName="carModel"
-              placeholder="مثال: 2020, 2021, 2022..."
-              [class.error]="isFieldInvalid('carModel')"
-            >
-            <div class="error-message" *ngIf="isFieldInvalid('carModel')">
-              {{ getErrorMessage('carModel') }}
+            <div class="error-message" *ngIf="isFieldInvalid('client_17293620987926')">
+              {{ getErrorMessage('client_17293620987926') }}
             </div>
           </div>
           
@@ -191,7 +277,7 @@
             <label for="additionalNotes">ملاحظات إضافية (اختياري)</label>
             <textarea 
               id="additionalNotes"
-              formControlName="additionalNotes"
+              formControlName="client_16492513797105"
               rows="3"
               placeholder="أي ملاحظات أو أسئلة إضافية..."
             ></textarea>
@@ -215,29 +301,65 @@
   <div class="trust-section">
     <div class="container">
       <div class="trust-content">
-        <h3>لماذا تختار رويال نانو سيراميك؟</h3>
+        <h3>✅ الحماية تشمل:</h3>
         <div class="trust-items">
           <div class="trust-item">
-            <i class="fas fa-award"></i>
-            <h4>خبرة 10 سنوات</h4>
-            <p>أكثر من 5000 سيارة تم حمايتها</p>
-          </div>
-          <div class="trust-item">
             <i class="fas fa-shield-alt"></i>
-            <h4>ضمان 3 سنوات</h4>
-            <p>ضمان شامل على جميع خدماتنا</p>
+            <h4>مقاومة الفوطة الزفرة والخدوش</h4>
+            <p></p>
           </div>
           <div class="trust-item">
-            <i class="fas fa-tools"></i>
-            <h4>أحدث التقنيات</h4>
-            <p>نستخدم أحدث تقنيات النانوسيراميك</p>
+            <i class="fas fa-bird"></i>
+            <h4>حماية من فضلات الطيور والأحماض</h4>
+            <p></p>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-sun"></i>
+            <h4>مقاومة الحرارة وبهتان اللون</h4>
+            <p></p>
           </div>
           <div class="trust-item">
             <i class="fas fa-star"></i>
-            <h4>تقييم 5 نجوم</h4>
-            <p>تقييم ممتاز من عملائنا</p>
+            <h4>لمعة وبريق مميز ودائم</h4>
+            <p></p>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-car"></i>
+            <h4>الحفاظ على قيمة السيارة والفابريكا</h4>
+            <p></p>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-crown"></i>
+            <h4>الوكيل الحصري لشركة Royal SHIELD USA</h4>
+            <p>بتكنولوجيا الهايبرد بلس – الوحيد في مصر بتكنولوجيا المعالجة الذاتية للخدوش</p>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Section -->
+  <div class="contact-section">
+    <div class="container">
+      <div class="contact-content">
+        <h3>📱 للتواصل والواتساب:</h3>
+        <div class="contact-numbers">
+          <div class="contact-item">
+            <i class="fab fa-whatsapp"></i>
+            <a href="https://wa.me/201032222546" target="_blank" rel="noopener noreferrer">
+              01032222546
+            </a>
+          </div>
+          <div class="contact-item">
+            <i class="fab fa-whatsapp"></i>
+            <a href="https://wa.me/201032222542" target="_blank" rel="noopener noreferrer">
+              01032222542
+            </a>
+          </div>
+        </div>
+        <p class="exclusive-agent">
+          <strong>الوكيل الحصري لشركة Royal SHIELD USA بتكنولوجيا الهايبرد بلس – الوحيد في مصر بتكنولوجيا المعالجة الذاتية للخدوش.</strong>
+        </p>
       </div>
     </div>
   </div>

@@ -1,0 +1,145 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Analytics collections - allow read for admins, write for authenticated users
+    match /analytics/{collection}/{docId} {
+      // Allow authenticated users to create analytics data
+      allow create: if request.auth != null;
+      
+      // Allow admins to read analytics data
+      allow read: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+      
+      // Only allow updates from server-side functions
+      allow update: if false;
+      
+      // Only allow deletes from server-side functions
+      allow delete: if false;
+    }
+    
+    // Analytics visits collection - for page view tracking
+    match /analytics_visits/{docId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+      allow update, delete: if false;
+    }
+    
+    // Analytics forms collection - for form submission tracking
+    match /analytics_forms/{docId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+      allow update, delete: if false;
+    }
+    
+    // Analytics events collection - for custom events
+    match /analytics_events/{docId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+      allow update, delete: if false;
+    }
+    
+    // Analytics conversions collection - for conversion tracking
+    match /analytics_conversions/{docId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+      allow update, delete: if false;
+    }
+    
+    // Analytics errors collection - for error tracking
+    match /analytics_errors/{docId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+      allow update, delete: if false;
+    }
+    
+    // Users collection - only admins can read/write
+    match /users/{userId} {
+      allow read, write: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+    }
+    
+    // Landing pages collection - only admins can read/write
+    match /landing_pages/{pageId} {
+      allow read: if true; // Public read for landing pages
+      allow write: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+    }
+    
+    // Contact submissions collection - only admins can read, authenticated users can write
+    match /contact_submissions/{submissionId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+      allow update, delete: if false;
+    }
+    
+    // Blog posts collection - public read, admin write
+    match /blog_posts/{postId} {
+      allow read: if true;
+      allow write: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+    }
+    
+    // Services collection - public read, admin write
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+    }
+    
+    // Gallery collection - public read, admin write
+    match /gallery/{imageId} {
+      allow read: if true;
+      allow write: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+    }
+    
+    // Reviews collection - public read, admin write
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow write: if request.auth != null && 
+        (request.auth.token.email.matches(".*@royalnano.com$") || 
+         request.auth.token.role == "admin");
+    }
+    
+    // White Friday Sessions collection - للعجلة
+    // يسمح بالقراءة والكتابة بدون authentication (لأن Session ID فريد)
+    match /whiteFridaySessions/{sessionId} {
+      // ✅ السماح بإنشاء document جديد (عند أول لفة)
+      allow create: if true;
+      
+      // ✅ السماح بقراءة document الخاص بالـ session ID فقط
+      allow read: if true;
+      
+      // ✅ السماح بتحديث document (عند الانتقال من form إلى submitted)
+      allow update: if true;
+      
+      // ❌ منع الحذف (للحماية)
+      allow delete: if false;
+    }
+    
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

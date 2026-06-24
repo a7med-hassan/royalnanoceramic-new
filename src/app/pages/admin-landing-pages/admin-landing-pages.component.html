@@ -1,0 +1,488 @@
+<div class="admin-landing-pages">
+  <div class="page-header">
+    <h1>إدارة صفحات الهبوط</h1>
+    <p>إدارة الصفحات الديناميكية للعروض والخصومات</p>
+    <button class="btn btn-primary" (click)="showAddForm()">
+      <i class="fas fa-plus"></i>
+      إضافة صفحة جديدة
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>جاري تحميل الصفحات...</p>
+  </div>
+
+  <!-- Pages List -->
+  <div *ngIf="!loading" class="pages-container">
+    <div *ngIf="landingPages.length === 0" class="empty-state">
+      <i class="fas fa-file-alt"></i>
+      <h3>لا توجد صفحات</h3>
+      <p>ابدأ بإنشاء صفحة هبوط جديدة</p>
+      <button class="btn btn-primary" (click)="showAddForm()">إضافة صفحة</button>
+    </div>
+
+    <div *ngIf="landingPages.length > 0" class="pages-grid">
+      <div *ngFor="let page of landingPages" class="page-card" [class.expired]="page.expires_at ? isExpired(page.expires_at) : false">
+        <div class="page-header">
+          <div class="page-title">
+            <h3>{{ page.title }}</h3>
+            <span class="page-slug">/{{ page.slug }}</span>
+          </div>
+          <div class="page-status">
+            <span class="status-badge" [class.active]="page.active" [class.inactive]="!page.active">
+              {{ page.active ? 'نشط' : 'غير نشط' }}
+            </span>
+            <span *ngIf="page.expires_at && isExpired(page.expires_at)" class="expired-badge">منتهي</span>
+          </div>
+        </div>
+
+        <div class="page-content">
+          <div class="page-image">
+            <img [src]="page.image" [alt]="page.title" class="preview-image" loading="lazy">
+          </div>
+          
+          <div class="page-details">
+            <p class="page-description">{{ page.description }}</p>
+            
+            <div *ngIf="page.show_pricing && page.original_price && page.discount_price" class="price-info">
+              <span class="original-price">{{ page.original_price | currency:'EGP':'symbol':'1.0-0':'ar' }}</span>
+              <span class="discount-price">{{ page.discount_price | currency:'EGP':'symbol':'1.0-0':'ar' }}</span>
+              <span class="discount-percent">خصم {{ page.discount_percent }}%</span>
+            </div>
+            <div *ngIf="!page.show_pricing || !page.original_price || !page.discount_price" class="no-price-info">
+              <span class="no-price">بدون أسعار</span>
+            </div>
+
+            <div class="time-info">
+              <i class="fas fa-clock"></i>
+              <span>{{ page.expires_at ? getTimeLeft(page.expires_at) : 'بدون انتهاء' }}</span>
+            </div>
+
+            <div class="features-preview">
+              <span *ngFor="let feature of (page.features || []).slice(0, 3)" class="feature-tag">
+                {{ feature }}
+              </span>
+              <span *ngIf="page.features && page.features.length > 3" class="more-features">
+                +{{ page.features.length - 3 }} أكثر
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-actions">
+          <button class="btn btn-sm btn-outline" (click)="previewPage(page)">
+            <i class="fas fa-eye"></i>
+            معاينة
+          </button>
+          <button class="btn btn-sm btn-outline" (click)="copyUrl(page)">
+            <i class="fas fa-copy"></i>
+            نسخ رابط
+          </button>
+          <button class="btn btn-sm btn-primary" (click)="showEditForm(page)">
+            <i class="fas fa-edit"></i>
+            تعديل
+          </button>
+          <button class="btn btn-sm" [class.btn-warning]="page.active" [class.btn-success]="!page.active" 
+                  (click)="togglePageStatus(page)">
+            <i class="fas" [class.fa-pause]="page.active" [class.fa-play]="!page.active"></i>
+            {{ page.active ? 'إيقاف' : 'تفعيل' }}
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="deletePage(page)">
+            <i class="fas fa-trash"></i>
+            حذف
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Form Modal -->
+  <div *ngIf="showForm" class="form-modal">
+    <div class="form-overlay" (click)="hideForm()"></div>
+    <div class="form-container">
+      <div class="form-header">
+        <h2>{{ editingPage ? 'تعديل الصفحة' : 'إضافة صفحة جديدة' }}</h2>
+        <button class="close-btn" (click)="hideForm()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form [formGroup]="pageForm" (ngSubmit)="onSubmit()" class="page-form">
+        <div class="form-grid">
+          <!-- Basic Info -->
+          <div class="form-section">
+            <h3>المعلومات الأساسية</h3>
+            
+            <div class="form-group">
+              <label for="slug">الرابط (Slug) *</label>
+              <input type="text" id="slug" formControlName="slug" 
+                     placeholder="مثال: discount, summer-offer" 
+                     class="form-control">
+              <small class="form-help">يجب أن يحتوي على أحرف صغيرة وأرقام وشرطات فقط</small>
+            </div>
+
+            <div class="form-group">
+              <label for="title">العنوان الرئيسي *</label>
+              <input type="text" id="title" formControlName="title" 
+                     placeholder="🎉 عروض ROYAL NANO CERAMIC الحصرية 🎉" 
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="subtitle">العنوان الفرعي *</label>
+              <input type="text" id="subtitle" formControlName="subtitle" 
+                     placeholder="💰 السعر: 22400 بدلاً من 28000" 
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="description">الوصف *</label>
+              <textarea id="description" formControlName="description" 
+                        placeholder="🎁 العرض يشمل جسم السيارة بالكامل من الخارج + 5 هدايا داخلية وخارجية" 
+                        class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="image">رابط الصورة *</label>
+              <input type="url" id="image" formControlName="image" 
+                     placeholder="https://example.com/image.jpg" 
+                     class="form-control">
+            </div>
+          </div>
+
+          <!-- Pricing -->
+          <div class="form-section">
+            <h3>التسعير</h3>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="original_price">السعر الأصلي *</label>
+                <input type="number" id="original_price" formControlName="original_price" 
+                       class="form-control" min="0">
+              </div>
+              <div class="form-group">
+                <label for="discount_price">السعر بعد الخصم *</label>
+                <input type="number" id="discount_price" formControlName="discount_price" 
+                       class="form-control" min="0">
+              </div>
+              <div class="form-group">
+                <label for="discount_percent">نسبة الخصم (%) *</label>
+                <input type="number" id="discount_percent" formControlName="discount_percent" 
+                       class="form-control" min="0" max="100">
+              </div>
+            </div>
+          </div>
+
+          <!-- Media & Contact -->
+          <div class="form-section">
+            <h3>الوسائط والاتصال</h3>
+            
+            <div class="form-group">
+              <label for="video_url">رابط الفيديو (YouTube)</label>
+              <input type="url" id="video_url" formControlName="video_url" 
+                     placeholder="https://www.youtube.com/embed/VIDEO_ID" 
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="whatsapp_number">رقم الواتساب *</label>
+              <input type="tel" id="whatsapp_number" formControlName="whatsapp_number" 
+                     placeholder="201032222542" 
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="expires_at">تاريخ انتهاء العرض *</label>
+              <input type="datetime-local" id="expires_at" formControlName="expires_at" 
+                     class="form-control">
+            </div>
+          </div>
+
+          <!-- Features -->
+          <div class="form-section">
+            <h3>الميزات</h3>
+            
+            <div class="form-group">
+              <label for="features">الميزات (كل ميزة في سطر منفصل) *</label>
+              <textarea id="features" formControlName="features" 
+                        placeholder="جسم السيارة بالكامل من الخارج&#10;حماية الزجاج بالكامل&#10;حماية الجنوط من الرمل" 
+                        class="form-control" rows="5"></textarea>
+            </div>
+          </div>
+
+          <!-- Section Visibility Controls -->
+          <div class="form-section">
+            <h3>خيارات عرض الأقسام</h3>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="show_pricing">
+                  <span class="checkmark"></span>
+                  عرض الأسعار والخصومات
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="show_features">
+                  <span class="checkmark"></span>
+                  عرض قسم الميزات
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="show_contact">
+                  <span class="checkmark"></span>
+                  عرض قسم التواصل
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="show_cta_buttons">
+                  <span class="checkmark"></span>
+                  عرض أزرار الإجراءات
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="show_image">
+                  <span class="checkmark"></span>
+                  عرض صورة المنتج
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="show_video">
+                  <span class="checkmark"></span>
+                  عرض الفيديو
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Form Settings -->
+          <div class="form-section">
+            <h3>إعدادات نموذج الاتصال</h3>
+            
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="contact_form_enabled">
+                <span class="checkmark"></span>
+                تفعيل نموذج الاتصال
+              </label>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="contact_form_full_name">
+                  <span class="checkmark"></span>
+                  حقل الاسم الكامل
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="contact_form_mobile">
+                  <span class="checkmark"></span>
+                  حقل رقم الهاتف
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="contact_form_service_type">
+                  <span class="checkmark"></span>
+                  حقل نوع الخدمة
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="contact_form_car_type">
+                  <span class="checkmark"></span>
+                  حقل ماركة السيارة
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="contact_form_car_model">
+                  <span class="checkmark"></span>
+                  حقل موديل السيارة
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="contact_form_notes">
+                  <span class="checkmark"></span>
+                  حقل الملاحظات
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="contact_form_submit_text">نص زر الإرسال</label>
+              <input type="text" id="contact_form_submit_text" formControlName="contact_form_submit_text" 
+                     class="form-control" placeholder="إرسال الرسالة">
+            </div>
+            
+            <div class="form-group">
+              <label for="contact_form_success_message">رسالة النجاح</label>
+              <textarea id="contact_form_success_message" formControlName="contact_form_success_message" 
+                        class="form-control" rows="2" placeholder="تم إرسال رسالتك بنجاح!"></textarea>
+            </div>
+          </div>
+
+          <!-- Styling Settings -->
+          <div class="form-section">
+            <h3>إعدادات التصميم</h3>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="primary_color">اللون الأساسي</label>
+                <input type="color" id="primary_color" formControlName="primary_color" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="secondary_color">اللون الثانوي</label>
+                <input type="color" id="secondary_color" formControlName="secondary_color" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="accent_color">لون التمييز</label>
+                <input type="color" id="accent_color" formControlName="accent_color" class="form-control">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="background_gradient">خلفية متدرجة</label>
+              <input type="text" id="background_gradient" formControlName="background_gradient" 
+                     class="form-control" placeholder="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="font_family">نوع الخط</label>
+                <select id="font_family" formControlName="font_family" class="form-control">
+                  <option value="Cairo">Cairo</option>
+                  <option value="Arial">Arial</option>
+                  <option value="Tahoma">Tahoma</option>
+                  <option value="Times New Roman">Times New Roman</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="button_style">شكل الأزرار</label>
+                <select id="button_style" formControlName="button_style" class="form-control">
+                  <option value="rounded">مستدير</option>
+                  <option value="square">مربع</option>
+                  <option value="pill">حبة</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="layout_style">نمط التخطيط</label>
+                <select id="layout_style" formControlName="layout_style" class="form-control">
+                  <option value="modern">حديث</option>
+                  <option value="classic">كلاسيكي</option>
+                  <option value="minimal">بسيط</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking Management -->
+          <div class="form-section">
+            <h3>إدارة الحجوزات</h3>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="booking_total_slots">إجمالي عدد الحجوزات المتاحة</label>
+                <input type="number" id="booking_total_slots" formControlName="booking_total_slots" 
+                       class="form-control" min="1" max="1000">
+                <small class="form-help">العدد الإجمالي للحجوزات المتاحة (مثال: 20)</small>
+              </div>
+              <div class="form-group">
+                <label for="booking_booked_slots">عدد الحجوزات المحجوزة</label>
+                <input type="number" id="booking_booked_slots" formControlName="booking_booked_slots" 
+                       class="form-control" min="0" max="1000">
+                <small class="form-help">عدد الحجوزات التي تم حجزها بالفعل (مثال: 12)</small>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="booking_message">رسالة الحجوزات</label>
+              <input type="text" id="booking_message" formControlName="booking_message" 
+                     class="form-control" placeholder="تم حجز 12/20 – باقي 8 فقط">
+              <small class="form-help">الرسالة التي تظهر للمستخدمين حول حالة الحجوزات</small>
+            </div>
+            
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="booking_show_count">
+                <span class="checkmark"></span>
+                عرض عداد الحجوزات وشريط التقدم
+              </label>
+            </div>
+          </div>
+
+          <!-- Mobile Optimization Settings -->
+          <div class="form-section">
+            <h3>إعدادات التحسين للموبايل</h3>
+            
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="mobile_optimized">
+                <span class="checkmark"></span>
+                تحسين للموبايل
+              </label>
+              <small class="form-help">تفعيل التحسينات الخاصة بأجهزة الموبايل</small>
+            </div>
+            
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="fullscreen_mobile">
+                <span class="checkmark"></span>
+                شاشة كاملة على الموبايل
+              </label>
+              <small class="form-help">جعل القسم الرئيسي يأخذ الشاشة كاملة على الموبايل</small>
+            </div>
+            
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="responsive_design">
+                <span class="checkmark"></span>
+                تصميم متجاوب
+              </label>
+              <small class="form-help">تفعيل التصميم المتجاوب لجميع أحجام الشاشات</small>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div class="form-section">
+            <h3>الحالة</h3>
+            
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="active">
+                <span class="checkmark"></span>
+                الصفحة نشطة
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" (click)="hideForm()">إلغاء</button>
+          <button type="submit" class="btn btn-primary" [disabled]="pageForm.invalid">
+            {{ editingPage ? 'تحديث' : 'إضافة' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+.branch-card {
+    transition: transform 0.2s;
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+}
+
+.status-badge {
+    font-size: 0.8rem;
+    padding: 0.25em 0.6em;
+}
+
+.table {
+
+    th,
+    td {
+        vertical-align: middle;
+    }
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation for the form */
+.animate__fadeIn {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

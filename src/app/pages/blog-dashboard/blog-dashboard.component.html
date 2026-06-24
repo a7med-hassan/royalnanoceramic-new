@@ -1,364 +1,482 @@
-<div class="dashboard-container">
-  <div class="dashboard-header">
-    <h1 i18n="@@blog.dashboard.title">لوحة إدارة المدونة</h1>
-    <p i18n="@@blog.dashboard.subtitle">أضف منشورات جديدة للمدونة</p>
+<div class="blog-dashboard" dir="rtl">
 
-    <div class="user-info">
-      <div class="user-details">
-        <i class="fas fa-user-circle"></i>
-        <div class="admin-info" *ngIf="adminUser">
-          <span class="welcome-text" i18n="@@blog.dashboard.welcome">Welcome, {{ adminUser.username }}</span>
-          <span class="user-role">{{ adminUser.role || "Admin" }}</span>
-        </div>
-        <span class="login-time" i18n="@@blog.dashboard.login.time">تم تسجيل الدخول: {{ loginTime }}</span>
+  <!-- ══ Header Bar ══ -->
+  <header class="dash-header">
+    <div class="dash-header__brand">
+      <div class="dash-header__icon"><i class="fas fa-crown"></i></div>
+      <div>
+        <h1 class="dash-header__title">لوحة تحكم المدونة</h1>
+        <p class="dash-header__sub">مرحباً، {{ currentUsername }}</p>
       </div>
     </div>
-
-    <div class="header-actions">
-      <button class="btn-secondary" (click)="goToBlog()" title="عرض المدونة">
-        <i class="fas fa-newspaper"></i>
-        <span i18n="@@blog.dashboard.view.blog">عرض المدونة</span>
+    <div class="dash-header__actions">
+      <button class="btn btn--ghost btn--sm" (click)="navigateToBlog()">
+        <i class="fas fa-external-link-alt icon-sm"></i> عرض المدونة
       </button>
-      <button
-        class="btn-view-posts"
-        (click)="openPostsPopup()"
-        title="عرض المنشورات"
-        *ngIf="existingPosts.length > 0"
-      >
-        <i class="fas fa-eye"></i>
-        <span i18n="@@blog.dashboard.view.posts">عرض المنشورات</span>
-        <span class="posts-count">({{ existingPosts.length }})</span>
-      </button>
-      <button class="btn-logout" (click)="logout()" title="تسجيل الخروج">
-        <i class="fas fa-sign-out-alt"></i>
-        <span i18n="@@blog.dashboard.logout">تسجيل الخروج</span>
+      <button class="btn btn--ghost btn--sm" (click)="logout()">
+        <i class="fas fa-sign-out-alt icon-sm"></i> خروج
       </button>
     </div>
+  </header>
+
+  <!-- ══ Stats Bar ══ -->
+  <section class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-card__icon"><i class="fas fa-file-alt"></i></div>
+      <div class="stat-card__info">
+        <span class="stat-card__num">{{ stats.total }}</span>
+        <span class="stat-card__label">إجمالي المقالات</span>
+      </div>
+    </div>
+    <div class="stat-card stat-card--green">
+      <div class="stat-card__icon"><i class="fas fa-check-circle"></i></div>
+      <div class="stat-card__info">
+        <span class="stat-card__num">{{ stats.published }}</span>
+        <span class="stat-card__label">منشور</span>
+      </div>
+    </div>
+    <div class="stat-card stat-card--amber">
+      <div class="stat-card__icon"><i class="fas fa-edit"></i></div>
+      <div class="stat-card__info">
+        <span class="stat-card__num">{{ stats.draft }}</span>
+        <span class="stat-card__label">مسودة</span>
+      </div>
+    </div>
+    <div class="stat-card stat-card--gold">
+      <div class="stat-card__icon"><i class="fas fa-star"></i></div>
+      <div class="stat-card__info">
+        <span class="stat-card__num">{{ stats.featured }}</span>
+        <span class="stat-card__label">مميز</span>
+      </div>
+    </div>
+    <div class="stat-card stat-card--blue">
+      <div class="stat-card__icon"><i class="fas fa-eye"></i></div>
+      <div class="stat-card__info">
+        <span class="stat-card__num">{{ stats.totalViews }}</span>
+        <span class="stat-card__label">إجمالي المشاهدات</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Global Message ══ -->
+  <div *ngIf="message" class="alert" [class.alert--success]="messageType==='success'" [class.alert--error]="messageType==='error'">
+    <i class="fas fa-check-circle" *ngIf="messageType==='success'"></i>
+    <i class="fas fa-exclamation-circle" *ngIf="messageType==='error'"></i>
+    {{ message }}
   </div>
 
-  <div class="dashboard-content">
-    <div class="form-container">
-      <form [formGroup]="blogForm" (ngSubmit)="onSubmit()" class="blog-form">
-        <div class="form-section">
-          <h3 i18n="@@blog.form.basic.info">معلومات المنشور الأساسية</h3>
+  <!-- ══ Tabs ══ -->
+  <nav class="dash-tabs">
+    <button class="dash-tab" [class.dash-tab--active]="activeTab==='editor'" (click)="setTab('editor')">
+      <i class="fas fa-file-medical" *ngIf="!isEditMode"></i>
+      <i class="fas fa-file-signature" *ngIf="isEditMode"></i>
+      {{ isEditMode ? 'تحرير المقال' : 'إنشاء مقال جديد' }}
+    </button>
+    <button class="dash-tab" [class.dash-tab--active]="activeTab==='manage'" (click)="setTab('manage')">
+      <i class="fas fa-list-ul"></i>
+      إدارة المقالات
+      <span class="dash-tab__badge" *ngIf="existingPosts.length">{{ existingPosts.length }}</span>
+    </button>
+  </nav>
 
-          <div class="form-group">
-            <label for="title" i18n="@@blog.form.title">عنوان المنشور *</label>
-            <input
-              type="text"
-              id="title"
-              formControlName="title"
-              placeholder="أدخل عنوان المنشور"
-              i18n-placeholder="@@blog.form.title.placeholder"
-              [class.invalid]="isFieldInvalid('title')"
-            />
-            <div class="error-message" *ngIf="isFieldInvalid('title')">
-              {{ getErrorMessage("title") }}
+  <!-- ══════════════════════════════════════════════
+       TAB 1: EDITOR
+  ═══════════════════════════════════════════════ -->
+  <div class="dash-body" *ngIf="activeTab==='editor'">
+
+    <!-- Edit mode banner -->
+    <div class="edit-banner" *ngIf="isEditMode">
+      <div class="edit-banner__content">
+        <i class="fas fa-pen-nib"></i>
+        <span>أنت تقوم بتعديل مقال حالي. التغييرات ستُحفظ فوق النسخة الأصلية.</span>
+      </div>
+      <button class="btn btn--ghost btn--xs" (click)="cancelEdit()">
+        <i class="fas fa-times icon-sm"></i> إلغاء التعديل
+      </button>
+    </div>
+
+    <form [formGroup]="blogForm" (ngSubmit)="onSubmit()" novalidate>
+      <div class="editor-grid">
+
+        <!-- ── Left Column (main content) ── -->
+        <div class="editor-col editor-col--main">
+
+          <!-- Language Toggle -->
+          <div class="lang-tabs-wrapper">
+            <div class="lang-tabs">
+              <button type="button" class="lang-tab" [class.lang-tab--active]="contentLang==='ar'" (click)="setContentLang('ar')">
+                🇸🇦 العربية
+              </button>
+              <button type="button" class="lang-tab" [class.lang-tab--active]="contentLang==='en'" (click)="setContentLang('en')">
+                🇬🇧 English
+              </button>
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="excerpt" i18n="@@blog.form.excerpt">ملخص المنشور *</label>
-            <textarea
-              id="excerpt"
-              formControlName="excerpt"
-              placeholder="أدخل ملخص مختصر للمنشور"
-              i18n-placeholder="@@blog.form.excerpt.placeholder"
-              rows="3"
-              [class.invalid]="isFieldInvalid('excerpt')"
-            ></textarea>
-            <div class="error-message" *ngIf="isFieldInvalid('excerpt')">
-              {{ getErrorMessage("excerpt") }}
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="content" i18n="@@blog.form.content">محتوى المنشور *</label>
-            <textarea
-              id="content"
-              formControlName="content"
-              placeholder="أدخل المحتوى الكامل للمنشور"
-              i18n-placeholder="@@blog.form.content.placeholder"
-              rows="8"
-              [class.invalid]="isFieldInvalid('content')"
-            ></textarea>
-            <div class="error-message" *ngIf="isFieldInvalid('content')">
-              {{ getErrorMessage("content") }}
-            </div>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h3 i18n="@@blog.form.additional.details">تفاصيل إضافية</h3>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="category" i18n="@@blog.form.category">الفئة *</label>
-              <select
-                id="category"
-                formControlName="category"
-                [class.invalid]="isFieldInvalid('category')"
-              >
-                <option value="" i18n="@@blog.form.category.placeholder">اختر الفئة</option>
-                <option *ngFor="let cat of categories" [value]="cat">
-                  {{ cat }}
-                </option>
-              </select>
-              <div class="error-message" *ngIf="isFieldInvalid('category')">
-                {{ getErrorMessage("category") }}
+          <div class="form-section">
+            <!-- Arabic fields -->
+            <div *ngIf="contentLang==='ar'" class="lang-panel">
+              <div class="form-group form-group--lg">
+                <input formControlName="titleAr" class="form-input form-input--title" [class.form-input--invalid]="isFieldInvalid('titleAr')" placeholder="عنوان المقال..." dir="rtl" />
+                <p class="field-error" *ngIf="isFieldInvalid('titleAr')">العنوان مطلوب (5 أحرف على الأقل)</p>
+              </div>
+              <div class="form-group">
+                <textarea formControlName="excerptAr" class="form-input form-input--textarea" rows="2" placeholder="مقتطف قصير يظهر في محركات البحث وبطاقة المقال..." dir="rtl"></textarea>
+                <p class="field-error" *ngIf="isFieldInvalid('excerptAr')">المقتطف مطلوب (20 حرف على الأقل)</p>
+              </div>
+              <div class="form-group">
+                <div class="editor-toolbar">
+                  <button type="button" class="toolbar-btn" title="عريض" (click)="execFormat('bold')"><i class="fas fa-bold"></i></button>
+                  <button type="button" class="toolbar-btn" title="مائل" (click)="execFormat('italic')"><i class="fas fa-italic"></i></button>
+                  <button type="button" class="toolbar-btn" title="تسطير" (click)="execFormat('underline')"><i class="fas fa-underline"></i></button>
+                  <span class="toolbar-sep"></span>
+                  <button type="button" class="toolbar-btn" title="عنوان رئيسي 1" (click)="insertHeading(1)"><i class="fas fa-heading"></i>1</button>
+                  <button type="button" class="toolbar-btn" title="عنوان فرعي 2" (click)="insertHeading(2)"><i class="fas fa-heading"></i>2</button>
+                  <button type="button" class="toolbar-btn" title="عنوان فرعي 3" (click)="insertHeading(3)"><i class="fas fa-heading"></i>3</button>
+                  <span class="toolbar-sep"></span>
+                  <button type="button" class="toolbar-btn" title="إدراج صورة" (click)="insertImage()"><i class="fas fa-image"></i></button>
+                  <button type="button" class="toolbar-btn" title="إدراج فيديو يوتيوب" (click)="insertVideo()"><i class="fab fa-youtube"></i></button>
+                  <span class="toolbar-sep"></span>
+                  <button type="button" class="toolbar-btn" title="قائمة" (click)="execFormat('insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                  <button type="button" class="toolbar-btn" title="قائمة مرقمة" (click)="execFormat('insertOrderedList')"><i class="fas fa-list-ol"></i></button>
+                  <span class="toolbar-sep"></span>
+                  <button type="button" class="toolbar-btn toolbar-btn--preview" (click)="togglePreview('ar')">
+                    <i class="fas fa-eye" *ngIf="!showPreviewAr"></i>
+                    <i class="fas fa-eye-slash" *ngIf="showPreviewAr"></i>
+                    {{ showPreviewAr ? 'وضع التحرير' : 'معاينة القراءة' }}
+                  </button>
+                </div>
+                <div
+                  #editorAr
+                  class="rich-editor"
+                  [class.rich-editor--invalid]="isEditorArInvalid"
+                  [class.hidden]="showPreviewAr"
+                  contenteditable="true"
+                  dir="rtl"
+                  (input)="syncContent()"
+                  (blur)="syncContent()"
+                  placeholder="ابدأ بكتابة مقالك هنا... استخدم شريط الأدوات للتنسيق."
+                ></div>
+                <div class="editor-preview" *ngIf="showPreviewAr" [innerHTML]="previewHtmlAr"></div>
+                <p class="field-error" *ngIf="isEditorArInvalid">محتوى المقال مطلوب</p>
               </div>
             </div>
 
+            <!-- English fields -->
+            <div *ngIf="contentLang==='en'" class="lang-panel">
+              <div class="form-group form-group--lg">
+                <input formControlName="titleEn" class="form-input form-input--title" [class.form-input--invalid]="isFieldInvalid('titleEn')" placeholder="Article Title..." dir="ltr" />
+                <p class="field-error" *ngIf="isFieldInvalid('titleEn')">Title is required (min 5 chars)</p>
+              </div>
+              <div class="form-group">
+                <textarea formControlName="excerptEn" class="form-input form-input--textarea" rows="2" placeholder="Short excerpt for search engines and post cards..." dir="ltr"></textarea>
+                <p class="field-error" *ngIf="isFieldInvalid('excerptEn')">Excerpt is required (min 20 chars)</p>
+              </div>
+              <div class="form-group">
+                <div class="editor-toolbar">
+                  <button type="button" class="toolbar-btn" title="Bold" (click)="execFormat('bold')"><i class="fas fa-bold"></i></button>
+                  <button type="button" class="toolbar-btn" title="Italic" (click)="execFormat('italic')"><i class="fas fa-italic"></i></button>
+                  <button type="button" class="toolbar-btn" title="Underline" (click)="execFormat('underline')"><i class="fas fa-underline"></i></button>
+                  <span class="toolbar-sep"></span>
+                  <button type="button" class="toolbar-btn" title="Heading 1" (click)="insertHeading(1)"><i class="fas fa-heading"></i>1</button>
+                  <button type="button" class="toolbar-btn" title="Heading 2" (click)="insertHeading(2)"><i class="fas fa-heading"></i>2</button>
+                  <button type="button" class="toolbar-btn" title="Heading 3" (click)="insertHeading(3)"><i class="fas fa-heading"></i>3</button>
+                  <span class="toolbar-sep"></span>
+                  <button type="button" class="toolbar-btn" title="Insert Image" (click)="insertImage()"><i class="fas fa-image"></i></button>
+                  <button type="button" class="toolbar-btn" title="Insert YouTube Video" (click)="insertVideo()"><i class="fab fa-youtube"></i></button>
+                  <span class="toolbar-sep"></span>
+                  <button type="button" class="toolbar-btn" (click)="execFormat('insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                  <button type="button" class="toolbar-btn" (click)="execFormat('insertOrderedList')"><i class="fas fa-list-ol"></i></button>
+                  <span class="toolbar-sep"></span>
+                  <button type="button" class="toolbar-btn toolbar-btn--preview" (click)="togglePreview('en')">
+                    <i class="fas fa-eye" *ngIf="!showPreviewEn"></i>
+                    <i class="fas fa-eye-slash" *ngIf="showPreviewEn"></i>
+                    {{ showPreviewEn ? 'Edit Mode' : 'Read Preview' }}
+                  </button>
+                </div>
+                <div
+                  #editorEn
+                  class="rich-editor"
+                  [class.rich-editor--invalid]="isEditorEnInvalid"
+                  [class.hidden]="showPreviewEn"
+                  contenteditable="true"
+                  dir="ltr"
+                  (input)="syncContent()"
+                  (blur)="syncContent()"
+                  placeholder="Start writing your article here..."
+                ></div>
+                <div class="editor-preview" *ngIf="showPreviewEn" [innerHTML]="previewHtmlEn"></div>
+                <p class="field-error" *ngIf="isEditorEnInvalid">English content is required</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- SEO Section -->
+          <div class="form-section">
+            <h3 class="section-title"><i class="fas fa-search"></i> إعدادات محركات البحث (SEO)</h3>
+            <div *ngIf="contentLang==='ar'">
+              <div class="form-group">
+                <label class="form-label">وصف الميتا (Meta Description)</label>
+                <textarea formControlName="seoDescriptionAr" class="form-input form-input--textarea" rows="2" placeholder="اكتب وصفاً جذاباً يظهر في نتائج بحث جوجل..." dir="rtl"></textarea>
+              </div>
+            </div>
+            <div *ngIf="contentLang==='en'">
+              <div class="form-group">
+                <label class="form-label">Meta Description</label>
+                <textarea formControlName="seoDescriptionEn" class="form-input form-input--textarea" rows="2" placeholder="Write an engaging description for Google search results..." dir="ltr"></textarea>
+              </div>
+            </div>
+            
             <div class="form-group">
-              <label for="readTime" i18n="@@blog.form.read.time">وقت القراءة *</label>
-              <input
-                type="text"
-                id="readTime"
-                formControlName="readTime"
-                placeholder="مثال: 5 دقائق"
-                i18n-placeholder="@@blog.form.read.time.placeholder"
-                [class.invalid]="isFieldInvalid('readTime')"
-              />
-              <div class="error-message" *ngIf="isFieldInvalid('readTime')">
-                {{ getErrorMessage("readTime") }}
+               <label class="form-label">رابط المقال المخصص (Slug)</label>
+               <div class="slug-input-wrap">
+                 <input
+                   formControlName="slug"
+                   class="form-input"
+                   [class.form-input--invalid]="isFieldInvalid('slug') || slugTaken"
+                   placeholder="nanoceramic-guide"
+                   (input)="onSlugInput($event)"
+                   dir="ltr"
+                 />
+                 <span class="slug-status" *ngIf="slugChecking"><i class="fas fa-spinner fa-spin icon-sm"></i></span>
+                 <span class="slug-status slug-status--ok" *ngIf="!slugChecking && !slugTaken && blogForm.get('slug')?.value"><i class="fas fa-check icon-sm"></i></span>
+                 <span class="slug-status slug-status--err" *ngIf="slugTaken"><i class="fas fa-times icon-sm"></i></span>
+               </div>
+               <p class="slug-preview" *ngIf="slugPreview" dir="ltr">
+                 {{ slugPreview }}
+               </p>
+               <p class="field-error" *ngIf="isFieldInvalid('slug')">يجب أن يحتوي الرابط على أحرف إنجليزية صغيرة وأرقام وشرطات فقط</p>
+               <p class="field-error" *ngIf="slugTaken">هذا الرابط مستخدم بالفعل، يرجى اختيار رابط آخر</p>
+             </div>
+          </div>
+
+        </div>
+
+        <!-- ── Right Column (settings) ── -->
+        <aside class="editor-col editor-col--aside">
+
+          <!-- Publish Card -->
+          <div class="aside-card aside-card--publish">
+            <h3 class="aside-card__title"><i class="fas fa-paper-plane"></i> النشر والمظهر</h3>
+            
+            <div class="toggle-group">
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">حالة المقال</span>
+                  <span class="toggle-desc">{{ blogForm.get('published')?.value ? 'منشور للعامة' : 'مسودة مخفية' }}</span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" formControlName="published" />
+                  <span class="toggle__slider"></span>
+                </label>
+              </label>
+              
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">تثبيت كمميز</span>
+                  <span class="toggle-desc">يظهر في أعلى صفحة المدونة</span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" formControlName="featured" />
+                  <span class="toggle__slider"></span>
+                </label>
+              </label>
+            </div>
+
+            <div class="submit-actions">
+              <button type="submit" class="btn btn--gold btn--full" [disabled]="isSubmitting">
+                <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+                <i class="fas fa-save" *ngIf="!isSubmitting"></i>
+                {{ isSubmitting ? 'جارٍ الحفظ...' : (isEditMode ? 'حفظ التعديلات' : 'نشر المقال') }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Taxonomy Card (Categories & Tags) -->
+          <div class="aside-card">
+            <h3 class="aside-card__title"><i class="fas fa-tags"></i> التصنيف والوسوم</h3>
+            <div class="form-group">
+              <label class="form-label">التصنيف الأساسي</label>
+              <!-- Datalist allows typing AND selecting -->
+              <input list="category-list" formControlName="category" class="form-input" placeholder="اكتب أو اختر تصنيفاً..." [class.form-input--invalid]="isFieldInvalid('category')">
+              <datalist id="category-list">
+                <option *ngFor="let cat of categories" [value]="cat"></option>
+              </datalist>
+              <p class="field-error" *ngIf="isFieldInvalid('category')">التصنيف مطلوب</p>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">وسوم إضافية (مفصولة بفاصلة)</label>
+              <input formControlName="tags" class="form-input" placeholder="حماية، لمعان، PPF..." dir="rtl" />
+              <div class="tags-preview" *ngIf="blogForm.get('tags')?.value">
+                <span class="hashtag-preview" *ngFor="let t of blogForm.get('tags')?.value.split(',')">
+                  <span *ngIf="t.trim()">#{{t.trim()}}</span>
+                </span>
               </div>
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="image">رابط الصورة *</label>
-            <input
-              type="url"
-              id="image"
-              formControlName="image"
-              placeholder="أدخل رابط الصورة"
-              (input)="onImageUrlChange($event)"
-              [class.invalid]="isFieldInvalid('image')"
-            />
-            <div class="error-message" *ngIf="isFieldInvalid('image')">
-              {{ getErrorMessage("image") }}
+          <!-- Media Card -->
+          <div class="aside-card">
+            <h3 class="aside-card__title"><i class="fas fa-image"></i> الوسائط</h3>
+            
+            <div class="form-group">
+              <label class="form-label">رابط الصورة الرئيسية</label>
+              <input formControlName="image" class="form-input" [class.form-input--invalid]="isFieldInvalid('image')" placeholder="https://.../image.webp" dir="ltr" (input)="onImageUrlChange($event)"/>
+              <div class="image-preview" *ngIf="imagePreviewUrl">
+                <img [src]="imagePreviewUrl" alt="معاينة" loading="lazy" />
+              </div>
+              <p class="field-error" *ngIf="isFieldInvalid('image')">الصورة الرئيسية مطلوبة</p>
             </div>
-            <small class="help-text"
-              >يجب أن يكون الرابط صحيحاً ويشير إلى صورة</small
-            >
-          </div>
 
-          <div class="form-group">
-            <label for="tags">العلامات *</label>
-            <input
-              type="text"
-              id="tags"
-              formControlName="tags"
-              placeholder="أدخل العلامات مفصولة بفواصل"
-              [class.invalid]="isFieldInvalid('tags')"
-            />
-            <div class="error-message" *ngIf="isFieldInvalid('tags')">
-              {{ getErrorMessage("tags") }}
+            <div class="toggle-group" style="margin-bottom: 1rem;">
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">إضافة فيديو رئيسي للمقال؟</span>
+                  <span class="toggle-desc">يعرض فيديو أسفل المقال</span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" formControlName="hasVideo" />
+                  <span class="toggle__slider"></span>
+                </label>
+              </label>
             </div>
-            <small class="help-text">مثال: تقنيات, حماية, سيارات, جودة</small>
-          </div>
-        </div>
 
-        <div class="form-section">
-          <h3>تحسين محركات البحث (SEO)</h3>
-
-          <div class="form-group">
-            <label for="seoKeywords">الكلمات المفتاحية *</label>
-            <input
-              type="text"
-              id="seoKeywords"
-              formControlName="seoKeywords"
-              placeholder="أدخل الكلمات المفتاحية مفصولة بفواصل"
-              [class.invalid]="isFieldInvalid('seoKeywords')"
-            />
-            <div class="error-message" *ngIf="isFieldInvalid('seoKeywords')">
-              {{ getErrorMessage("seoKeywords") }}
+            <div class="form-group" *ngIf="blogForm.get('hasVideo')?.value">
+              <label class="form-label">رابط يوتيوب</label>
+              <div class="input-icon-wrap">
+                <i class="fab fa-youtube input-icon"></i>
+                <input formControlName="videoUrl" class="form-input pl-icon" placeholder="https://youtube.com/watch?v=..." dir="ltr" (input)="onVideoUrlChange($event)"/>
+              </div>
+              <div class="video-preview" *ngIf="videoEmbedUrl">
+                <iframe [src]="videoEmbedUrl" frameborder="0" allowfullscreen loading="lazy"></iframe>
+              </div>
             </div>
-            <small class="help-text">مثال: تقنيات, حماية, سيارات, جودة</small>
           </div>
 
-          <div class="form-group">
-            <label for="seoDescription">وصف SEO *</label>
-            <textarea
-              id="seoDescription"
-              formControlName="seoDescription"
-              placeholder="أدخل وصف مختصر للمنشور لتحسين محركات البحث"
-              rows="3"
-              [class.invalid]="isFieldInvalid('seoDescription')"
-            ></textarea>
-            <div class="error-message" *ngIf="isFieldInvalid('seoDescription')">
-              {{ getErrorMessage("seoDescription") }}
+          <!-- Reading Time -->
+          <div class="aside-card">
+            <h3 class="aside-card__title"><i class="fas fa-clock"></i> معلومات القراءة</h3>
+            <div class="form-group">
+              <input formControlName="readTime" class="form-input" placeholder="مثال: 5 دقائق" dir="rtl" />
             </div>
-            <small class="help-text">يجب أن يكون الوصف بين 50-160 حرف</small>
           </div>
 
-          <div class="form-group checkbox-group">
-            <label class="checkbox-label">
-              <input type="checkbox" formControlName="featured" id="featured" />
-              <span class="checkmark"></span>
-              منشور مميز
-            </label>
-            <small class="help-text"
-              >المنشورات المميزة تظهر في أعلى المدونة</small
-            >
-          </div>
-        </div>
+        </aside>
+      </div>
+    </form>
+  </div>
 
-        <div class="form-actions">
-          <button type="submit" class="btn-primary" [disabled]="isSubmitting">
-            <i class="fas fa-plus" *ngIf="!isSubmitting"></i>
-            <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
-            <span *ngIf="!isSubmitting" i18n="@@blog.form.submit">إضافة المنشور</span>
-            <span *ngIf="isSubmitting" i18n="@@blog.form.submitting">جاري الإضافة...</span>
-          </button>
+  <!-- ══════════════════════════════════════════════
+       TAB 2: MANAGE POSTS
+  ═══════════════════════════════════════════════ -->
+  <div class="dash-body dash-body--manage" *ngIf="activeTab==='manage'">
 
-          <button
-            type="button"
-            class="btn-secondary"
-            (click)="blogForm.reset()"
-            [disabled]="isSubmitting"
-          >
-            <i class="fas fa-undo"></i>
-            <span i18n="@@blog.form.reset">إعادة تعيين</span>
-          </button>
-        </div>
-      </form>
+    <div class="manage-header">
+      <h2 class="manage-header__title">قائمة المقالات</h2>
+      <button class="btn btn--gold btn--sm" (click)="setTab('editor'); cancelEdit()">
+        <i class="fas fa-plus"></i> إضافة مقال
+      </button>
+    </div>
+
+    <!-- Loading spinner -->
+    <div class="loading-state" *ngIf="loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>جارٍ تحميل المقالات...</p>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="!loading && existingPosts.length === 0">
+      <div class="empty-state__icon"><i class="fas fa-file-excel"></i></div>
+      <h3>لا توجد مقالات حتى الآن</h3>
+      <p>ابدأ بمشاركة خبراتك مع عملائك</p>
+      <button class="btn btn--gold" (click)="setTab('editor')"><i class="fas fa-pen-nib icon-sm"></i> كتابة مقال جديد</button>
+    </div>
+
+    <!-- Posts Table -->
+    <div class="posts-table-wrap" *ngIf="!loading && existingPosts.length > 0">
+      <table class="posts-table">
+        <thead>
+          <tr>
+            <th width="100">الصورة</th>
+            <th>التفاصيل</th>
+            <th>التصنيف</th>
+            <th>الحالة</th>
+            <th>الإحصائيات</th>
+            <th class="text-left">الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let post of existingPosts; trackBy: trackByPostId" class="post-row" [class.post-row--draft]="!post.published">
+
+            <!-- Thumbnail -->
+            <td class="post-row__thumb">
+              <img *ngIf="post.image" [src]="post.image" [alt]="getPostTitle(post)" loading="lazy" />
+              <div *ngIf="!post.image" class="post-row__thumb-placeholder"><i class="fas fa-image"></i></div>
+            </td>
+
+            <!-- Details -->
+            <td class="post-row__title">
+              <div class="post-row__name">{{ getPostTitle(post) }}</div>
+              <a [href]="'/blog/' + post.slug" target="_blank" class="post-row__slug" dir="ltr">/blog/{{ post.slug }}</a>
+              <span class="badge badge--featured" *ngIf="post.featured"><i class="fas fa-star icon-xs"></i> مميز</span>
+            </td>
+
+            <!-- Category -->
+            <td><span class="hashtag-badge">{{ post.category }}</span></td>
+
+            <!-- Status -->
+            <td>
+              <button class="status-btn" [class.status-btn--published]="post.published" [class.status-btn--draft]="!post.published" (click)="togglePublish(post)">
+                <span class="status-dot"></span>
+                {{ post.published ? 'منشور' : 'مسودة' }}
+              </button>
+            </td>
+
+            <!-- Stats -->
+            <td class="post-row__stats">
+              <div class="stat-item" title="تاريخ النشر">
+                <i class="fas fa-calendar icon-xs"></i> {{ getFormattedDate(post.createdAt || post.date) }}
+              </div>
+              <div class="stat-item" title="المشاهدات">
+                <i class="fas fa-eye icon-xs"></i> {{ post.views || 0 }}
+              </div>
+            </td>
+
+            <!-- Actions -->
+            <td class="post-row__actions text-left">
+              <button class="action-btn action-btn--star" (click)="toggleFeatured(post)" [class.action-btn--star-active]="post.featured" title="تمييز المقال">
+                <i class="fas fa-star"></i>
+              </button>
+              <a class="action-btn action-btn--view" [href]="'/blog/' + post.slug" target="_blank" title="عرض بالموقع">
+                <i class="fas fa-external-link-alt"></i>
+              </a>
+              <button class="action-btn action-btn--edit" (click)="editPost(post)" title="تعديل">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="action-btn action-btn--delete" (click)="confirmDelete(post.id!)" title="حذف">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- Success/Error Messages -->
-  <div class="message-container" *ngIf="message">
-    <div class="message" [class]="'message-' + messageType">
-      <i
-        class="fas"
-        [class]="
-          messageType === 'success'
-            ? 'fa-check-circle'
-            : 'fa-exclamation-circle'
-        "
-      ></i>
-      {{ message }}
-    </div>
-  </div>
-
-  <!-- Posts Popup Modal -->
-  <div
-    class="posts-popup-overlay"
-    *ngIf="showPostsPopup"
-    (click)="closePostsPopup()"
-  >
-    <div class="posts-popup-content" (click)="$event.stopPropagation()">
-      <div class="popup-header">
-        <h3>عرض المنشورات</h3>
-        <button class="popup-close" (click)="closePostsPopup()">
-          <i class="fas fa-times"></i>
+  <!-- ══ Delete Confirmation Modal ══ -->
+  <div class="modal-overlay" *ngIf="deleteConfirmId" (click)="cancelDelete()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal__icon"><i class="fas fa-exclamation-triangle"></i></div>
+      <h3 class="modal__title">هل أنت متأكد؟</h3>
+      <p class="modal__body">سيتم حذف هذا المقال نهائياً. لا يمكن التراجع عن هذه العملية بعد التنفيذ.</p>
+      <div class="modal__actions">
+        <button class="btn btn--ghost" (click)="cancelDelete()">إلغاء الأمر</button>
+        <button class="btn btn--danger" (click)="deletePost(deleteConfirmId!)">
+          <i class="fas fa-trash-alt icon-sm"></i> تأكيد الحذف
         </button>
       </div>
-
-      <div class="popup-controls">
-        <div class="selection-controls">
-          <button
-            class="btn-select-all"
-            (click)="selectAllPosts()"
-            title="تحديد جميع المنشورات"
-            *ngIf="
-              existingPosts.length > 0 &&
-              selectedPosts.length < existingPosts.length
-            "
-          >
-            <i class="fas fa-check-square"></i>
-            تحديد الكل
-          </button>
-          <button
-            class="btn-deselect-all"
-            (click)="deselectAllPosts()"
-            title="إلغاء تحديد جميع المنشورات"
-            *ngIf="selectedPosts.length > 0"
-          >
-            <i class="fas fa-square"></i>
-            إلغاء التحديد
-          </button>
-        </div>
-
-        <div class="popup-actions">
-          <button
-            class="btn-delete-popup"
-            (click)="deleteSelectedPosts()"
-            title="حذف المنشورات المحددة"
-            *ngIf="selectedPosts.length > 0"
-            [attr.data-count]="selectedPosts.length"
-          >
-            <i class="fas fa-trash-alt"></i>
-            حذف المنشورات المحددة
-            <span class="selected-count" *ngIf="selectedPosts.length > 0">
-              ({{ selectedPosts.length }})
-            </span>
-          </button>
-        </div>
-      </div>
-
-      <div class="popup-posts-grid">
-        <div
-          class="popup-post-card"
-          *ngFor="let post of existingPosts; trackBy: trackByPostId"
-        >
-          <div class="post-selection">
-            <input
-              type="checkbox"
-              [id]="'popup-post-' + post.id"
-              [checked]="selectedPosts.includes(post.id)"
-              (change)="togglePostSelection(post.id)"
-              class="post-checkbox"
-            />
-            <label [for]="'popup-post-' + post.id" class="post-checkbox-label">
-              <i class="fas fa-check"></i>
-            </label>
-          </div>
-
-          <div class="post-image">
-            <img
-              [src]="post.image"
-              [alt]="post.title"
-              onerror="this.src='assets/images/blog/default-post.jpg'"
-            />
-            <div class="post-badge" *ngIf="post.featured">
-              <i class="fas fa-star"></i>
-              مميز
-            </div>
-          </div>
-
-          <div class="post-content">
-            <h4 class="post-title">{{ post.title }}</h4>
-            <p class="post-excerpt">{{ post.excerpt }}</p>
-
-            <div class="post-meta">
-              <span class="category">
-                <i class="fas fa-tag"></i>
-                {{ post.category }}
-              </span>
-              <span class="date">
-                <i class="fas fa-calendar"></i>
-                {{ getFormattedDate(post.date) }}
-              </span>
-              <span class="read-time">
-                <i class="fas fa-clock"></i>
-                {{ post.readTime }}
-              </span>
-            </div>
-
-            <div class="post-tags">
-              <span class="tag" *ngFor="let tag of post.tags">{{ tag }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="no-posts" *ngIf="existingPosts.length === 0">
-          <i class="fas fa-newspaper"></i>
-          <h3>📝 لا توجد منشورات حالياً</h3>
-          <p>لم يتم إضافة أي منشورات بعد</p>
-          <small>قم بإضافة منشور جديد من النموذج أعلاه</small>
-        </div>
-      </div>
     </div>
   </div>
+
 </div>

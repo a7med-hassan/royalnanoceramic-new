@@ -1,0 +1,127 @@
+<section>
+  <div class="container">
+    <!-- Royal Shield Header -->
+    <div class="royal-shield-header">
+      <h1>
+        <i class="fas fa-envelope-open icon"></i>
+        طلبات العملاء
+      </h1>
+      <p style="margin: 8px 0 0 0; opacity: 0.9;">إدارة ومتابعة طلبات العملاء والاستفسارات</p>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <div class="left">
+        <button class="btn btn-danger" (click)="warningMsg = true">
+          <i class="fas fa-trash"></i>
+          مسح الكل
+        </button>
+        <button class="btn btn-secondary" (click)="exportData()">
+          <i class="fas fa-download"></i>
+          تصدير الجدول
+        </button>
+      </div>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" matSort id="requests">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>الاسم</th>
+          <td mat-cell *matCellDef="let offer">
+            {{ offer.name }}
+          </td>
+        </ng-container>
+
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>البريد الإلكتروني</th>
+          <td mat-cell *matCellDef="let offer">
+            <a [href]="mailTo + offer.email">{{ offer.email }}</a>
+          </td>
+        </ng-container>
+
+        <!-- Phone Column -->
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>الهاتف</th>
+          <td mat-cell *matCellDef="let offer">{{ offer.phone }}</td>
+        </ng-container>
+
+        <!-- Message Column -->
+        <ng-container matColumnDef="msg">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>الرسالة</th>
+          <td mat-cell *matCellDef="let offer" class="msg-body">
+            <p>{{ offer.msg }}</p>
+          </td>
+        </ng-container>
+
+        <!-- Company Column -->
+        <ng-container matColumnDef="company">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>الشركة</th>
+          <td mat-cell *matCellDef="let offer">{{ offer.company }}</td>
+        </ng-container>
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
+          <td mat-cell *matCellDef="let offer" style="min-width: 10px">
+            <button
+              *ngIf="!offer.checked"
+              mat-icon-button
+              (click)="checkOffer(offer.Id)"
+              title="تمييز كمقروء"
+            >
+              <mat-icon>check</mat-icon>
+            </button>
+            <button
+              *ngIf="offer.checked"
+              mat-icon-button
+              (click)="uncheckOffer(offer.Id)"
+              title="إلغاء التمييز"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              (click)="deleteOffer(offer._id)"
+              title="حذف"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          [ngClass]="{
+            'checked-row': row.checked
+          }"
+        ></tr>
+      </table>
+
+      <!-- Paginator -->
+      <mat-paginator
+        [pageSizeOptions]="paginatorNumbers"
+        [pageSize]="10"
+        showFirstLastButtons
+        aria-label="Select page"
+      ></mat-paginator>
+    </div>
+  </div>
+</section>
+
+<!-- Confirmation Modal -->
+<div class="msg" [ngClass]="{ active: warningMsg }">
+  <div class="msg-card">
+    <p>هل أنت متأكد من حذف جميع الطلبات؟</p>
+    <div class="d-flex align-items-center justify-content-end">
+      <button class="btn btn-primary" (click)="deleteAll()">نعم</button>
+      <button class="btn btn-success ms-3" (click)="warningMsg = false">
+        إلغاء
+      </button>
+    </div>
+  </div>
+</div>

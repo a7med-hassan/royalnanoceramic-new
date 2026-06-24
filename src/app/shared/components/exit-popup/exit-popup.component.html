@@ -1,0 +1,83 @@
+<!-- Exit Intent Popup -->
+<div class="popup-overlay" *ngIf="showPopup" (click)="closePopup()">
+  <div class="popup" (click)="$event.stopPropagation()">
+    <!-- Close Button -->
+    <button class="close-btn" (click)="closePopup()" aria-label="إغلاق">
+      ✕
+    </button>
+
+    <!-- Popup Content -->
+    <div class="popup-content">
+      <!-- Icon -->
+      <div class="popup-icon">
+        🎁
+      </div>
+
+      <!-- Title -->
+      <h2 class="popup-title">
+        انتظر! لا تغادر بعد
+      </h2>
+
+      <!-- Description -->
+      <p class="popup-description">
+        لقد فتحت خصم <strong>30%</strong> على حماية السيارة الكاملة!
+        <br>
+        <span class="highlight">أول 20 عميل فقط</span>
+      </p>
+
+      <!-- Features -->
+      <div class="popup-features">
+        <div class="feature">
+          <span class="feature-icon">✨</span>
+          <span>10 طبقات حماية</span>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🛡️</span>
+          <span>أطول فترة ضمان</span>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🇺🇸</span>
+          <span>خامة أمريكية معتمدة</span>
+        </div>
+      </div>
+
+      <!-- Countdown -->
+      <div class="popup-countdown">
+        <p class="countdown-text">⏰ العرض ينتهي خلال:</p>
+        <div class="countdown-timer">
+          <div class="time-unit">
+            <span class="time-number">7</span>
+            <span class="time-label">يوم</span>
+          </div>
+          <div class="time-unit">
+            <span class="time-number">23</span>
+            <span class="time-label">ساعة</span>
+          </div>
+          <div class="time-unit">
+            <span class="time-number">59</span>
+            <span class="time-label">دقيقة</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="popup-actions">
+        <button class="claim-btn" (click)="claimOffer()">
+          <span class="btn-icon">🎯</span>
+          احجز خصمي الآن
+        </button>
+        <button class="decline-btn" (click)="closePopup()">
+          لا شكراً
+        </button>
+      </div>
+
+      <!-- Trust Indicators -->
+      <div class="trust-indicators">
+        <p class="trust-text">
+          <span class="trust-icon">🔒</span>
+          آمن ومضمون 100%
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

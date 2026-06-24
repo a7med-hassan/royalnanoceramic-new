@@ -1,309 +1,147 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs';
 import { TranslationService } from '../../shared/services/translation.service';
-
-interface BlogPost {
-  id: number;
-  title: string;
-  excerpt: string;
-  content: string;
-  image: string;
-  category: string;
-  date: string;
-  readTime: string;
-  tags: string[];
-  featured: boolean;
-  seoKeywords: string[];
-  seoDescription: string;
-}
+import { BlogService, BlogPost } from '../../shared/services/blog.service';
+import { SchemaService } from '../../shared/services/schema.service';
+import { SchemaDataService } from '../../shared/services/schema-data.service';
+import * as lucide from 'lucide';
 
 @Component({
   selector: 'app-blog',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './blog.component.html',
   styleUrls: ['./blog.component.scss'],
 })
-export class BlogComponent implements OnInit, OnDestroy {
+export class BlogComponent implements OnInit, OnDestroy, AfterViewChecked {
   private destroy$ = new Subject<void>();
+
   currentLang = 'ar';
-  isRtl = false;
+  isRtl = true;
 
   allPosts: BlogPost[] = [];
   filteredPosts: BlogPost[] = [];
   featuredPost: BlogPost | null = null;
-  selectedPost: BlogPost | null = null;
-  searchTerm: string = '';
-  currentCategory: string = 'all';
-  postsPerPage: number = 50; // Show more posts initially
-  currentPage: number = 1;
-  hasMorePosts: boolean = true;
-  newsletterEmail: string = '';
+  searchTerm = '';
+  currentCategory = 'all';
+  loading = false;
+
+  categories: string[] = [];
+
+  faqs = [
+    { question: 'ما هو النانو سيراميك؟', answer: 'النانو سيراميك هو مادة سائلة شفافة توضع على طلاء السيارة لتشكل طبقة حماية صلبة تدوم طويلاً، تحمي من الخدوش الدقيقة، العوامل الجوية، والأشعة فوق البنفسجية.' },
+    { question: 'كم تدوم طبقة النانو سيراميك على السيارة؟', answer: 'تعتمد المدة على نوع الطبقة والمنتج المستخدم وعنايتك بالسيارة، وتتراوح عادةً بين سنتين إلى 5 سنوات مع ضمان موثق.' },
+    { question: 'هل يمنع النانو سيراميك الخدوش العميقة؟', answer: 'يحمي من الخدوش الدقيقة (Swirl marks)، لكنه لا يمنع الخدوش العميقة الناتجة عن الاحتكاك القوي أو الحوادث.' },
+    { question: 'ما الفرق بين PPF والنانو سيراميك؟', answer: 'PPF طبقة بلاستيكية سميكة تحمي من الخدوش القوية، بينما النانو سيراميك يوفر لمعاناً زجاجياً وحماية من الكيماويات. يمكن دمجهما للحماية القصوى.' },
+  ];
+  activeFaqIndex: number | null = null;
+  toggleFaq(i: number): void { this.activeFaqIndex = this.activeFaqIndex === i ? null : i; }
 
   constructor(
     private router: Router,
-    public translationService: TranslationService
+    public translationService: TranslationService,
+    private blogService: BlogService,
+    private schemaService: SchemaService,
+    private schemaData: SchemaDataService
   ) {}
 
   ngOnInit(): void {
-    // Get initial language and RTL settings
     this.currentLang = this.translationService.getCurrentLanguage();
-    this.isRtl = this.translationService.isRtl$;
+    this.isRtl = this.currentLang === 'ar';
 
-    // Subscribe to language changes
+    this.schemaService.addSchema('blog-breadcrumb', this.schemaData.getBreadcrumbSchema([
+      { name: 'Home', url: 'https://royalnanoceramic.com' },
+      { name: 'Blog', url: 'https://royalnanoceramic.com/blog' },
+    ]));
+
     this.translationService.languageChanged$.subscribe((lang: string) => {
       this.currentLang = lang;
       this.isRtl = lang === 'ar';
-      
-      // Refresh blog posts when language changes
-      this.initializeBlogPosts();
-      this.filterPosts();
-      this.setFeaturedPost();
     });
 
-    this.initializeBlogPosts();
-    this.filterPosts();
-    this.setFeaturedPost();
-
-    // Auto-refresh dashboard posts every 30 seconds
-    setInterval(() => {
-      this.refreshDashboardPosts();
-    }, 30000);
+    this.loadPosts();
   }
 
-  refreshBlogPosts(): void {
-    this.initializeBlogPosts();
-    this.filterPosts();
-    this.setFeaturedPost();
+  ngAfterViewChecked(): void {
+    // Icons now use FontAwesome, so no init needed
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.schemaService.removeSchema('blog-breadcrumb');
   }
 
-  initializeBlogPosts(): void {
-    // Default posts from translation service
-    const defaultPosts: BlogPost[] = [
-      {
-        id: 1,
-        title: this.translationService.getTranslation('blog.post.1.title'),
-        excerpt: this.translationService.getTranslation('blog.post.1.excerpt'),
-        content: this.translationService.getTranslation('blog.post.1.excerpt'),
-        image: 'assets/images/blog/close-up-car-care-process.jpg',
-        category: this.translationService.getTranslation(
-          'blog.post.1.category'
-        ),
-        date: '2024-01-15',
-        readTime: this.translationService.getTranslation(
-          'blog.post.1.readTime'
-        ),
-        tags: this.translationService
-          .getTranslation('blog.post.1.tags')
-          .split(',')
-          .map((tag) => tag.trim()),
-        featured: true,
-        seoKeywords: this.translationService
-          .getTranslation('blog.post.1.seoKeywords')
-          .split(',')
-          .map((keyword) => keyword.trim()),
-        seoDescription: this.translationService.getTranslation(
-          'blog.post.1.seoDescription'
-        ),
-      },
-      {
-        id: 2,
-        title: this.translationService.getTranslation('blog.post.2.title'),
-        excerpt: this.translationService.getTranslation('blog.post.2.excerpt'),
-        content: this.translationService.getTranslation('blog.post.2.excerpt'),
-        image:
-          'assets/images/blog/male-worker-wrapping-car-with-ptotective-foil (1).jpg',
-        category: this.translationService.getTranslation(
-          'blog.post.2.category'
-        ),
-        date: '2024-01-10',
-        readTime: this.translationService.getTranslation(
-          'blog.post.2.readTime'
-        ),
-        tags: this.translationService
-          .getTranslation('blog.post.2.tags')
-          .split(',')
-          .map((tag) => tag.trim()),
-        featured: false,
-        seoKeywords: this.translationService
-          .getTranslation('blog.post.2.seoKeywords')
-          .split(',')
-          .map((keyword) => keyword.trim()),
-        seoDescription: this.translationService.getTranslation(
-          'blog.post.2.seoDescription'
-        ),
-      },
-      {
-        id: 3,
-        title: this.translationService.getTranslation('blog.post.3.title'),
-        excerpt: this.translationService.getTranslation('blog.post.3.excerpt'),
-        content: this.translationService.getTranslation('blog.post.3.excerpt'),
-        image: 'assets/images/blog/pexels-autorecords-10126663.jpg',
-        category: this.translationService.getTranslation(
-          'blog.post.3.category'
-        ),
-        date: '2024-01-05',
-        readTime: this.translationService.getTranslation(
-          'blog.post.3.readTime'
-        ),
-        tags: this.translationService
-          .getTranslation('blog.post.3.tags')
-          .split(',')
-          .map((tag) => tag.trim()),
-        featured: false,
-        seoKeywords: this.translationService
-          .getTranslation('blog.post.3.seoKeywords')
-          .split(',')
-          .map((keyword) => keyword.trim()),
-        seoDescription: this.translationService.getTranslation(
-          'blog.post.3.seoDescription'
-        ),
-      },
-    ];
-
-    // Load posts from localStorage (added from dashboard)
-    const dashboardPosts: BlogPost[] = this.loadDashboardPosts();
-
-    // Merge default posts with dashboard posts
-    this.allPosts = [...defaultPosts, ...dashboardPosts];
-
-    // Sort posts by date (newest first)
-    this.allPosts.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
-
-    console.log('📚 Blog posts loaded:', this.allPosts.length, 'total posts');
-    console.log('📝 Dashboard posts:', dashboardPosts.length, 'posts');
+  loadPosts(): void {
+    this.loading = true;
+    this.blogService.getPublishedPosts()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (posts) => {
+          this.allPosts = posts;
+          this.extractCategories();
+          this.filterPosts();
+          this.setFeaturedPost();
+          this.loading = false;
+        },
+        error: () => { this.loading = false; }
+      });
   }
 
-  /**
-   * Load posts that were added from the dashboard
-   */
-  private loadDashboardPosts(): BlogPost[] {
-    try {
-      const storedPosts = localStorage.getItem('blog-posts');
-      if (storedPosts) {
-        const posts = JSON.parse(storedPosts);
-        console.log('📖 Loaded dashboard posts from localStorage:', posts);
-        return posts;
-      }
-    } catch (error) {
-      console.error('❌ Error loading dashboard posts:', error);
-    }
-    return [];
+  extractCategories(): void {
+    const cats = new Set(this.allPosts.map(p => p.category).filter(Boolean));
+    this.categories = Array.from(cats);
   }
 
-  /**
-   * Refresh posts from localStorage (useful after adding new posts)
-   */
-  refreshDashboardPosts(): void {
-    const dashboardPosts = this.loadDashboardPosts();
-    const defaultPosts = this.allPosts.filter((post) => post.id <= 3); // Keep default posts
-    this.allPosts = [...defaultPosts, ...dashboardPosts];
-    this.allPosts.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
-
+  filterByCategory(cat: string): void {
+    this.currentCategory = cat;
     this.filterPosts();
-    this.setFeaturedPost();
-
-    console.log(
-      '🔄 Dashboard posts refreshed:',
-      this.allPosts.length,
-      'total posts'
-    );
   }
 
-  filterByCategory(category: string): void {
-    this.currentCategory = category;
-    this.currentPage = 1;
-    this.filterPosts();
-
-    // Update active category
-    document.querySelectorAll('.category-card').forEach((card) => {
-      card.classList.remove('active');
-    });
-    const target = event?.target as HTMLElement;
-    target?.closest('.category-card')?.classList.add('active');
-  }
+  onSearch(): void { this.filterPosts(); }
 
   filterPosts(): void {
-    let filtered = this.allPosts;
-
-    // Filter by category
+    let posts = this.allPosts;
     if (this.currentCategory !== 'all') {
-      filtered = filtered.filter(
-        (post) => post.category === this.currentCategory
-      );
+      posts = posts.filter(p => p.category === this.currentCategory);
     }
-
-    // Filter by search term
     if (this.searchTerm.trim()) {
-      const searchLower = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (post) =>
-          post.title.toLowerCase().includes(searchLower) ||
-          post.excerpt.toLowerCase().includes(searchLower) ||
-          post.tags.some((tag) => tag.toLowerCase().includes(searchLower))
-      );
+      const q = this.searchTerm.toLowerCase();
+      posts = posts.filter(p => {
+        const title = (this.getTitle(p) + ' ' + (p.titleEn || '')).toLowerCase();
+        const excerpt = (this.getExcerpt(p) + ' ' + (p.excerptEn || '')).toLowerCase();
+        return title.includes(q) || excerpt.includes(q);
+      });
     }
-
-    this.filteredPosts = filtered.slice(
-      0,
-      this.currentPage * this.postsPerPage
-    );
-    this.hasMorePosts = this.filteredPosts.length < filtered.length;
-
-    // Debug logging
-    console.log('📝 Blog Posts Debug:', {
-      totalPosts: this.allPosts.length,
-      filteredPosts: filtered.length,
-      displayedPosts: this.filteredPosts.length,
-      currentCategory: this.currentCategory,
-      searchTerm: this.searchTerm,
-      postsPerPage: this.postsPerPage,
-      currentPage: this.currentPage,
-    });
+    this.filteredPosts = posts;
   }
 
   setFeaturedPost(): void {
-    this.featuredPost =
-      this.allPosts.find((post) => post.featured) || this.allPosts[0];
+    this.featuredPost = this.allPosts.find(p => p.featured) || this.allPosts[0] || null;
   }
 
-  quickView(post: BlogPost): void {
-    this.selectedPost = post;
+  getTitle(post: BlogPost): string {
+    return (this.currentLang === 'ar' ? post.titleAr : post.titleEn) || post.title || '';
   }
 
-  closeQuickView(): void {
-    this.selectedPost = null;
+  getExcerpt(post: BlogPost): string {
+    return (this.currentLang === 'ar' ? post.excerptAr : post.excerptEn) || post.excerpt || '';
   }
 
-  readFullPost(post: BlogPost): void {
-    // In a real application, this would navigate to a full blog post page
-    console.log('Reading full post:', post.title);
-    // this.router.navigate(['/blog', post.id]);
+  navigateToPost(post: BlogPost): void {
+    const slug = post.slug || post.id;
+    if (slug) this.router.navigate(['/blog', slug]);
   }
 
-  loadMorePosts(): void {
-    this.currentPage++;
-    this.filterPosts();
-  }
-
-  subscribeNewsletter(): void {
-    if (this.newsletterEmail.trim()) {
-      console.log('Subscribing to newsletter:', this.newsletterEmail);
-      // In a real application, this would send the email to your backend
-      alert(this.translationService.getTranslation('blog.subscribe_success'));
-      this.newsletterEmail = '';
-    }
+  getFormattedDate(d: any): string {
+    try {
+      const date = d?.toDate ? d.toDate() : new Date(d);
+      return date.toLocaleDateString(this.currentLang === 'ar' ? 'ar-SA' : 'en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+    } catch { return ''; }
   }
 }

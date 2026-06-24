@@ -1,0 +1,109 @@
+<section class="py-5 my-5">
+  <div class="container">
+    <div class="d-flex justify-content-center mb-4">
+      <div class="btn-group" role="group">
+        <button type="button" class="btn" [class.btn-primary]="activeTab === 'film'" (click)="switchTab('film')">
+          <i class="fa fa-film me-2"></i> Protection Films
+        </button>
+        <button type="button" class="btn" [class.btn-primary]="activeTab === 'nano'" (click)="switchTab('nano')">
+          <i class="fa fa-shield-alt me-2"></i> Nano Ceramic
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="mat-elevation-z8 table-responsive">
+      <table mat-table [dataSource]="dataSource" matSort id="activatedWarrantysTable">
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+
+        <!-- Phone Column -->
+        <ng-container matColumnDef="phoneNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone</th>
+          <td mat-cell *matCellDef="let element">{{ element.phoneNumber }}</td>
+        </ng-container>
+
+        <!-- Serial Column -->
+        <ng-container matColumnDef="serialNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Serial / Product Code</th>
+          <td mat-cell *matCellDef="let element">{{ element.serialNumber }}</td>
+        </ng-container>
+
+        <!-- Model Column -->
+        <ng-container matColumnDef="model">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Model</th>
+          <td mat-cell *matCellDef="let element">{{ element.model }}</td>
+        </ng-container>
+
+        <!-- Address Column -->
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Address</th>
+          <td mat-cell *matCellDef="let element">{{ element.address || '-' }}</td>
+        </ng-container>
+
+        <!-- Birthdate Column -->
+        <ng-container matColumnDef="birthdate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Birthdate</th>
+          <td mat-cell *matCellDef="let element">{{ element.birthdate | date:'mediumDate' }}</td>
+        </ng-container>
+
+        <!-- Created At Column -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Created At</th>
+          <td mat-cell *matCellDef="let element">{{ element.createdAt | date:'short' }}</td>
+        </ng-container>
+
+        <!-- Brand Column -->
+        <ng-container matColumnDef="brand">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Brand</th>
+          <td mat-cell *matCellDef="let element">{{ element.brand }}</td>
+        </ng-container>
+
+        <!-- Color Column -->
+        <ng-container matColumnDef="color">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Color</th>
+          <td mat-cell *matCellDef="let element">{{ element.color }}</td>
+        </ng-container>
+
+        <!-- OTP Column -->
+        <ng-container matColumnDef="otp">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>OTP</th>
+          <td mat-cell *matCellDef="let element">{{ element.otp }}</td>
+        </ng-container>
+
+        <!-- Image Column -->
+        <ng-container matColumnDef="image">
+          <th mat-header-cell *matHeaderCellDef>Image</th>
+          <td mat-cell *matCellDef="let warranty">
+            <button type="button" class="btn p-0" (click)="openImgTap(getImgPath(warranty.imagePath))">
+              <img [src]="getImgPath(warranty.imagePath)" alt="no Image" class="warranty-img"
+                style="height: 50px; width: auto;" loading="lazy" />
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>Action</th>
+          <td mat-cell *matCellDef="let element">
+            <button class="btn btn-danger btn-sm" (click)="deleteActivation(element)">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+
+    <div class="mt-3 text-end">
+      <button class="btn btn-success" (click)="exportData()">Export to Excel</button>
+    </div>
+  </div>
+</section>

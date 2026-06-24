@@ -1,0 +1,134 @@
+<div class="admin-branches-container">
+    <!-- Header -->
+    <mat-toolbar color="primary" class="page-header">
+        <h1>Branch Codes Management</h1>
+        <span class="spacer"></span>
+        <button mat-raised-button color="accent" (click)="openAddForm()">
+            <mat-icon>add</mat-icon>
+            Add New Branch
+        </button>
+    </mat-toolbar>
+
+    <!-- Add/Edit Form -->
+    <mat-card *ngIf="showForm" class="form-card" [@fadeIn]>
+        <mat-card-header>
+            <mat-card-title>{{ isEditing ? 'Edit Branch' : 'Add New Branch' }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="form-grid">
+                <mat-form-field appearance="outline">
+                    <mat-label>Agent / Reseller</mat-label>
+                    <mat-select [(ngModel)]="currentBranch.agentId" [disabled]="isEditing">
+                        <mat-option *ngFor="let r of resellersList" [value]="r.name">
+                            {{ r.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Branch Name</mat-label>
+                    <input matInput [(ngModel)]="currentBranch.branchName" placeholder="e.g. Cairo Center">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Branch Code</mat-label>
+                    <input matInput [(ngModel)]="currentBranch.branchCode" placeholder="e.g. AGENT-EG-01">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>City</mat-label>
+                    <input matInput [(ngModel)]="currentBranch.city" placeholder="e.g. Cairo">
+                </mat-form-field>
+            </div>
+        </mat-card-content>
+        <mat-card-actions align="end">
+            <button mat-button (click)="cancelForm()">Cancel</button>
+            <button mat-raised-button color="primary" (click)="saveBranch()">Save Branch</button>
+        </mat-card-actions>
+    </mat-card>
+
+    <!-- Search -->
+    <mat-card class="search-card">
+        <mat-card-content>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Search</mat-label>
+                <input matInput [(ngModel)]="searchTerm" (input)="filterBranches()"
+                    placeholder="Search by Branch Name, Code, City or Agent...">
+                <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- Table -->
+    <mat-card class="table-card">
+        <mat-card-content>
+            <div class="table-container">
+                <table mat-table [dataSource]="filteredBranches" class="branches-table">
+                    <!-- Status Column -->
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef>Status</th>
+                        <td mat-cell *matCellDef="let branch">
+                            <mat-chip [class.active-chip]="branch.isActive !== false"
+                                [class.inactive-chip]="branch.isActive === false">
+                                {{ branch.isActive !== false ? 'Active' : 'Disabled' }}
+                            </mat-chip>
+                        </td>
+                    </ng-container>
+
+                    <!-- Branch Code Column -->
+                    <ng-container matColumnDef="branchCode">
+                        <th mat-header-cell *matHeaderCellDef>Branch Code</th>
+                        <td mat-cell *matCellDef="let branch" class="branch-code">{{ branch.branchCode }}</td>
+                    </ng-container>
+
+                    <!-- Branch Name Column -->
+                    <ng-container matColumnDef="branchName">
+                        <th mat-header-cell *matHeaderCellDef>Branch Name</th>
+                        <td mat-cell *matCellDef="let branch">{{ branch.branchName }}</td>
+                    </ng-container>
+
+                    <!-- City Column -->
+                    <ng-container matColumnDef="city">
+                        <th mat-header-cell *matHeaderCellDef>City</th>
+                        <td mat-cell *matCellDef="let branch">{{ branch.city || '-' }}</td>
+                    </ng-container>
+
+                    <!-- Agent Column -->
+                    <ng-container matColumnDef="agentId">
+                        <th mat-header-cell *matHeaderCellDef>Agent / Reseller</th>
+                        <td mat-cell *matCellDef="let branch">{{ branch.agentId }}</td>
+                    </ng-container>
+
+                    <!-- Country Column -->
+                    <ng-container matColumnDef="country">
+                        <th mat-header-cell *matHeaderCellDef>Country</th>
+                        <td mat-cell *matCellDef="let branch">{{ branch.country || '-' }}</td>
+                    </ng-container>
+
+                    <!-- Actions Column -->
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef>Actions</th>
+                        <td mat-cell *matCellDef="let branch">
+                            <button mat-icon-button color="primary" (click)="editBranch(branch)" matTooltip="Edit">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button [color]="branch.isActive !== false ? 'warn' : 'accent'"
+                                (click)="toggleActive(branch)"
+                                [matTooltip]="branch.isActive !== false ? 'Disable' : 'Enable'">
+                                <mat-icon>{{ branch.isActive !== false ? 'block' : 'check_circle' }}</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+
+                <div *ngIf="filteredBranches.length === 0" class="no-data">
+                    <mat-icon>inbox</mat-icon>
+                    <p>No branches found</p>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

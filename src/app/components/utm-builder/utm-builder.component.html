@@ -1,0 +1,214 @@
+<!-- UTM Builder Button -->
+<button class="utm-builder-trigger" (click)="openPopup()">
+  <i class="fas fa-link"></i>
+  <span>منشئ روابط UTM</span>
+</button>
+
+<!-- UTM Builder Popup -->
+<div class="utm-popup-overlay" *ngIf="showPopup" (click)="closePopup()">
+  <div class="utm-popup" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="popup-header">
+      <h2>
+        <i class="fas fa-link"></i>
+        منشئ روابط UTM
+      </h2>
+      <button class="close-btn" (click)="closePopup()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="popup-content">
+      <!-- Base URL Selection -->
+      <div class="form-section">
+        <h3>الرابط الأساسي</h3>
+        <div class="form-group">
+          <label for="baseUrl">اختر الصفحة المستهدفة</label>
+          <select id="baseUrl" [(ngModel)]="baseUrl" (ngModelChange)="onBaseUrlChange()" class="form-control">
+            <option *ngFor="let option of baseUrlOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+        
+        <!-- Custom URL Input -->
+        <div class="form-group" *ngIf="useCustomUrl">
+          <label for="customUrl">
+            أدخل الرابط المخصص <span class="required">*</span>
+            <small>الصق الرابط الكامل (مثال: https://example.com/page)</small>
+          </label>
+          <input 
+            type="url" 
+            id="customUrl" 
+            [(ngModel)]="customUrl" 
+            class="form-control custom-url-input"
+            placeholder="https://royalnanoceramic.com/your-page">
+        </div>
+      </div>
+
+      <!-- Quick Presets -->
+      <div class="form-section">
+        <h3>قوالب سريعة</h3>
+        <div class="preset-buttons">
+          <button type="button" class="preset-btn" (click)="fillGoogleAds()">
+            <i class="fab fa-google"></i>
+            Google Ads
+          </button>
+          <button type="button" class="preset-btn" (click)="fillFacebookAds()">
+            <i class="fab fa-facebook"></i>
+            Facebook Ads
+          </button>
+          <button type="button" class="preset-btn" (click)="fillInstagramAds()">
+            <i class="fab fa-instagram"></i>
+            Instagram Ads
+          </button>
+          <button type="button" class="preset-btn" (click)="fillEmailCampaign()">
+            <i class="fas fa-envelope"></i>
+            Email Campaign
+          </button>
+        </div>
+      </div>
+
+      <!-- UTM Parameters -->
+      <div class="form-section">
+        <h3>معلمات الحملة</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="utmSource">
+              مصدر الحملة <span class="required">*</span>
+              <small>مثال: google, facebook, newsletter</small>
+            </label>
+            <input 
+              type="text" 
+              id="utmSource" 
+              [(ngModel)]="utmSource" 
+              class="form-control"
+              placeholder="google">
+          </div>
+
+          <div class="form-group">
+            <label for="utmMedium">
+              وسيلة الحملة <span class="required">*</span>
+              <small>مثال: cpc, banner, email, social</small>
+            </label>
+            <input 
+              type="text" 
+              id="utmMedium" 
+              [(ngModel)]="utmMedium" 
+              class="form-control"
+              placeholder="cpc">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="utmCampaign">
+            اسم الحملة <span class="required">*</span>
+            <small>مثال: summer_sale_2025, discount_20percent</small>
+          </label>
+          <input 
+            type="text" 
+            id="utmCampaign" 
+            [(ngModel)]="utmCampaign" 
+            class="form-control"
+            placeholder="summer_sale_2025">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="utmContent">
+              محتوى الإعلان (اختياري)
+              <small>مثال: banner_top, text_ad, video_ad</small>
+            </label>
+            <input 
+              type="text" 
+              id="utmContent" 
+              [(ngModel)]="utmContent" 
+              class="form-control"
+              placeholder="banner_top">
+          </div>
+
+          <div class="form-group">
+            <label for="utmTerm">
+              الكلمة المفتاحية (اختياري)
+              <small>مثال: nano_ceramic, car_protection</small>
+            </label>
+            <input 
+              type="text" 
+              id="utmTerm" 
+              [(ngModel)]="utmTerm" 
+              class="form-control"
+              placeholder="nano_ceramic">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="discount">
+            نسبة الخصم (اختياري)
+            <small>مثال: 20, 30, 50</small>
+          </label>
+          <input 
+            type="text" 
+            id="discount" 
+            [(ngModel)]="discount" 
+            class="form-control"
+            placeholder="20">
+        </div>
+      </div>
+
+      <!-- Generate Button -->
+      <div class="form-actions">
+        <button class="btn-generate" (click)="generateLink()">
+          <i class="fas fa-magic"></i>
+          إنشاء الرابط
+        </button>
+        <button class="btn-reset" type="button" (click)="resetForm()">
+          <i class="fas fa-redo"></i>
+          إعادة تعيين
+        </button>
+      </div>
+
+      <!-- Generated Link -->
+      <div class="generated-link-section" *ngIf="generatedLink">
+        <h3>الرابط المُنشأ</h3>
+        <div class="link-output">
+          <div class="link-text">{{ generatedLink }}</div>
+          <button class="copy-btn" (click)="copyToClipboard()">
+            <i class="fas fa-copy"></i>
+            <span *ngIf="!showCopySuccess">نسخ</span>
+            <span *ngIf="showCopySuccess" class="success-text">تم النسخ!</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Links -->
+      <div class="recent-links-section" *ngIf="recentLinks.length > 0">
+        <div class="section-header">
+          <h3>الروابط السابقة</h3>
+          <button class="clear-all-btn" (click)="clearAllLinks()">
+            <i class="fas fa-trash"></i>
+            حذف الكل
+          </button>
+        </div>
+        <div class="recent-links-list">
+          <div class="recent-link-item" *ngFor="let link of recentLinks; let i = index">
+            <div class="link-info">
+              <div class="link-url">{{ link.url }}</div>
+              <div class="link-date">{{ link.createdAt | date:'short' }}</div>
+            </div>
+            <div class="link-actions">
+              <button class="icon-btn" (click)="copyRecentLink(link.url)" title="نسخ">
+                <i class="fas fa-copy"></i>
+              </button>
+              <button class="icon-btn delete" (click)="deleteRecentLink(i)" title="حذف">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

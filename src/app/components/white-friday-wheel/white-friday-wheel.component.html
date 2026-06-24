@@ -1,0 +1,89 @@
+<!-- الـ Popup Modal -->
+<!-- ✅ منع الإغلاق بالنقر على الخلفية - فقط زر X -->
+<div class="wheel-modal" *ngIf="showModal">
+  <div class="modal-content animate-fade" (click)="$event.stopPropagation()">
+    <button class="btn-close-modal" (click)="closeModal()" aria-label="إغلاق">×</button>
+
+    <h2 class="title">🎉 خصومات <span>White Friday</span> من Royal Nano</h2>
+    <p class="subtitle">لف العجلة لتحصل على خصمك المميز 🎯</p>
+
+    <div class="wheel-wrapper" *ngIf="showModal">
+      <canvas 
+        #wheelCanvas 
+        width="400" 
+        height="400" 
+        class="wheel-canvas"
+      ></canvas>
+    </div>
+
+    <button
+      class="btn-spin"
+      (click)="startSpin()"
+      [disabled]="isSpinning"
+    >
+      {{ isSpinning ? 'جاري اللف...' : 'لف العجلة 🎁' }}
+    </button>
+
+    <!-- Audio elements removed - no sound -->
+  </div>
+</div>
+
+<!-- فورم الخصم بعد اللف -->
+<!-- ✅ منع الإغلاق بالنقر على الخلفية - فقط Submit -->
+<div class="form-modal" *ngIf="formVisible">
+  <div class="form-box animate-fade" (click)="$event.stopPropagation()">
+    <h3>🎊 مبروك! حصلت على <span class="discount-badge">{{ selectedSegmentText }}</span></h3>
+    <p class="form-subtitle">املأ بياناتك للحصول على الكود الخاص بك:</p>
+
+    <form (ngSubmit)="submitForm()" #discountForm="ngForm">
+      <div class="form-group">
+        <label for="name">الاسم *</label>
+        <input 
+          class="form-control" 
+          id="name"
+          name="name" 
+          required 
+          [(ngModel)]="formData.name"
+          placeholder="أدخل اسمك الكامل"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">رقم الهاتف *</label>
+        <input 
+          class="form-control" 
+          id="phone"
+          name="phone" 
+          required 
+          type="tel" 
+          [(ngModel)]="formData.phone"
+          placeholder="01234567890"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="carType">نوع السيارة *</label>
+        <input 
+          class="form-control" 
+          id="carType"
+          name="carType" 
+          required 
+          [(ngModel)]="formData.carType"
+          placeholder="مثال: تويوتا، مرسيدس، BMW"
+        />
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn-submit"
+        [disabled]="discountForm.invalid || isLoading"
+      >
+        <span *ngIf="!isLoading">إرسال البيانات ✅</span>
+        <span *ngIf="isLoading" class="submit-loading">
+          <span class="spinner"></span>
+          جاري الإرسال...
+        </span>
+      </button>
+    </form>
+  </div>
+</div>

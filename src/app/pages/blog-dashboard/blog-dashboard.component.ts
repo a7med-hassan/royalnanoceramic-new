@@ -1,49 +1,64 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
+  FormsModule,
   FormBuilder,
   FormGroup,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AdminApiService } from '../../shared/services/admin-api.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Subject, takeUntil } from 'rxjs';
+import { BlogService, BlogPost } from '../../shared/services/blog.service';
+import { AuthService } from '../../shared/services/auth.service';
+import * as lucide from 'lucide';
 
-interface BlogPost {
-  id: number;
-  title: string;
-  excerpt: string;
-  content: string;
-  image: string;
-  category: string;
-  date: string;
-  readTime: string;
-  tags: string[];
-  featured: boolean;
-  seoKeywords: string[];
-  seoDescription: string;
-}
+type ActiveTab = 'editor' | 'manage';
+type ContentLang = 'ar' | 'en';
 
 @Component({
   selector: 'app-blog-dashboard',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './blog-dashboard.component.html',
   styleUrls: ['./blog-dashboard.component.scss'],
 })
-export class BlogDashboardComponent implements OnInit {
-  blogForm: FormGroup;
+export class BlogDashboardComponent implements OnInit, OnDestroy, AfterViewChecked {
+  @ViewChild('editorAr') editorArRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('editorEn') editorEnRef!: ElementRef<HTMLDivElement>;
+
+  private destroy$ = new Subject<void>();
+
+  // ── UI State ──────────────────────────────────────────────────────────
+  activeTab: ActiveTab = 'editor';
+  contentLang: ContentLang = 'ar';
   isSubmitting = false;
+  loading = false;
   message = '';
   messageType: 'success' | 'error' = 'success';
-  currentUsername = '';
-  loginTime = '';
-  adminUser: any = null;
-  existingPosts: any[] = [];
-  selectedPosts: string[] = [];
-  showPostsPopup = false;
+  showPreviewAr = false;
+  showPreviewEn = false;
+  previewHtmlAr: SafeHtml = '';
+  previewHtmlEn: SafeHtml = '';
+  isEditorArInvalid = false;
+  isEditorEnInvalid = false;
+  slugTaken = false;
+  slugChecking = false;
+  imagePreviewUrl = '';
+  videoEmbedUrl: SafeHtml | null = null;
+  deleteConfirmId: string | null = null;
 
-  // Sample categories for the dropdown
+  // ── Edit mode ─────────────────────────────────────────────────────────
+  isEditMode = false;
+  editingPostId: string | null = null;
+
+  // ── Data ─────────────────────────────────────────────────────────────
+  existingPosts: BlogPost[] = [];
+  stats = { total: 0, published: 0, draft: 0, featured: 0, totalViews: 0 };
+  currentUsername = '';
+  adminUser: any = null;
+
   categories = [
     'تقنيات متطورة',
     'صيانة السيارات',
@@ -51,469 +66,439 @@ export class BlogDashboardComponent implements OnInit {
     'سيارات فاخرة',
     'تقنيات النانو',
     'عناية السيارات',
+    'حماية الطلاء',
+    'أفلام الحماية',
   ];
+
+  blogForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private adminApiService: AdminApiService
+    private blogService: BlogService,
+    private authService: AuthService,
+    private sanitizer: DomSanitizer
   ) {
     this.blogForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(10)]],
-      excerpt: ['', [Validators.required, Validators.minLength(20)]],
-      content: ['', [Validators.required, Validators.minLength(100)]],
-      category: ['', Validators.required],
-      image: ['', Validators.required],
-      readTime: ['', Validators.required],
-      tags: ['', Validators.required],
-      seoKeywords: ['', Validators.required],
-      seoDescription: ['', [Validators.required, Validators.minLength(50)]],
-      featured: [false],
+      slug:            ['', [Validators.required, Validators.pattern(/^[a-z0-9-]+$/)]],
+      titleAr:         ['', [Validators.required, Validators.minLength(5)]],
+      titleEn:         ['', [Validators.required, Validators.minLength(5)]],
+      excerptAr:       ['', [Validators.required, Validators.minLength(20)]],
+      excerptEn:       ['', [Validators.required, Validators.minLength(20)]],
+      contentAr:       ['', [Validators.required]],
+      contentEn:       ['', [Validators.required]],
+      image:           ['', Validators.required],
+      hasVideo:        [false],
+      videoUrl:        [''],
+      category:        ['', Validators.required],
+      tags:            [''],
+      seoDescriptionAr:['', [Validators.minLength(50)]],
+      seoDescriptionEn:['', [Validators.minLength(50)]],
+      seoKeywords:     [''],
+      readTime:        ['5 دقائق'],
+      featured:        [false],
+      published:       [true],
     });
   }
 
   ngOnInit(): void {
-    // Check if user is logged in to admin system
-    const isLoggedIn = this.adminApiService.isLoggedIn();
-    if (!isLoggedIn) {
+    if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/admin']);
       return;
     }
+    this.adminUser = this.authService.getCurrentUser();
+    this.currentUsername = this.adminUser?.name || 'Admin';
+    this.loadPosts();
 
-    // Get user information
-    this.adminUser = this.adminApiService.getCurrentAdmin();
-    this.currentUsername = this.adminUser ? this.adminUser.username : 'Admin';
-    this.loginTime = this.formatLoginTime(new Date().toISOString());
-
-    // Load existing posts
-    this.loadExistingPosts();
-  }
-
-  /**
-   * تحميل المنشورات الموجودة
-   */
-  loadExistingPosts(): void {
-    try {
-      // تحميل المنشورات من localStorage
-      const postsData = localStorage.getItem('blog-posts');
-      let dashboardPosts: any[] = [];
-
-      if (postsData) {
-        dashboardPosts = JSON.parse(postsData);
-        console.log('📝 Dashboard posts:', dashboardPosts);
+    // Auto-generate slug from English title
+    this.blogForm.get('titleEn')?.valueChanges.subscribe(val => {
+      if (!this.isEditMode && !this.blogForm.get('slug')?.dirty) {
+        const slug = this.blogService.generateSlug(val || '');
+        this.blogForm.get('slug')?.setValue(slug, { emitEvent: false });
       }
+    });
 
-      // إضافة المنشورات القديمة
-      const defaultPosts = [
-        {
-          id: 'default-1',
-          title: 'أفضل طرق حماية السيارات من الخدوش',
-          excerpt:
-            'تعرف على أحدث التقنيات المستخدمة في حماية السيارات من الخدوش والتلف',
-          content: 'محتوى كامل عن حماية السيارات...',
-          image: 'assets/images/blog/close-up-car-care-process.jpg',
-          category: 'حماية السيارات',
-          date: new Date('2024-01-15'),
-          readTime: '5 دقائق',
-          tags: ['حماية', 'سيارات', 'تقنيات'],
-          seoKeywords: 'حماية السيارات, خدوش, تقنيات',
-          seoDescription:
-            'أفضل طرق حماية السيارات من الخدوش والتلف باستخدام أحدث التقنيات',
-          featured: true,
-        },
-        {
-          id: 'default-2',
-          title: 'تقنيات النانو في تلميع السيارات',
-          excerpt: 'اكتشف كيف تستخدم تقنيات النانو في تلميع وحماية السيارات',
-          content: 'محتوى كامل عن تقنيات النانو...',
-          image:
-            'assets/images/blog/male-worker-wrapping-car-with-ptotective-foil (1).jpg',
-          category: 'تقنيات النانو',
-          date: new Date('2024-01-10'),
-          readTime: '7 دقائق',
-          tags: ['نانو', 'تلميع', 'تقنيات'],
-          seoKeywords: 'تقنيات النانو, تلميع السيارات, حماية',
-          seoDescription:
-            'اكتشف أحدث تقنيات النانو المستخدمة في تلميع وحماية السيارات',
-          featured: false,
-        },
-        {
-          id: 'default-3',
-          title: 'دليل شامل لصيانة السيارات',
-          excerpt: 'دليل شامل لصيانة السيارات والحفاظ على مظهرها الجديد',
-          content: 'محتوى كامل عن صيانة السيارات...',
-          image: 'assets/images/blog/pexels-autorecords-10126663.jpg',
-          category: 'صيانة السيارات',
-          date: new Date('2024-01-05'),
-          readTime: '10 دقائق',
-          tags: ['صيانة', 'سيارات', 'دليل'],
-          seoKeywords: 'صيانة السيارات, دليل, حماية',
-          seoDescription: 'دليل شامل لصيانة السيارات والحفاظ على مظهرها الجديد',
-          featured: true,
-        },
-        {
-          id: 'default-4',
-          title: 'أهمية الحماية الوقائية للسيارات',
-          excerpt: 'لماذا تعتبر الحماية الوقائية مهمة جداً لسيارتك',
-          content: 'محتوى كامل عن الحماية الوقائية...',
-          image: 'assets/images/blog/pexels-dimkidama-14908957.jpg',
-          category: 'نصائح',
-          date: new Date('2024-01-01'),
-          readTime: '6 دقائق',
-          tags: ['نصائح', 'حماية', 'وقائية'],
-          seoKeywords: 'حماية وقائية, سيارات, نصائح',
-          seoDescription:
-            'اكتشف أهمية الحماية الوقائية للسيارات وكيف تحافظ على سيارتك',
-          featured: false,
-        },
-      ];
-
-      // دمج المنشورات مع ترتيب حسب التاريخ (الأحدث أولاً)
-      this.existingPosts = [...dashboardPosts, ...defaultPosts].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-      );
-
-      console.log('📝 Total posts loaded:', this.existingPosts.length);
-    } catch (error) {
-      console.error('❌ Error loading posts:', error);
-      this.existingPosts = [];
-    }
-  }
-
-  /**
-   * Delete a blog post
-   */
-  deletePost(postId: number): void {
-    const post = this.existingPosts.find((p) => p.id === postId);
-    const postTitle = post ? post.title : 'هذا المنشور';
-
-    const confirmMessage = `
-🚨 تأكيد الحذف 🚨
-
-هل أنت متأكد من حذف المنشور:
-"${postTitle}"؟
-
-⚠️  تحذير مهم:
-• لا يمكن استرجاع المنشور بعد الحذف
-• سيتم حذفه نهائياً من النظام
-• لا يمكن التراجع عن هذه العملية
-
-اكتب "نعم" للتأكيد أو اضغط "إلغاء" للتراجع
-    `;
-
-    const userConfirmation = prompt(confirmMessage);
-
-    if (userConfirmation && userConfirmation.trim().toLowerCase() === 'نعم') {
-      try {
-        // Remove post from array
-        this.existingPosts = this.existingPosts.filter(
-          (post) => post.id !== postId
-        );
-
-        // Update localStorage
-        localStorage.setItem('blog-posts', JSON.stringify(this.existingPosts));
-
-        this.message = `✅ تم حذف "${postTitle}" بنجاح!`;
-        this.messageType = 'success';
-
-        console.log('🗑️ Post deleted:', postId, postTitle);
-        console.log('📝 Remaining posts:', this.existingPosts.length);
-
-        // Clear message after 6 seconds
-        setTimeout(() => {
-          this.message = '';
-        }, 6000);
-      } catch (error) {
-        console.error('❌ Error deleting post:', error);
-        this.message = '❌ حدث خطأ أثناء حذف المنشور';
-        this.messageType = 'error';
-
-        setTimeout(() => {
-          this.message = '';
-        }, 6000);
+    // Clear video URL when toggle is disabled
+    this.blogForm.get('hasVideo')?.valueChanges.subscribe(hasVideo => {
+      if (!hasVideo) {
+        this.blogForm.get('videoUrl')?.setValue('');
+        this.videoEmbedUrl = null;
       }
-    } else {
-      console.log('🚫 Post deletion cancelled by user');
-    }
-  }
-
-  /**
-   * حذف جميع المنشورات
-   */
-  deleteAllPosts(): void {
-    if (this.existingPosts.length === 0) {
-      this.message = 'لا توجد منشورات للحذف';
-      this.messageType = 'error';
-      return;
-    }
-
-    const confirmMessage = `هل أنت متأكد من حذف جميع المنشورات (${this.existingPosts.length} منشور)؟\nاكتب "نعم" للتأكيد:`;
-    const userInput = prompt(confirmMessage);
-
-    if (userInput === 'نعم') {
-      try {
-        // حذف جميع المنشورات من localStorage
-        localStorage.removeItem('dashboardPosts');
-        this.existingPosts = [];
-
-        this.message = `✅ تم حذف جميع المنشورات بنجاح! (${this.existingPosts.length} منشور)`;
-        this.messageType = 'success';
-
-        console.log('🗑️ All posts deleted successfully');
-
-        // إخفاء الرسالة بعد 6 ثواني
-        setTimeout(() => {
-          this.message = '';
-        }, 6000);
-      } catch (error) {
-        console.error('❌ Error deleting all posts:', error);
-        this.message = '❌ حدث خطأ أثناء حذف جميع المنشورات';
-        this.messageType = 'error';
-      }
-    } else {
-      this.message = 'تم إلغاء عملية الحذف';
-      this.messageType = 'error';
-
-      setTimeout(() => {
-        this.message = '';
-      }, 3000);
-    }
-  }
-
-  /**
-   * Get formatted date for display
-   */
-  getFormattedDate(dateString: string): string {
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('ar-SA', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
-    } catch {
-      return dateString;
-    }
-  }
-
-  private formatLoginTime(loginTime: string): string {
-    if (!loginTime) return '';
-
-    try {
-      const date = new Date(loginTime);
-      return date.toLocaleString('ar-SA', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-    } catch {
-      return loginTime;
-    }
-  }
-
-  onSubmit(): void {
-    if (this.blogForm.valid) {
-      this.isSubmitting = true;
-      this.message = '';
-
-      const formData = this.blogForm.value;
-
-      // Create new blog post
-      const newPost: BlogPost = {
-        id: Date.now(), // Simple ID generation
-        title: formData.title,
-        excerpt: formData.excerpt,
-        content: formData.content,
-        image: formData.image,
-        category: formData.category,
-        date: new Date().toISOString().split('T')[0],
-        readTime: formData.readTime,
-        tags: formData.tags.split(',').map((tag: string) => tag.trim()),
-        featured: formData.featured,
-        seoKeywords: formData.seoKeywords
-          .split(',')
-          .map((keyword: string) => keyword.trim()),
-        seoDescription: formData.seoDescription,
-      };
-
-      // Save blog post
-      setTimeout(() => {
-        // Store in localStorage for demo purposes
-        const existingPosts = JSON.parse(
-          localStorage.getItem('blog-posts') || '[]'
-        );
-        existingPosts.push(newPost);
-        localStorage.setItem('blog-posts', JSON.stringify(existingPosts));
-
-        // Update the existing posts list
-        this.existingPosts = existingPosts;
-
-        this.message =
-          'تم إضافة المنشور بنجاح! يمكنك الآن عرضه في صفحة المدونة.';
-        this.messageType = 'success';
-        this.isSubmitting = false;
-
-        // Reset form
-        this.blogForm.reset();
-        this.blogForm.patchValue({ featured: false });
-
-        // Clear message after 5 seconds
-        setTimeout(() => {
-          this.message = '';
-        }, 5000);
-      }, 1000);
-    } else {
-      this.markFormGroupTouched();
-      this.message = 'يرجى ملء جميع الحقول المطلوبة';
-      this.messageType = 'error';
-    }
-  }
-
-  private markFormGroupTouched(): void {
-    Object.keys(this.blogForm.controls).forEach((key) => {
-      const control = this.blogForm.get(key);
-      control?.markAsTouched();
     });
   }
 
-  onImageUrlChange(event: any): void {
-    const url = event.target.value;
+  ngAfterViewChecked(): void {
+    // Icons now use FontAwesome, so no init needed
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  // ── Tab navigation ───────────────────────────────────────────────────
+
+  setTab(tab: ActiveTab): void {
+    this.activeTab = tab;
+    if (tab === 'manage') this.loadPosts();
+  }
+
+  setContentLang(lang: ContentLang): void {
+    this.contentLang = lang;
+  }
+
+  // ── Rich Editor ──────────────────────────────────────────────────────
+
+  getActiveEditor(): HTMLDivElement | null {
+    return this.contentLang === 'ar'
+      ? this.editorArRef?.nativeElement || null
+      : this.editorEnRef?.nativeElement || null;
+  }
+
+  execFormat(command: string, value?: string): void {
+    const editor = this.getActiveEditor();
+    if (!editor) return;
+    editor.focus();
+    document.execCommand(command, false, value);
+    this.syncContent();
+  }
+
+  insertHeading(level: number): void {
+    this.execFormat('formatBlock', `H${level}`);
+  }
+
+  insertImage(): void {
+    const url = prompt(this.contentLang === 'ar' ? 'أدخل رابط الصورة (URL):' : 'Enter image URL:');
     if (url) {
-      // You can add image validation here
+      const imgHtml = `<img src="${url}" alt="image" style="max-width:100%; border-radius:8px; margin:1.5rem 0; border:1px solid rgba(197,160,89,0.15);" />`;
+      this.execFormat('insertHTML', imgHtml);
     }
   }
 
-  getErrorMessage(controlName: string): string {
-    const control = this.blogForm.get(controlName);
-    if (control?.errors && control.touched) {
-      if (control.errors['required']) {
-        return 'هذا الحقل مطلوب';
-      }
-      if (control.errors['minlength']) {
-        const requiredLength = control.errors['minlength'].requiredLength;
-        return `يجب أن يكون الطول على الأقل ${requiredLength} حروف`;
+  insertVideo(): void {
+    const url = prompt(this.contentLang === 'ar' ? 'أدخل رابط يوتيوب (YouTube URL):' : 'Enter YouTube URL:');
+    if (url) {
+      const embedUrl = this.blogService.getYouTubeEmbedUrl(url);
+      if (embedUrl) {
+        const iframeHtml = `
+          <div style="margin: 2rem 0; border-radius: 12px; overflow: hidden; position: relative; aspect-ratio: 16/9; background: #111; border: 1px solid rgba(197, 160, 89, 0.15);">
+            <iframe src="${embedUrl}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen loading="lazy"></iframe>
+          </div><p><br></p>`;
+        this.execFormat('insertHTML', iframeHtml);
+      } else {
+        alert(this.contentLang === 'ar' ? 'رابط يوتيوب غير صحيح.' : 'Invalid YouTube URL.');
       }
     }
-    return '';
   }
 
-  isFieldInvalid(controlName: string): boolean {
-    const control = this.blogForm.get(controlName);
-    return !!(control?.invalid && control.touched);
+  syncContent(): void {
+    if (this.editorArRef) {
+      const htmlAr = this.editorArRef.nativeElement.innerHTML;
+      this.blogForm.get('contentAr')?.setValue(htmlAr);
+      this.isEditorArInvalid = false;
+    }
+    if (this.editorEnRef) {
+      const htmlEn = this.editorEnRef.nativeElement.innerHTML;
+      this.blogForm.get('contentEn')?.setValue(htmlEn);
+      this.isEditorEnInvalid = false;
+    }
   }
 
-  goToBlog(): void {
-    this.router.navigate(['/blog']);
-  }
-
-  logout(): void {
-    localStorage.removeItem('adminLoggedIn');
-    localStorage.removeItem('adminUser');
-    this.router.navigate(['/admin']);
-  }
-
-  /**
-   * Track function for ngFor directive
-   */
-  trackByPostId(index: number, post: BlogPost): number {
-    return post.id;
-  }
-
-  /**
-   * تحديد جميع المنشورات
-   */
-  selectAllPosts(): void {
-    this.selectedPosts = this.existingPosts.map((post) => post.id);
-    console.log('📋 All posts selected:', this.selectedPosts.length);
-  }
-
-  /**
-   * إلغاء تحديد جميع المنشورات
-   */
-  deselectAllPosts(): void {
-    this.selectedPosts = [];
-    console.log('📋 All posts deselected');
-  }
-
-  /**
-   * تبديل اختيار منشور
-   */
-  togglePostSelection(postId: string): void {
-    const index = this.selectedPosts.indexOf(postId);
-    if (index > -1) {
-      this.selectedPosts.splice(index, 1);
+  togglePreview(lang: ContentLang): void {
+    if (lang === 'ar') {
+      this.showPreviewAr = !this.showPreviewAr;
+      if (this.showPreviewAr) {
+        this.previewHtmlAr = this.sanitizer.bypassSecurityTrustHtml(this.blogForm.value.contentAr || '');
+      }
     } else {
-      this.selectedPosts.push(postId);
+      this.showPreviewEn = !this.showPreviewEn;
+      if (this.showPreviewEn) {
+        this.previewHtmlEn = this.sanitizer.bypassSecurityTrustHtml(this.blogForm.value.contentEn || '');
+      }
     }
-    console.log('📋 Selected posts:', this.selectedPosts);
   }
 
-  /**
-   * حذف المنشورات المحددة
-   */
-  deleteSelectedPosts(): void {
-    if (this.selectedPosts.length === 0) {
-      this.message = 'الرجاء تحديد المنشورات المراد حذفها';
-      this.messageType = 'error';
+  // ── Inputs & Previews ────────────────────────────────────────────────
+
+  get slugPreview(): string {
+    const val = this.blogForm.get('slug')?.value;
+    return val ? `https://royalnanoceramic.com/blog/${val}` : '';
+  }
+
+  onSlugInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const clean = input.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+    this.blogForm.get('slug')?.setValue(clean, { emitEvent: false });
+    this.checkSlug();
+  }
+
+  checkSlug(): void {
+    const slug = this.blogForm.get('slug')?.value;
+    if (!slug || this.blogForm.get('slug')?.invalid) return;
+
+    this.slugChecking = true;
+    this.blogService.checkSlugExists(slug).subscribe({
+      next: (exists) => {
+        // If edit mode and slug matches current post, it's fine
+        const isSameAsCurrent = this.isEditMode && slug === this.existingPosts.find(p => p.id === this.editingPostId)?.slug;
+        this.slugTaken = exists && !isSameAsCurrent;
+        this.slugChecking = false;
+      },
+      error: () => {
+        this.slugChecking = false;
+      }
+    });
+  }
+
+  onImageUrlChange(event: Event): void {
+    this.imagePreviewUrl = (event.target as HTMLInputElement).value;
+  }
+
+  onVideoUrlChange(event: Event): void {
+    const url = (event.target as HTMLInputElement).value;
+    if (!url) {
+      this.videoEmbedUrl = null;
+      return;
+    }
+    const embedUrl = this.blogService.getYouTubeEmbedUrl(url);
+    if (embedUrl) {
+      this.videoEmbedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+    } else {
+      this.videoEmbedUrl = null;
+    }
+  }
+
+  isFieldInvalid(field: string): boolean {
+    const control = this.blogForm.get(field);
+    return !!(control && control.invalid && (control.dirty || control.touched));
+  }
+
+  // ── Post Management ──────────────────────────────────────────────────
+
+  loadPosts(): void {
+    this.loading = true;
+    this.blogService.getAllPosts()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (posts) => {
+          this.existingPosts = posts;
+          this.calculateStats();
+          this.loading = false;
+        },
+        error: () => {
+          this.showMessage('خطأ في تحميل المقالات', 'error');
+          this.loading = false;
+        }
+      });
+  }
+
+  calculateStats(): void {
+    this.stats = {
+      total: this.existingPosts.length,
+      published: this.existingPosts.filter(p => p.published).length,
+      draft: this.existingPosts.filter(p => !p.published).length,
+      featured: this.existingPosts.filter(p => p.featured).length,
+      totalViews: this.existingPosts.reduce((acc, p) => acc + (p.views || 0), 0)
+    };
+  }
+
+  getFormattedDate(d: any): string {
+    try {
+      const date = d?.toDate ? d.toDate() : new Date(d);
+      return date.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch {
+      return '';
+    }
+  }
+
+  getPostTitle(post: BlogPost): string {
+    return post.titleAr || post.titleEn || post.title || 'بدون عنوان';
+  }
+
+  togglePublish(post: BlogPost): void {
+    if (!post.id) return;
+    this.blogService.updatePost(post.id, { published: !post.published }).subscribe(() => {
+      this.showMessage(`تم ${!post.published ? 'نشر' : 'إلغاء نشر'} المقال`, 'success');
+    });
+  }
+
+  toggleFeatured(post: BlogPost): void {
+    if (!post.id) return;
+    this.blogService.updatePost(post.id, { featured: !post.featured }).subscribe(() => {
+      this.showMessage(`تم ${!post.featured ? 'تمييز' : 'إلغاء تمييز'} المقال`, 'success');
+    });
+  }
+
+  confirmDelete(id: string): void {
+    this.deleteConfirmId = id;
+  }
+
+  cancelDelete(): void {
+    this.deleteConfirmId = null;
+  }
+
+  deletePost(id: string): void {
+    this.blogService.deletePost(id).subscribe({
+      next: () => {
+        this.showMessage('تم حذف المقال بنجاح', 'success');
+        this.deleteConfirmId = null;
+      },
+      error: () => {
+        this.showMessage('حدث خطأ أثناء الحذف', 'error');
+      }
+    });
+  }
+
+  editPost(post: BlogPost): void {
+    this.isEditMode = true;
+    this.editingPostId = post.id || null;
+    this.activeTab = 'editor';
+    this.contentLang = 'ar';
+
+    this.blogForm.patchValue({
+      slug: post.slug || '',
+      titleAr: post.titleAr || post.title || '',
+      titleEn: post.titleEn || '',
+      excerptAr: post.excerptAr || post.excerpt || '',
+      excerptEn: post.excerptEn || '',
+      contentAr: post.contentAr || post.content || '',
+      contentEn: post.contentEn || '',
+      image: post.image || '',
+      hasVideo: post.hasVideo || !!post.videoUrl || false,
+      videoUrl: post.videoUrl || '',
+      category: post.category || '',
+      tags: post.tags ? post.tags.join(', ') : '',
+      seoDescriptionAr: post.seoDescriptionAr || '',
+      seoDescriptionEn: post.seoDescriptionEn || '',
+      seoKeywords: post.seoKeywords ? post.seoKeywords.join(', ') : '',
+      readTime: post.readTime || '5 دقائق',
+      featured: post.featured || false,
+      published: post.published !== false,
+    });
+
+    this.imagePreviewUrl = post.image || '';
+    if (post.videoUrl) {
+      const embedUrl = this.blogService.getYouTubeEmbedUrl(post.videoUrl);
+      this.videoEmbedUrl = embedUrl ? this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl) : null;
+    } else {
+      this.videoEmbedUrl = null;
+    }
+
+    setTimeout(() => {
+      if (this.editorArRef) this.editorArRef.nativeElement.innerHTML = post.contentAr || post.content || '';
+      if (this.editorEnRef) this.editorEnRef.nativeElement.innerHTML = post.contentEn || '';
+    }, 100);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  cancelEdit(): void {
+    this.isEditMode = false;
+    this.editingPostId = null;
+    this.blogForm.reset({
+      readTime: '5 دقائق',
+      featured: false,
+      published: true
+    });
+    this.imagePreviewUrl = '';
+    this.videoEmbedUrl = null;
+    this.slugTaken = false;
+    if (this.editorArRef) this.editorArRef.nativeElement.innerHTML = '';
+    if (this.editorEnRef) this.editorEnRef.nativeElement.innerHTML = '';
+  }
+
+  // ── Submit ───────────────────────────────────────────────────────────
+
+  onSubmit(): void {
+    this.syncContent();
+
+    if (!this.blogForm.get('contentAr')?.value) this.isEditorArInvalid = true;
+    if (!this.blogForm.get('contentEn')?.value) this.isEditorEnInvalid = true;
+
+    if (this.blogForm.invalid || this.slugTaken || this.isEditorArInvalid || this.isEditorEnInvalid) {
+      this.blogForm.markAllAsTouched();
+      this.showMessage('يرجى ملء جميع الحقول المطلوبة بشكل صحيح', 'error');
       return;
     }
 
-    const confirmMessage = `هل أنت متأكد من حذف ${this.selectedPosts.length} منشور محدد؟\nاكتب "نعم" للتأكيد:`;
-    const userInput = prompt(confirmMessage);
+    this.isSubmitting = true;
+    const formVal = this.blogForm.value;
 
-    if (userInput === 'نعم') {
-      try {
-        // حذف المنشورات المحددة من localStorage
-        const remainingPosts = this.existingPosts.filter(
-          (post) => !this.selectedPosts.includes(post.id)
-        );
+    const newPost: BlogPost = {
+      slug: formVal.slug,
+      title: formVal.titleAr, // Fallback
+      titleAr: formVal.titleAr,
+      titleEn: formVal.titleEn,
+      excerpt: formVal.excerptAr, // Fallback
+      excerptAr: formVal.excerptAr,
+      excerptEn: formVal.excerptEn,
+      content: formVal.contentAr, // Fallback
+      contentAr: formVal.contentAr,
+      contentEn: formVal.contentEn,
+      image: formVal.image,
+      hasVideo: formVal.hasVideo,
+      videoUrl: formVal.hasVideo ? formVal.videoUrl : '',
+      category: formVal.category,
+      tags: formVal.tags ? formVal.tags.split(',').map((t: string) => t.trim()).filter(Boolean) : [],
+      seoDescriptionAr: formVal.seoDescriptionAr,
+      seoDescriptionEn: formVal.seoDescriptionEn,
+      seoKeywords: formVal.seoKeywords ? formVal.seoKeywords.split(',').map((t: string) => t.trim()).filter(Boolean) : [],
+      readTime: formVal.readTime,
+      featured: formVal.featured,
+      published: formVal.published,
+      author: this.currentUsername,
+      authorId: this.adminUser?.uid || 'admin',
+      date: new Date().toISOString().split('T')[0],
+    };
 
-        localStorage.setItem('blog-posts', JSON.stringify(remainingPosts));
-        this.existingPosts = remainingPosts;
-        this.selectedPosts = [];
-
-        this.message = `✅ تم حذف ${this.selectedPosts.length} منشور بنجاح!`;
-        this.messageType = 'success';
-
-        console.log('🗑️ Selected posts deleted successfully');
-
-        // إخفاء الرسالة بعد 6 ثواني
-        setTimeout(() => {
-          this.message = '';
-        }, 6000);
-      } catch (error) {
-        console.error('❌ Error deleting selected posts:', error);
-        this.message = '❌ حدث خطأ أثناء حذف المنشورات المحددة';
-        this.messageType = 'error';
-      }
+    if (this.isEditMode && this.editingPostId) {
+      this.blogService.updatePost(this.editingPostId, newPost).subscribe({
+        next: () => {
+          this.showMessage('تم تحديث المقال بنجاح', 'success');
+          this.isSubmitting = false;
+          this.setTab('manage');
+        },
+        error: (err) => {
+          console.error(err);
+          this.showMessage('خطأ في التحديث', 'error');
+          this.isSubmitting = false;
+        }
+      });
     } else {
-      this.message = 'تم إلغاء عملية الحذف';
-      this.messageType = 'error';
-
-      setTimeout(() => {
-        this.message = '';
-      }, 3000);
+      newPost.views = 0;
+      this.blogService.createPost(newPost, formVal.slug).subscribe({
+        next: () => {
+          this.showMessage('تم إنشاء المقال بنجاح', 'success');
+          this.isSubmitting = false;
+          this.cancelEdit();
+          this.setTab('manage');
+        },
+        error: (err) => {
+          console.error(err);
+          this.showMessage('خطأ في الإنشاء', 'error');
+          this.isSubmitting = false;
+        }
+      });
     }
   }
 
-  /**
-   * فتح النافذة المنبثقة لعرض المنشورات
-   */
-  openPostsPopup(): void {
-    this.showPostsPopup = true;
-    this.loadExistingPosts();
-    // منع التمرير في الخلفية
-    document.body.style.overflow = 'hidden';
+  // ── Utils ────────────────────────────────────────────────────────────
+
+  showMessage(msg: string, type: 'success' | 'error'): void {
+    this.message = msg;
+    this.messageType = type;
+    setTimeout(() => { this.message = ''; }, 4000);
   }
 
-  /**
-   * إغلاق النافذة المنبثقة
-   */
-  closePostsPopup(): void {
-    this.showPostsPopup = false;
-    // إعادة التمرير
-    document.body.style.overflow = 'auto';
+  logout(): void {
+    this.authService.signOut().then(() => this.router.navigate(['/admin']));
+  }
+
+  navigateToBlog(): void {
+    window.open('/blog', '_blank');
+  }
+
+  trackByPostId(index: number, post: BlogPost): string {
+    return post.id || index.toString();
   }
 }

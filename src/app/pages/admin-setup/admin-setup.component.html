@@ -1,0 +1,93 @@
+<div class="setup-container">
+  <div class="setup-card" *ngIf="!setupComplete">
+    <div class="setup-header">
+      <h1>إعداد النظام</h1>
+      <p>إنشاء حساب المدير الأول</p>
+    </div>
+
+    <form [formGroup]="setupForm" (ngSubmit)="setupAdmin()">
+      <div class="form-section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>البريد الإلكتروني</mat-label>
+          <input matInput 
+                 formControlName="email" 
+                 type="email" 
+                 placeholder="admin@royalnano.com">
+          <mat-error *ngIf="setupForm.get('email')?.hasError('required')">
+            البريد الإلكتروني مطلوب
+          </mat-error>
+          <mat-error *ngIf="setupForm.get('email')?.hasError('email')">
+            البريد الإلكتروني غير صحيح
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>كلمة المرور</mat-label>
+          <input matInput 
+                 formControlName="password" 
+                 type="password" 
+                 placeholder="كلمة مرور قوية">
+          <mat-error *ngIf="setupForm.get('password')?.hasError('required')">
+            كلمة المرور مطلوبة
+          </mat-error>
+          <mat-error *ngIf="setupForm.get('password')?.hasError('minlength')">
+            كلمة المرور يجب أن تكون 6 أحرف على الأقل
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>الاسم</mat-label>
+          <input matInput 
+                 formControlName="name" 
+                 placeholder="اسم المدير">
+          <mat-error *ngIf="setupForm.get('name')?.hasError('required')">
+            الاسم مطلوب
+          </mat-error>
+          <mat-error *ngIf="setupForm.get('name')?.hasError('minlength')">
+            الاسم يجب أن يكون أكثر من حرفين
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-section">
+        <h3>الصلاحيات</h3>
+        <div class="permissions-info">
+          <p>سيتم منح صلاحيات كاملة للمدير الأول:</p>
+          <ul>
+            <li>وصول كامل إلى Royal Nano</li>
+            <li>إدارة جميع الأقسام</li>
+            <li>إدارة المستخدمين</li>
+            <li>صلاحيات Royal Shield</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="setup-actions">
+        <button mat-raised-button 
+                color="primary" 
+                type="submit" 
+                [disabled]="setupForm.invalid || loading"
+                class="setup-btn">
+          <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+          {{ loading ? 'جاري الإنشاء...' : 'إنشاء حساب المدير' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="setup-complete" *ngIf="setupComplete">
+    <div class="complete-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <h2>تم الإعداد بنجاح!</h2>
+    <p>تم إنشاء حساب المدير بنجاح. يمكنك الآن تسجيل الدخول.</p>
+    
+    <button mat-raised-button 
+            color="primary" 
+            (click)="goToLogin()"
+            class="login-btn">
+      <i class="fas fa-sign-in-alt"></i>
+      تسجيل الدخول
+    </button>
+  </div>
+</div>

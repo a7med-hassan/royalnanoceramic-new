@@ -1,0 +1,171 @@
+<div class="analytics-dashboard">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">
+        <i class="fas fa-chart-line"></i>
+        تحليلات الموقع
+      </h1>
+      <p class="dashboard-subtitle">إحصائيات شاملة لموقع Royal Nano Ceramic</p>
+    </div>
+    
+    <div class="header-actions">
+      <button 
+        class="refresh-btn" 
+        (click)="refreshData()" 
+        [disabled]="refreshing">
+        <i class="fas fa-sync-alt" [class.fa-spin]="refreshing"></i>
+        <span>تحديث</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>جاري تحميل البيانات...</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loading" class="dashboard-content">
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div 
+        *ngFor="let card of statCards" 
+        class="stat-card"
+        [style.--card-color]="card.color">
+        
+        <div class="stat-icon">
+          <i [class]="card.icon"></i>
+        </div>
+        
+        <div class="stat-content">
+          <h3 class="stat-title">{{ card.title }}</h3>
+          <div class="stat-value">{{ formatNumber(card.value) }}</div>
+          
+          <div *ngIf="card.change !== undefined" class="stat-change">
+            <i 
+              [class]="getChangeIcon(card.changeType!)" 
+              [style.color]="getChangeColor(card.changeType!)">
+            </i>
+            <span 
+              [style.color]="getChangeColor(card.changeType!)"
+              class="change-text">
+              {{ card.change > 0 ? '+' : '' }}{{ card.change }}%
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="fas fa-chart-area"></i>
+            الإحصائيات اليومية (آخر 30 يوم)
+          </h3>
+        </div>
+        
+        <div class="chart-wrapper">
+          <app-chart 
+            [data]="chartData"
+            [options]="chartOptions"
+            [type]="chartType">
+          </app-chart>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Pages Section -->
+    <div class="top-pages-section">
+      <div class="section-header">
+        <h3 class="section-title">
+          <i class="fas fa-globe"></i>
+          أكثر الصفحات زيارة
+        </h3>
+      </div>
+      
+      <div class="pages-list">
+        <div 
+          *ngFor="let page of topPages; let i = index" 
+          class="page-item">
+          
+          <div class="page-rank">
+            <span class="rank-number">{{ i + 1 }}</span>
+          </div>
+          
+          <div class="page-info">
+            <div class="page-path">{{ page.page }}</div>
+            <div class="page-visits">{{ formatNumber(page.visits) }} زيارة</div>
+          </div>
+          
+          <div class="page-last-visit">
+            <i class="fas fa-clock"></i>
+            <span>{{ page.lastVisit | date:'short' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Section -->
+    <div class="summary-section">
+      <div class="summary-cards">
+        <div class="summary-card">
+          <div class="summary-icon">
+            <i class="fas fa-calendar-week"></i>
+          </div>
+          <div class="summary-content">
+            <h4>هذا الأسبوع</h4>
+            <p>{{ formatNumber(overallStats.last7DaysVisits) }} زيارة</p>
+          </div>
+        </div>
+        
+        <div class="summary-card">
+          <div class="summary-icon">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div class="summary-content">
+            <h4>هذا الشهر</h4>
+            <p>{{ formatNumber(overallStats.last30DaysVisits) }} زيارة</p>
+          </div>
+        </div>
+        
+        <div class="summary-card">
+          <div class="summary-icon">
+            <i class="fas fa-envelope-open"></i>
+          </div>
+          <div class="summary-content">
+            <h4>إجمالي النماذج</h4>
+            <p>{{ formatNumber(
+              (overallStats.totalContactForms || 0) + 
+              (overallStats.totalDiscountForms || 0) + 
+              (overallStats.totalJoinForms || 0) + 
+              (overallStats.totalLandingPageForms || 0)
+            ) }} نموذج</p>
+          </div>
+        </div>
+        
+        <div class="summary-card">
+          <div class="summary-icon">
+            <i class="fas fa-percentage"></i>
+          </div>
+          <div class="summary-content">
+            <h4>معدل التحويل</h4>
+            <p>{{ 
+              overallStats.totalVisits > 0 ? 
+              (((overallStats.totalContactForms || 0) + 
+                (overallStats.totalDiscountForms || 0) + 
+                (overallStats.totalJoinForms || 0) + 
+                (overallStats.totalLandingPageForms || 0)) / overallStats.totalVisits * 100).toFixed(1) : 0
+            }}%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

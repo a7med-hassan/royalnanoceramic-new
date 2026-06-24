@@ -1,0 +1,167 @@
+<section class="py-5 my-5 bg-light" style="min-height: 80vh;">
+    <div class="container">
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="card-header bg-primary text-white text-center py-4">
+                <h2 class="mb-0 fw-bold">تفعيل ضمان النانو سيراميك</h2>
+                <p class="mb-0 opacity-75">نظام تفعيل الضمان المعتمد للفروع</p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+
+                @if(successMessage) {
+                <div class="text-center py-5">
+                    <div class="mb-4 text-success">
+                        <i class="fas fa-check-circle fa-5x"></i>
+                    </div>
+                    <h3 class="text-success fw-bold mb-3">{{ successMessage }}</h3>
+                    <p class="lead mb-4">رقم الضمان الخاص بك هو:</p>
+                    <div class="bg-light p-3 rounded-3 d-inline-block border border-success">
+                        <h2 class="mb-0 font-monospace text-dark">{{ activatedSerial }}</h2>
+                    </div>
+                    <div class="mt-5">
+                        <button class="btn btn-primary" onclick="window.location.reload()">تفعيل ضمان آخر</button>
+                    </div>
+                </div>
+                } @else {
+
+                <mat-stepper [linear]="true" #stepper>
+
+                    <!-- Step 1: Branch Code -->
+                    <mat-step [stepControl]="otpForm">
+                        <ng-template matStepLabel>التحقق من الفرع</ng-template>
+                        <div class="row justify-content-center py-4">
+                            <div class="col-md-6">
+                                <form [formGroup]="otpForm" (ngSubmit)="requestOtp()">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">كود الفرع</label>
+                                        <input type="text" class="form-control form-control-lg text-center"
+                                            formControlName="branchCode" placeholder="أدخل كود الفرع">
+                                    </div>
+
+                                    @if(errorMessage) {
+                                    <div class="alert alert-danger">{{ errorMessage }}</div>
+                                    }
+
+                                    <div class="d-grid">
+                                        <button mat-raised-button color="primary" class="py-2"
+                                            [disabled]="otpForm.invalid || isLoading"
+                                            (click)="requestOtp(); stepper.next()" *ngIf="!requestId">
+                                            @if(isLoading) { <mat-spinner diameter="20"
+                                                class="d-inline-block"></mat-spinner> }
+                                            طلب رمز التحقق (OTP)
+                                        </button>
+
+                                        <button mat-button matStepperNext *ngIf="requestId">التالي</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </mat-step>
+
+                    <!-- Step 2: Verify OTP -->
+                    <mat-step [stepControl]="verifyForm">
+                        <ng-template matStepLabel>تأكيد الرمز</ng-template>
+                        <div class="row justify-content-center py-4">
+                            <div class="col-md-6">
+                                <div class="alert alert-info" *ngIf="branchName">
+                                    تم إرسال الرمز إلى مسؤولي الفرع: <strong>{{ branchName }}</strong>
+                                </div>
+
+                                <form [formGroup]="verifyForm" (ngSubmit)="verifyOtp()">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">رمز التحقق (OTP)</label>
+                                        <input type="text"
+                                            class="form-control form-control-lg text-center letter-spacing-2"
+                                            formControlName="otp" placeholder="XXXXXX" maxlength="6">
+                                    </div>
+
+                                    @if(errorMessage) {
+                                    <div class="alert alert-danger">{{ errorMessage }}</div>
+                                    }
+
+                                    <div class="d-grid gap-2">
+                                        <button mat-raised-button color="primary"
+                                            [disabled]="verifyForm.invalid || isLoading"
+                                            (click)="verifyOtp(); stepper.next()" *ngIf="!verifiedToken">
+                                            @if(isLoading) { <mat-spinner diameter="20"
+                                                class="d-inline-block"></mat-spinner> }
+                                            تأكيد الرمز
+                                        </button>
+                                        <button mat-button matStepperPrevious>رجوع</button>
+                                        <button mat-button matStepperNext *ngIf="verifiedToken">التالي</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </mat-step>
+
+                    <!-- Step 3: Activation Form -->
+                    <mat-step [stepControl]="activationForm">
+                        <ng-template matStepLabel>بيانات العميل</ng-template>
+                        <div class="py-4">
+                            <form [formGroup]="activationForm" (ngSubmit)="submitActivation()">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">اسم العميل <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" formControlName="name">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">رقم الهاتف <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control" formControlName="phoneNumber">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">البريد الإلكتروني</label>
+                                        <input type="email" class="form-control" formControlName="email">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">رقم اللوحة</label>
+                                        <input type="text" class="form-control" formControlName="plateNumber">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">الماركة</label>
+                                        <input type="text" class="form-control" formControlName="brand">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">الموديل</label>
+                                        <input type="text" class="form-control" formControlName="model">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">اللون</label>
+                                        <input type="text" class="form-control" formControlName="color">
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label">صورة السيارة/الفاتورة <span
+                                                class="text-danger">*</span></label>
+                                        <input type="file" class="form-control" (change)="onFileSelected($event)"
+                                            accept="image/*">
+                                        @if(imagePreview) {
+                                        <div class="mt-2">
+                                            <img [src]="imagePreview" class="img-thumbnail" style="max-height: 200px">
+                                        </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                @if(errorMessage) {
+                                <div class="alert alert-danger mt-3">{{ errorMessage }}</div>
+                                }
+
+                                <div class="mt-4 d-flex justify-content-between">
+                                    <button mat-button matStepperPrevious type="button">رجوع</button>
+                                    <button mat-raised-button color="primary" type="submit"
+                                        [disabled]="activationForm.invalid || isLoading">
+                                        @if(isLoading) { <mat-spinner diameter="20"
+                                            class="d-inline-block me-2"></mat-spinner> }
+                                        تفعيل الضمان
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </mat-step>
+                </mat-stepper>
+                }
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,197 @@
+<div class="post-page" [class.rtl]="isRtl" [dir]="isRtl ? 'rtl' : 'ltr'">
+
+  <!-- Reading Progress Bar -->
+  <div class="reading-progress" [style.width.%]="readingProgress"></div>
+
+  <!-- Loading -->
+  <div class="post-loading" *ngIf="loading">
+    <div class="post-loading__spinner"></div>
+    <p>{{ isRtl ? 'جارٍ تحميل المقال...' : 'Loading article...' }}</p>
+  </div>
+
+  <!-- Error -->
+  <div class="post-error" *ngIf="!loading && error">
+    <i class="fas fa-exclamation-circle post-error__icon"></i>
+    <h2>{{ error }}</h2>
+    <button class="btn-back" (click)="goBack()">
+      <i class="fas fa-arrow-right" *ngIf="isRtl"></i>
+      <i class="fas fa-arrow-left" *ngIf="!isRtl"></i>
+      {{ isRtl ? 'العودة للمدونة' : 'Back to Blog' }}
+    </button>
+  </div>
+
+  <!-- ══ Article ══ -->
+  <article class="post-article" *ngIf="!loading && post && !error">
+
+    <!-- Hero Image -->
+    <header class="post-hero" [style.background-image]="'url(' + post.image + ')'">
+      <div class="post-hero__overlay"></div>
+      <div class="post-hero__content">
+        <button class="btn-back-hero" (click)="goBack()">
+          <i class="fas fa-arrow-right" *ngIf="isRtl"></i>
+          <i class="fas fa-arrow-left" *ngIf="!isRtl"></i>
+          {{ isRtl ? 'المدونة' : 'Blog' }}
+        </button>
+        <div class="post-hero__meta">
+          <span class="post-hero__cat">{{ post.category }}</span>
+          <span class="post-hero__read"><i class="fas fa-clock icon-sm"></i> {{ post.readTime }}</span>
+          <span class="post-hero__views" *ngIf="post.views"><i class="fas fa-eye icon-sm"></i> {{ post.views }}</span>
+        </div>
+        <h1 class="post-hero__title">{{ getTitle(post) }}</h1>
+        <p class="post-hero__excerpt">{{ getExcerpt(post) }}</p>
+        <div class="post-hero__info">
+          <span class="post-hero__author">
+            <i class="fas fa-user-circle icon-sm"></i> {{ post.author || 'Royal Nano' }}
+          </span>
+          <span class="post-hero__date">
+            <i class="fas fa-calendar icon-sm"></i> {{ getFormattedDate(post.createdAt || post.date) }}
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <div class="post-layout">
+
+      <!-- Main Content -->
+      <div class="post-main">
+
+        <!-- Article Body -->
+        <div class="post-body" [innerHTML]="safeContent"></div>
+
+        <!-- YouTube Video (if exists) -->
+        <div class="post-video" *ngIf="safeVideoUrl">
+          <div class="post-video__header">
+            <i class="fab fa-youtube"></i>
+            {{ isRtl ? 'شاهد الفيديو' : 'Watch Video' }}
+          </div>
+          <div class="post-video__embed">
+            <iframe
+              [src]="safeVideoUrl"
+              frameborder="0"
+              allowfullscreen
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            ></iframe>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="post-tags" *ngIf="post.tags && post.tags.length">
+          <span class="post-tags__label"><i class="fas fa-tags icon-sm"></i></span>
+          <span class="post-tag" *ngFor="let tag of post.tags">#{{ tag }}</span>
+        </div>
+
+        <!-- Share Bar -->
+        <div class="post-share">
+          <span class="post-share__label">{{ isRtl ? 'شارك المقال:' : 'Share:' }}</span>
+          <button class="share-btn share-btn--copy" (click)="copyLink()">
+            <i class="fas fa-link"></i>
+            {{ isRtl ? 'نسخ الرابط' : 'Copy Link' }}
+          </button>
+          <button class="share-btn share-btn--share" (click)="sharePost()" *ngIf="post">
+            <i class="fas fa-share-alt"></i>
+            {{ isRtl ? 'مشاركة' : 'Share' }}
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Sidebar (desktop) -->
+      <aside class="post-sidebar">
+        <div class="sidebar-card">
+          <h3 class="sidebar-card__title">
+            <i class="fas fa-crown"></i>
+            {{ isRtl ? 'رويال نانو سيراميك' : 'Royal Nano Ceramic' }}
+          </h3>
+          <p class="sidebar-card__text">
+            {{ isRtl
+              ? 'خبراء حماية السيارات بأفضل المنتجات والتقنيات العالمية. أكثر من 10 سنوات من التميز.'
+              : 'Car protection experts with top global products & technologies. Over 10 years of excellence.' }}
+          </p>
+          <a routerLink="/contact" class="sidebar-card__cta">
+            <i class="fas fa-phone icon-sm"></i>
+            {{ isRtl ? 'تواصل معنا' : 'Contact Us' }}
+          </a>
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- ══ Related Posts ══ -->
+    <section class="related-posts" *ngIf="relatedPosts.length">
+      <div class="related-posts__container">
+        <h2 class="related-posts__title">
+          {{ isRtl ? 'مقالات ذات صلة' : 'Related Articles' }}
+        </h2>
+        <div class="related-grid">
+          <article
+            *ngFor="let rel of relatedPosts"
+            class="related-card"
+            (click)="navigateToPost(rel)"
+          >
+            <div class="related-card__img-wrap">
+              <img [src]="rel.image" [alt]="getTitle(rel)" loading="lazy" />
+              <span class="related-card__cat">{{ rel.category }}</span>
+            </div>
+            <div class="related-card__body">
+              <h3 class="related-card__title">{{ getTitle(rel) }}</h3>
+              <span class="related-card__read"><i class="fas fa-clock icon-sm"></i> {{ rel.readTime }}</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ Prev / Next Navigation ══ -->
+    <nav class="post-nav" *ngIf="prevPost || nextPost">
+      <a class="post-nav__item post-nav__item--prev" *ngIf="prevPost" (click)="navigateToPost(prevPost)">
+        <span class="post-nav__label">
+          <i class="fas fa-arrow-right" *ngIf="isRtl"></i>
+          <i class="fas fa-arrow-left" *ngIf="!isRtl"></i>
+          {{ isRtl ? 'المقال السابق' : 'Previous Post' }}
+        </span>
+        <div class="post-nav__content">
+          <img [src]="prevPost.image" [alt]="getTitle(prevPost)" loading="lazy" class="post-nav__img" />
+          <span class="post-nav__title">{{ getTitle(prevPost) }}</span>
+        </div>
+      </a>
+      <div class="post-nav__divider" *ngIf="prevPost && nextPost"></div>
+      <a class="post-nav__item post-nav__item--next" *ngIf="nextPost" (click)="navigateToPost(nextPost)">
+        <span class="post-nav__label">
+          {{ isRtl ? 'المقال التالي' : 'Next Post' }}
+          <i class="fas fa-arrow-left" *ngIf="isRtl"></i>
+          <i class="fas fa-arrow-right" *ngIf="!isRtl"></i>
+        </span>
+        <div class="post-nav__content post-nav__content--next">
+          <img [src]="nextPost.image" [alt]="getTitle(nextPost)" loading="lazy" class="post-nav__img" />
+          <span class="post-nav__title">{{ getTitle(nextPost) }}</span>
+        </div>
+      </a>
+    </nav>
+
+    <!-- ══ FAQ Section ══ -->
+    <section class="post-faq">
+      <div class="post-faq__container">
+        <div class="post-faq__header">
+          <span class="post-faq__badge">{{ isRtl ? 'الأسئلة الشائعة' : 'FAQ' }}</span>
+          <h2 class="post-faq__title">{{ isRtl ? 'كل ما تريد معرفته عن النانو سيراميك' : 'Everything about Nano Ceramic' }}</h2>
+        </div>
+        <div class="post-faq__list">
+          <div *ngFor="let faq of faqs; let i = index" class="post-faq__item" [class.post-faq__item--active]="activeFaqIndex === i">
+            <button class="post-faq__question" (click)="toggleFaq(i)">
+              <span class="post-faq__icon">
+                <i class="fas fa-chevron-down"></i>
+              </span>
+              <span class="post-faq__q-text">{{ faq.question }}</span>
+            </button>
+            <div class="post-faq__answer" [style.max-height]="activeFaqIndex === i ? '300px' : '0'">
+              <p class="post-faq__answer-text">{{ faq.answer }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </article>
+
+</div>

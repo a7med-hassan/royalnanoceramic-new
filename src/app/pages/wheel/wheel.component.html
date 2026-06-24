@@ -1,0 +1,101 @@
+<div class="wheel-page">
+  <!-- رسالة أنه لعب من قبل -->
+  <div class="already-played-modal" *ngIf="hasPlayedBefore">
+    <div class="already-played-box animate-fade">
+      <div class="already-played-icon">🎁</div>
+      <h2 class="already-played-title">لقد لعبت بالفعل!</h2>
+      <p class="already-played-message">
+        لقد لعبت العجلة وأخذت الهدية بالفعل. شكراً لك على مشاركتك! 🎉
+      </p>
+      <p class="already-played-submessage">
+        يمكنك مشاركة الصفحة مع أصدقائك لفرصة الحصول على الهدايا أيضاً!
+      </p>
+      <button class="btn-go-home" (click)="goToHome()">
+        العودة للرئيسية 🏠
+      </button>
+    </div>
+  </div>
+
+  <!-- العجلة العادية -->
+  <div class="wheel-container" *ngIf="!hasPlayedBefore">
+    <h2 class="title">🎉 خصومات <span>White Friday</span> من Royal Nano</h2>
+    <p class="subtitle">لف العجلة لتحصل على خصمك المميز 🎯</p>
+
+    <div class="wheel-wrapper">
+      <canvas 
+        #wheelCanvas 
+        width="400" 
+        height="400" 
+        class="wheel-canvas"
+      ></canvas>
+    </div>
+
+    <button
+      class="btn-spin"
+      (click)="startSpin()"
+      [disabled]="isSpinning"
+    >
+      {{ isSpinning ? 'جاري اللف...' : 'لف العجلة 🎁' }}
+    </button>
+  </div>
+
+  <!-- فورم الخصم بعد اللف -->
+  <div class="form-modal" *ngIf="formVisible" (click)="hideForm()">
+    <div class="form-box animate-fade" (click)="$event.stopPropagation()">
+      <h3>🎊 مبروك! حصلت على <span class="discount-badge">{{ selectedSegmentText }}</span></h3>
+      <p class="form-subtitle">املأ بياناتك للحصول على الكود الخاص بك:</p>
+
+      <form (ngSubmit)="submitForm()" #discountForm="ngForm">
+        <div class="form-group">
+          <label for="name">الاسم *</label>
+          <input 
+            class="form-control" 
+            id="name"
+            name="name" 
+            required 
+            [(ngModel)]="formData.name"
+            placeholder="أدخل اسمك الكامل"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">رقم الهاتف *</label>
+          <input 
+            class="form-control" 
+            id="phone"
+            name="phone" 
+            required 
+            type="tel" 
+            [(ngModel)]="formData.phone"
+            placeholder="01234567890"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="carType">نوع السيارة *</label>
+          <input 
+            class="form-control" 
+            id="carType"
+            name="carType" 
+            required 
+            [(ngModel)]="formData.carType"
+            placeholder="مثال: تويوتا، مرسيدس، BMW"
+          />
+        </div>
+
+        <button 
+          type="submit" 
+          class="btn-submit"
+          [disabled]="discountForm.invalid || isLoading"
+        >
+          <span *ngIf="!isLoading">إرسال البيانات ✅</span>
+          <span *ngIf="isLoading" class="submit-loading">
+            <span class="spinner"></span>
+            جاري الإرسال...
+          </span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+

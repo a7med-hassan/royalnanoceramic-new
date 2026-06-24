@@ -1,0 +1,153 @@
+<div class="thank-you-page">
+  <!-- Success Animation Container -->
+  <div class="thank-you-container">
+    <!-- Success Icon with Animation -->
+    <div class="success-icon-wrapper">
+      <div class="success-circle">
+        <div class="checkmark-icon">
+          <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thank You Content -->
+    <div class="thank-you-content">
+      <h1 class="thank-you-title">
+        <span class="emoji">🎉</span>
+        شكراً لك<span *ngIf="customerName"> يا {{ customerName }}</span>!
+      </h1>
+      
+      <p class="thank-you-subtitle">
+        <span *ngIf="isWhiteFridayWheel">🎉 مبروك حصلت على خصم White Friday</span>
+        <span *ngIf="!isWhiteFridayWheel">تم استلام طلبك بنجاح</span>
+      </p>
+      
+      <!-- White Friday Discount Code Section -->
+      <div *ngIf="isWhiteFridayWheel && (discountCode || discount)" class="discount-section">
+        <div class="discount-card">
+          <div class="discount-header">
+            <i class="fas fa-gift"></i>
+            <h3>كود الخصم الخاص بك</h3>
+          </div>
+          <div class="discount-content">
+            <div *ngIf="discountText" class="discount-text">
+              <span class="discount-label">الخصم:</span>
+              <span class="discount-value">{{ discountText }}</span>
+            </div>
+            <div *ngIf="discountCode" class="discount-code-wrapper">
+              <span class="discount-code-label">كود الخصم:</span>
+              <div class="discount-code-box">
+                <span class="discount-code">{{ discountCode }}</span>
+                <button class="copy-btn" (click)="copyDiscountCode()" title="نسخ الكود">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+            </div>
+            <!-- ⚠️ تحذير انتهاء الخصم بعد 24 ساعة -->
+            <div class="discount-expiry-warning">
+              <i class="fas fa-clock"></i>
+              <p class="expiry-text">
+                <strong>⚠️ تحذير مهم:</strong> هذا الخصم متاح لمدة <strong class="highlight-24h">24 ساعة فقط</strong> من الآن!
+              </p>
+              <p class="expiry-subtext">
+                استخدم الكود خلال الـ 24 ساعة القادمة قبل انتهاء صلاحيته
+              </p>
+            </div>
+            <p class="discount-instructions">
+              💡 احفظ هذا الكود واستخدمه عند التواصل معنا للحصول على خصمك
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="success-message">
+        <i class="fas fa-check-circle"></i>
+        <p>سيتواصل معك فريقنا في أقرب وقت ممكن</p>
+      </div>
+
+      <div class="next-steps">
+        <h2>الخطوات التالية:</h2>
+        <div class="steps-grid">
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>مراجعة طلبك</h3>
+              <p>نقوم الآن بمراجعة طلبك والتحضير للتواصل معك</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>الاتصال بك</h3>
+              <p>سيتصل بك أحد ممثلينا خلال 24 ساعة</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>حجز موعد</h3>
+              <p>سنقوم بحجز موعد مناسب لك لتقديم الخدمة</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <h2>هل لديك استفسار عاجل؟</h2>
+        <div class="action-buttons">
+          <button class="btn btn-whatsapp" (click)="openWhatsApp()">
+            <i class="fab fa-whatsapp"></i>
+            <span>راسلنا على واتساب</span>
+          </button>
+          <button class="btn btn-call" (click)="callNow()">
+            <i class="fas fa-phone"></i>
+            <span>اتصل بنا الآن</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Auto Redirect Notice -->
+      <div class="redirect-notice">
+        <i class="fas fa-info-circle"></i>
+        <p>سيتم توجيهك للصفحة الرئيسية تلقائياً خلال <strong>{{ countdown }}</strong> ثواني</p>
+        <button class="btn-link" (click)="goToHome()">
+          أو انقر هنا للعودة الآن
+        </button>
+      </div>
+    </div>
+
+    <!-- Decorative Elements -->
+    <div class="confetti-container">
+      <div class="confetti" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]"></div>
+    </div>
+  </div>
+
+  <!-- Social Proof Section -->
+  <div class="social-proof">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">10,000+</div>
+          <div class="stat-label">عميل سعيد</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">5</div>
+          <div class="stat-label">سنوات ضمان</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">16</div>
+          <div class="stat-label">فرع في مصر</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">دعم فني</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

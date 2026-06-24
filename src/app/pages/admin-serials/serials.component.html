@@ -1,0 +1,186 @@
+<section class="py-5 my-5">
+  <div class="container">
+    <!-- Royal Shield Header -->
+    <div class="royal-shield-header">
+      <h1>
+        <i class="fas fa-key icon"></i>
+        إدارة أرقام التسلسل
+      </h1>
+      <p style="margin: 8px 0 0 0; opacity: 0.9;">إدارة وإضافة أرقام التسلسل للضمانات</p>
+    </div>
+
+    <!-- Add Serial Form -->
+    <div class="card"
+      style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 24px;">
+      <h3 style="margin: 0 0 20px 0; color: #374151; font-size: 18px;">إضافة رقم تسلسل جديد</h3>
+      <form [formGroup]="serialForm">
+        <div class="my-inputs">
+          <div class="input-parent">
+            <label for="productCodeInput">كود المنتج (على الملصق)</label>
+            <input type="text" id="productCodeInput" class="form-control" formControlName="productCode"
+              placeholder="M-102487" />
+          </div>
+          <div class="input-parent">
+            <label for="internalSerialInput">السيريال الداخلي (على الكارت)</label>
+            <input type="text" id="internalSerialInput" class="form-control" formControlName="internalSerial"
+              placeholder="RXM-3055" />
+          </div>
+          <div class="input-parent">
+            <label for="branch">الفرع</label>
+            <select id="branch" class="form-control" formControlName="branch">
+              <option value="" disabled selected>اختر الفرع</option>
+              @for (branch of branches; track branch.branchCode) {
+              <option [value]="branch.branchCode">{{ branch.branchName }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 16px;">
+          <button class="btn btn-primary" (click)="addSerial()">
+            <i class="fas fa-plus"></i>
+            إضافة
+          </button>
+          <button class="btn btn-secondary" (click)="exportData()">
+            <i class="fas fa-download"></i>
+            تصدير الجدول
+          </button>
+        </div>
+        @if (serialForm.invalid && serialForm.touched) {
+        <div class="alert alert-danger mt-2">
+          <p class="mb-0">يرجى تعبئة جميع الحقول المطلوبة</p>
+        </div>
+        }
+      </form>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="card"
+      style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 24px;">
+      <h3 style="margin: 0 0 20px 0; color: #374151; font-size: 18px;">
+        <i class="fas fa-filter"></i>
+        البحث والتصفية
+      </h3>
+      <div class="filter-container">
+        <div class="filter-row">
+          <!-- Search Input -->
+          <div class="filter-item">
+            <label for="searchInput">البحث</label>
+            <div class="search-input-wrapper">
+              <input type="text" id="searchInput" class="form-control"
+                placeholder="ابحث برقم التسلسل، الفرع، أو عدد الفحوصات..." [(ngModel)]="searchText"
+                (input)="applySearch($event)" />
+              <i class="fas fa-search search-icon"></i>
+            </div>
+          </div>
+
+          <!-- Activation Filter Dropdown -->
+          <div class="filter-item">
+            <label for="activationFilter">حالة التفعيل</label>
+            <select id="activationFilter" class="form-control" [(ngModel)]="activationFilter"
+              (change)="onActivationFilterChange(activationFilter)">
+              <option value="all">
+                <span>الكل</span>
+              </option>
+              <option value="activated">
+                <span>المفعل فقط</span>
+              </option>
+              <option value="not_activated">
+                <span>غير المفعل فقط</span>
+              </option>
+            </select>
+          </div>
+
+          <!-- Clear Filters Button -->
+          <div class="filter-item filter-actions">
+            <button class="btn btn-secondary" (click)="clearFilters()">
+              <i class="fas fa-redo"></i>
+              مسح الفلاتر
+            </button>
+          </div>
+        </div>
+
+        <!-- Results Count -->
+        <div class="results-count">
+          <i class="fas fa-info-circle"></i>
+          عرض {{ dataSource.data.length }} من أصل {{ allSerials.length }} رقم تسلسل
+        </div>
+      </div>
+    </div>
+
+    <!-- Serials Table -->
+    <div class="mat-elevation-z8">
+      <table mat-table matSort [dataSource]="dataSource" id="serials">
+        <!-- Serial Number Column -->
+        <!-- Product Code Column -->
+        <ng-container matColumnDef="productCode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            كود المنتج
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.productCode || element.serialNumber }}</td>
+        </ng-container>
+
+        <!-- Internal Serial Column -->
+        <ng-container matColumnDef="internalSerial">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            السيريال الداخلي
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.internalSerial || '-' }}</td>
+        </ng-container>
+
+        <!-- Number of Checks Column -->
+        <ng-container matColumnDef="numOfChecks">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            عدد الفحوصات
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.numOfChecks }}</td>
+        </ng-container>
+        <ng-container matColumnDef="branch">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>الفرع</th>
+
+          <td mat-cell *matCellDef="let element">
+            @if(element.branch){
+            {{ element.branch }}
+            } @else {
+            <form id="ubdateBranch" (ngSubmit)="UpdateBranch(element.serialNumber)" [formGroup]="branchUpdateForm">
+              <input type="text" placeholder="اسم الفرع؟" formControlName="branch" [id]="element.serialNumber"
+                class="form-control" style="width: 100%; padding: 8px 12px; font-size: 14px;" />
+            </form>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Activation Status Column -->
+        <ng-container matColumnDef="activated">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            حالة التفعيل
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span [class]="
+                element.activated ? 'bg-info' : 'bg-secondary text-white'
+              " class="py-1 px-2 rounded-pill">
+              {{ element.activated ? "مفعل" : "غير مفعل" }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>الإجراءات</th>
+          <td mat-cell *matCellDef="let element">
+            <button class="btn btn-danger" (click)="deleteSerial(element.productCode || element.serialNumber)"
+              title="حذف">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <!-- Paginator -->
+      <mat-paginator [pageSizeOptions]="paginatorNumbers" [pageSize]="10" showFirstLastButtons
+        aria-label="Select page"></mat-paginator>
+    </div>
+  </div>
+</section>
